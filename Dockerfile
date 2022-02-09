@@ -5,7 +5,7 @@ WORKDIR /app
 ENV PYTHONPATH /app
 ENV PATH="/app/bin:${PATH}"
 
-COPY shared ./
+COPY shared shared
 RUN python -m pip install --upgrade pip
 RUN pip install --upgrade poetry \
     && poetry config virtualenvs.create false
@@ -20,7 +20,8 @@ RUN poetry cache clear $(poetry cache list) --all -n \
     # are not clearing no matter what so force delete:
     && rm -rf /root/.cache/* pyproject.toml poetry.lock \
     && pip uninstall -y poetry poethepoet
-COPY *.py .
+COPY *.py ./
+COPY module module
 
 # You can overwrite command in `serverless.yml` template
 # CMD ["/app/train.handler"]

@@ -18,7 +18,7 @@ sls deploy -s dev
 
 sls deploy builds a docker image: `<acc>.dkr.ecr.<region>.amazonaws.com/serverless-mentor-classifier-service-<stage>` which can be started and invoked locally:
 ```
-docker run --rm -p 9000:8080 <image_name>
+docker run -e SHARED_ROOT=/app/shared -e GRAPHQL_ENDPOINT=https://v2.mentorpal.org/graphql -e API_SECRET=... --rm -p 9000:8080 <image_name>
 curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"param1":"parameter 1 value"}'
 ```
 
