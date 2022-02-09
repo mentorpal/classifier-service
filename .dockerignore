@@ -5,6 +5,8 @@
 .mypy_cache
 .pytest_cache
 .venv
+.serverless
+.npmignore
 data
 htmlcov
 notebooks

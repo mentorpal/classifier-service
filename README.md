@@ -11,13 +11,27 @@ For detailed instructions, please refer to the [documentation](https://www.serve
 In order to deploy your service, run the following command
 
 ```
-sls deploy
+sls deploy -s dev
+```
+
+## Testing locally
+
+sls deploy builds a docker image: `<acc>.dkr.ecr.<region>.amazonaws.com/serverless-mentor-classifier-service-<stage>` which can be started and invoked locally:
+```
+docker run --rm -p 9000:8080 <image_name>
+curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"param1":"parameter 1 value"}'
 ```
 
 ## Test your service
 
-After successful deployment, you can test your service remotely by using the following command:
+After successful deployment, you can test the service remotely by using the following command:
 
 ```
 sls invoke --function train-mentor
 ```
+
+# Resources
+
+ - https://www.serverless.com/blog/container-support-for-lambda
+ - https://dev.to/aws-builders/container-images-for-aws-lambda-with-python-286c
+ - https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml

@@ -1,7 +1,9 @@
 import json
+from sentence_transformers import SentenceTransformer
 
 
 def handler(event, context):
+    
     body = {
         "message": "Hello, world! Your function executed successfully!",
     }

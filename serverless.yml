@@ -68,7 +68,7 @@ provider:
     API_SECRET: ${self:custom.stages.${self:provider.stage}.API_SECRET}
     IS_SENTRY_ENABLED: ${self:custom.stages.${self:provider.stage}.IS_SENTRY_ENABLED}
     SENTRY_DSN_MENTOR_CLASSIFIER: '${ssm:/mentorpal/upload/sentry_dsn}'
-
+    SHARED_ROOT: '/app/shared' # as defined in Dockerfile
 
 # TODO
 #  iam:
@@ -87,13 +87,14 @@ provider:
 #              - - "arn:aws:s3:::"
 #                - "Ref" : "ServerlessDeploymentBucket"
 #                - "/*"
-package:
-#  individually: false
- patterns:
-    # exclude everything:
-     - '!./**'
-    # and then add back in only the files we need:
-     - '*.py'
+
+# package:
+# #  individually: false
+#  patterns:
+#     # exclude everything:
+#      - '!./**'
+#     # and then add back in only the files we need:
+#      - '*.py'
 
 functions:
   train-mentor:
