@@ -1,3 +1,20 @@
+# TODO
+
+- implement full api set
+- infrastructure code (s3 buckets, api gateway)
+- api call -> train jobs (plus status reporting)
+- LFS for /shared
+- CORS headers
+- secure headers
+- authentication & authorization
+- dns name for the api gateway plus base path mapping
+- sentry
+- remove panda from fetch_training_data and use csv
+- separate set of requirements for api lambdas (if they could be made small)
+- logging
+- monitoring
+- alerting
+
 # Serverless - AWS Python Docker
 
 This project has been generated using the `aws-python-docker` template from the [Serverless framework](https://www.serverless.com/).
