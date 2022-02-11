@@ -1,11 +1,7 @@
 # TODO
 
-- implement full api set
 - infrastructure code (s3 buckets, api gateway)
 - api call -> train jobs (plus status reporting)
-- LFS for /shared
-- CORS headers
-- secure headers
 - authentication & authorization
 - dns name for the api gateway plus base path mapping
 - sentry
@@ -14,6 +10,10 @@
 - logging
 - monitoring
 - alerting
+- [blocked] implement full api set (blocked on followups / cookies)
+- [x] LFS for /shared
+- [x] CORS headers
+- [x] secure headers
 
 # Serverless - AWS Python Docker
 

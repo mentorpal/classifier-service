@@ -9,6 +9,20 @@ from os import _Environ, environ
 from typing import Any, Dict, Union, List
 from pathlib import Path
 
+
+def append_secure_headers(headers):
+    secure = {
+        "content-security-policy":"upgrade-insecure-requests;",
+        "referrer-policy":"no-referrer-when-downgrade",
+        "strict-transport-security":"max-age=31536000",
+        "x-content-type-options":"nosniff",
+        "x-frame-options":"SAMEORIGIN",
+        "x-xss-protection":"1; mode=block"
+    }
+    for h in secure:
+        headers[h] = secure[h]
+
+
 def append_cors_headers(headers, event):
     origin = environ.get('CORS_ORIGIN', '*')
     # TODO specify allowed list of origins and if event["headers"]["origin"] is one of them then allow it
