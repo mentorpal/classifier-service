@@ -24,6 +24,7 @@ custom:
       GRAPHQL_ENDPOINT: 'http://127.0.0.1:3001/graphql'
       IS_SENTRY_ENABLED: false
     dev:
+      # TODO cors
       LOG_LEVEL: 'trace'
       IS_SENTRY_ENABLED: false
       # v2 is hardcoded, we could use fallback stages instead
@@ -56,9 +57,20 @@ provider:
       train:
         path: ./
         file: Dockerfile
+  endpointType: regional
   tracing:
     lambda: true
-  logRetentionInDays: 30      
+  logRetentionInDays: 30
+  logs:
+      # Enables HTTP access logs (default: true)
+      accessLogging: true
+      # # Log format to use for access logs
+      # format: 'requestId: $context.requestId'
+      # Enable execution logging (default: true)
+      executionLogging: true
+      level: INFO  # INFO or ERROR
+      # Log full requests/responses for execution logging (default: true)
+      fullExecutionData: true
   region: us-east-1
   # architecture: x86_64 # if necessary
   environment:
@@ -97,11 +109,37 @@ provider:
 #      - '*.py'
 
 functions:
-  train-mentor:
+  http_train:
     image:
       name: train
     memorySize: 8192
-    timeout: 300
+    timeout: 30
+    events:
+      - httpApi:
+          path: /train
+          method: get
+          cors: true
+  http_answer:
+    image:
+      name: train
+    memorySize: 1024
+    timeout: 20
+    events:
+      - httpApi:
+          path: /questions
+          method: get
+          cors: true
+  http_training_data:
+    image:
+      name: train
+    memorySize: 1024
+    timeout: 20
+    cors: true
+    events:
+      - httpApi:
+          path: /trainingdata
+          method: get
+          cors: true
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
