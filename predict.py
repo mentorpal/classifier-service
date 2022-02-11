@@ -2,17 +2,19 @@ import json
 import os
 from module import ClassifierFactory
 
+
+SHARED = os.environ.get('SHARED_ROOT')
+
 def handler(event, context):
     mentor = '6109d2a86e6fa01e5bf3219f'
-    shared = os.environ.get('SHARED_ROOT')
     question = 'how should we call you?'
     os.environ['CLASSIFIER_ARCH'] = 'module.arch.lr_transformer'
     result = (
             ClassifierFactory()
             .new_prediction(
-                mentor=mentor, shared_root=shared, data_path='models'
+                mentor=mentor, shared_root=SHARED, data_path='models'
             )
-            .evaluate(question=question,shared_root=shared)
+            .evaluate(question=question,shared_root=SHARED)
         )
     body = {
         "question": question,
