@@ -4,9 +4,21 @@
 #
 # The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 #
+
 from os import _Environ, environ
 from typing import Any, Dict, Union, List
 from pathlib import Path
+
+def append_cors_headers(headers, event):
+    origin = environ.get('CORS_ORIGIN', '*')
+    # TODO specify allowed list of origins and if event["headers"]["origin"] is one of them then allow it
+    # if "origin" in event["headers"] and getenv.array('CORS_ORIGIN').includes(event["headers"]["origin"]):
+    #     origin = event["headers"]["origin"]
+
+    headers['Access-Control-Allow-Origin'] = origin
+    headers['Access-Control-Allow-Origin'] = '*'
+    headers['Access-Control-Allow-Headers']= 'GET,PUT,POST,DELETE,OPTIONS'
+    headers['Access-Control-Allow-Methods']=  'Authorization,Origin,Accept,Accept-Language,Content-Language,Content-Type'
 
 
 def use_average_embedding() -> bool:
