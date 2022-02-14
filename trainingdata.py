@@ -1,3 +1,10 @@
+##
+## This software is Copyright ©️ 2020 The University of Southern California. All Rights Reserved. 
+## Permission to use, copy, modify, and distribute this software and its documentation for educational, research and non-profit purposes, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and subject to the full license file found in the root of this software deliverable. Permission to make commercial use of this software may be obtained by contacting:  USC Stevens Center for Innovation University of Southern California 1150 S. Olive Street, Suite 2300, Los Angeles, CA 90115, USA Email: accounting@stevens.usc.edu
+##
+## The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
+##
+import json
 import os
 from module.api import fetch_training_data
 from module.utils import append_cors_headers, append_secure_headers
@@ -6,7 +13,13 @@ SHARED = os.environ.get('SHARED_ROOT')
 
 
 def handler(event, context):
-    mentor = '6109d2a86e6fa01e5bf3219f'
+    print(json.dumps(event))
+    
+    if "pathParameters" not in event or "mentor" not in event['pathParameters']:
+        raise Exception("bad request")
+    mentor = event['pathParameters']["mentor"]
+    print(f"fetching training data for {mentor}")
+
     data = fetch_training_data(mentor)
     data_csv = data.to_csv(index=False)
 
@@ -29,6 +42,6 @@ def handler(event, context):
 # if __name__ == '__main__':
 #     handler({}, {})
 # if __name__ == '__main__':
-#     with open('__events__/transcribe-collect-event.json.dist') as f:
+#     with open('__events__/trainingdata-event.json.dist') as f:
 #         event = json.loads(f.read())
 #         handler(event, {})

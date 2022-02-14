@@ -24,5 +24,4 @@ COPY *.py ./
 COPY module module
 
 # You can overwrite command in `serverless.yml` template
-# CMD ["/app/train.handler"]
 CMD ["train.handler"]

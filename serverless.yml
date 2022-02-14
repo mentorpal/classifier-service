@@ -17,6 +17,10 @@ service: mentor-classifier-service
 frameworkVersion: '2'
 variablesResolutionMode: 20210326
 
+# plugins:
+#   - serverless-deployment-bucket
+#   - serverless-layers
+
 custom:
   stages:
     offline:
@@ -41,12 +45,32 @@ custom:
       LOG_LEVEL: 'info'
       IS_SENTRY_ENABLED: true
       GRAPHQL_ENDPOINT: 'https://careerfair.mentorpal.org/graphql'
+      # TODO
+      # ALERT_SNS_ARN: ${ssm:/mentorpal/careerfair/shared/sns_alert_topic_arn}
+
+  # serverless-layers requires a deployment bucket to be created before deploying this stack
+  # serverless-layers:
+  #   - dependencies:
+  #       layersDeploymentBucket: ${self:provider.deploymentBucket.name}
+  #       dependenciesPath: ./requirements.txt
+  #       compatibleRuntimes:
+  #         - python3.7
+  #         - python3.8
+  #       functions:
+  #         - http_train
+  #         - http_answer
+  #         - http_training_data
 
 
 provider:
   name: aws
   stage: ${opt:stage, 'dev'} # stage is dev unless otherwise specified with --stage flag
   lambdaHashingVersion: 20201221
+  # deploymentBucket:
+  #   name: '${self:service}-sls-deploy-${self:provider.stage}'
+  #   blockPublicAccess: true
+  #   serverSideEncryption: AES256
+  #   versioning: false
   stackTags:
     ENVIRONMENT: ${self:provider.stage}
     PROJECT: ${self:service}-${self:provider.stage}
@@ -60,6 +84,8 @@ provider:
   endpointType: regional
   tracing:
     lambda: true
+  # httpApi:
+  #   cors: true # probably sets 'Origin: *'
   logRetentionInDays: 30
   logs:
       # Enables HTTP access logs (default: true)
@@ -72,7 +98,7 @@ provider:
       # Log full requests/responses for execution logging (default: true)
       fullExecutionData: true
   region: us-east-1
-  # architecture: x86_64 # if necessary
+  architecture: x86_64 # in case deploy is run on a different architecture (apple arm...)
   environment:
     STAGE: ${self:provider.stage}
     PYTHON_ENV: careerfair-${self:provider.stage}
@@ -81,24 +107,32 @@ provider:
     IS_SENTRY_ENABLED: ${self:custom.stages.${self:provider.stage}.IS_SENTRY_ENABLED}
     SENTRY_DSN_MENTOR_CLASSIFIER: '${ssm:/mentorpal/upload/sentry_dsn}'
     SHARED_ROOT: '/app/shared' # as defined in Dockerfile
-
-# TODO
-#  iam:
-#    role:
-#      statements:
-#        - Effect: "Allow"
-#          Action:
-#            - "s3:ListBucket"
-#          Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#        - Effect: "Allow"
-#          Action:
-#            - "s3:PutObject"
-#          Resource:
-#            Fn::Join:
-#              - ""
-#              - - "arn:aws:s3:::"
-#                - "Ref" : "ServerlessDeploymentBucket"
-#                - "/*"
+    MODELS_BUCKET: classifier-models-${self:provider.stage}
+    JOBS_TABLE_NAME: classifier-jobs-${self:provider.stage}
+    JOBS_SQS_NAME: classifier-jobs-${self:provider.stage}
+  iam:
+    role:
+      statements:
+      # todo create dedicated roles for each function for increased security
+        - Effect: "Allow"
+          Action:
+            - "s3:PutObject"
+            - "s3:GetObject"
+          Resource:
+            - 'arn:aws:s3:::${self:provider.environment.MODELS_BUCKET}/*'
+        - Effect: "Allow"
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+          Resource:
+            Fn::GetAtt: [JobsTable, Arn]
+        - Effect: "Allow"
+          Action:
+            - sqs:SendMessage
+            - sqs:GetQueueUrl
+          Resource:
+            Fn::GetAtt: [TrainQueue, Arn]
 
 # package:
 # #  individually: false
@@ -112,83 +146,127 @@ functions:
   http_train:
     image:
       name: train
-    memorySize: 8192
-    timeout: 30
+      command:
+        - train.handler
+    memorySize: 1024
+    timeout: 60 # until its taken out of docker
     events:
       - httpApi:
           path: /train
+          method: post
+  http_train_status:
+    image:
+      name: train
+      command:
+        - status.handler
+    memorySize: 2048
+    timeout: 60
+    events:
+      - httpApi:
+          path: /train/status/{id}
           method: get
-          cors: true
+  sqs_train:
+    image:
+      name: train
+      command:
+        - trainjob.handler
+    memorySize: 8192
+    timeout: 600
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [TrainQueue, Arn]
+          batchSize: 1
   http_answer:
     image:
       name: train
-    memorySize: 1024
-    timeout: 20
+      command:
+        - predict.handler
+    memorySize: 2048
+    timeout: 60
     events:
       - httpApi:
           path: /questions
           method: get
-          cors: true
   http_training_data:
     image:
       name: train
-    memorySize: 1024
-    timeout: 20
-    cors: true
+      command:
+        - trainingdata.handler
+    memorySize: 2048
+    timeout: 60 # it takes time to provision docker image
     events:
       - httpApi:
           path: /trainingdata
           method: get
-          cors: true
 
-#    The following are a few example events you can configure
-#    NOTE: Please make sure to change your handler code to work with those events
-#    Check the event documentation for details
-#    events:
-#      - httpApi:
-#          path: /users/create
-#          method: get
-#      - websocket: $connect
-#      - s3: ${env:BUCKET}
-#      - schedule: rate(10 minutes)
-#      - sns: greeter-topic
-#      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
-#      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
-#      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
-#      - iot:
-#          sql: "SELECT * FROM 'some_topic'"
-#      - cloudwatchEvent:
-#          event:
-#            source:
-#              - "aws.ec2"
-#            detail-type:
-#              - "EC2 Instance State-change Notification"
-#            detail:
-#              state:
-#                - pending
-#      - cloudwatchLog: '/aws/lambda/hello'
-#      - cognitoUserPool:
-#          pool: MyUserPool
-#          trigger: PreSignUp
-#      - alb:
-#          listenerArn: arn:aws:elasticloadbalancing:us-east-1:XXXXXX:listener/app/my-load-balancer/50dc6c495c0c9188/
-#          priority: 1
-#          conditions:
-#            host: example.com
-#            path: /hello
 
-#    Define function environment variables here
-#    environment:
-#      variable2: value2
+resources:
+  Conditions:
+    CreateCloudWatchAlarm:
+      Fn::Or:
+        - Fn::Equals: ['${self:provider.stage}', 'qa']
+        - Fn::Equals: ['${self:provider.stage}', 'prod']
+  Resources:
+    TrainDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        DelaySeconds: 30
+        QueueName: classifier-jobs-dlq-${self:provider.stage}
+        MessageRetentionPeriod: 1209600 # max 14 days, default is 4 days
+    TrainQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sqs-queues.html
+        QueueName:  ${self:provider.environment.JOBS_SQS_NAME}
+        VisibilityTimeout: 800 # AWS recommends 6 times lambdas timeout
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt: [TrainDLQ, Arn]
+          maxReceiveCount: 5 # AWS recommends minimum 5
+    
+    TrainedModelsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.MODELS_BUCKET}
 
-# you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+    JobsTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      UpdateReplacePolicy: Delete
+      Properties:
+        TableName: ${self:provider.environment.JOBS_TABLE_NAME}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        # to cleanup jobs after a while set this attribute as a number
+        TimeToLiveSpecification: 
+          AttributeName: ttl
+          Enabled: true
+
+    TrainDLQAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Condition: CreateCloudWatchAlarm
+      Properties:
+        ActionsEnabled: true
+        AlarmName: 'Number of failed train jobs ${self:resources.Resources.TrainDLQ.Properties.QueueName}'
+        AlarmDescription: 'Number of failed train jobs greater than zero'
+        Namespace: 'AWS/SQS'
+        Statistic: 'Sum'
+        MetricName: 'ApproximateNumberOfMessagesVisible'
+        ComparisonOperator: 'GreaterThanThreshold'
+        EvaluationPeriods: 1
+        Period: 300 # 5 minutes in seconds
+        Threshold: 0
+        TreatMissingData: 'notBreaching'
+        Dimensions:
+          - Name: QueueName
+            Value: ${self:resources.Resources.TrainDLQ.Properties.QueueName}
+        AlarmActions:
+          - ${self:custom.stages.${self:provider.stage}.ALERT_SNS_ARN}
+        OKActions:
+          - ${self:custom.stages.${self:provider.stage}.ALERT_SNS_ARN}

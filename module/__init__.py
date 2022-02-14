@@ -79,7 +79,7 @@ def register_classifier_factory(arch: str, fac: ArchClassifierFactory) -> None:
 
 ARCH_LR = "module.arch.lr"
 ARCH_LR_TRANSFORMER = "module.arch.lr_transformer"
-ARCH_DEFAULT = ARCH_LR
+ARCH_DEFAULT = ARCH_LR_TRANSFORMER
 
 
 class ClassifierFactory:

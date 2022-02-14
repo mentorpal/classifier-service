@@ -10,6 +10,13 @@ from typing import Any, Dict, Union, List
 from pathlib import Path
 
 
+def require_env(n: str) -> str:
+    env_val = environ.get(n, "")
+    if not env_val:
+        raise EnvironmentError(f"missing required env var {n}")
+    return env_val
+
+
 def append_secure_headers(headers):
     secure = {
         "content-security-policy":"upgrade-insecure-requests;",

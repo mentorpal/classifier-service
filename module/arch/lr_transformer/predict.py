@@ -40,7 +40,8 @@ class TransformersQuestionClassifierPrediction(QuestionClassifierPrediction):
             data_path, mentor.id, ARCH_LR_TRANSFORMER, "model.pkl"
         )
         self.transformer = self.__load_transformer(
-            os.path.join(data_path, mentor.id, ARCH_LR_TRANSFORMER, "transformer.pkl")
+            # os.path.join(data_path, mentor.id, ARCH_LR_TRANSFORMER, "transformer.pkl")
+            os.path.join(shared_root, "transformer.pkl")
         )
         self.model = self.__load_model()
 

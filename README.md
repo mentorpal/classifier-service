@@ -1,16 +1,24 @@
 # TODO
 
-- infrastructure code (s3 buckets, api gateway)
-- api call -> train jobs (plus status reporting)
-- authentication & authorization
-- dns name for the api gateway plus base path mapping
-- sentry
-- remove panda from fetch_training_data and use csv
-- separate set of requirements for api lambdas (if they could be made small)
-- logging
-- monitoring
-- alerting
+- [ ] separate set of requirements for api lambdas (if they could be made small)
+- [ ] github repo
+- [ ] sentry
+- [ ] authentication & authorization
+- [ ] dns name for the api gateway plus base path mapping
+- [ ] logging
+- [ ] architecture diagram
+- [ ] validate request in api gateway
+- [ ] remove panda from fetch_training_data and use csv
+- [ ] monitoring & alerting on slow responses
+- [ ] default gateway response 4xx 5xx
+- [x] api call -> status reporting
+- [x] api call -> train job (upload res to s3)
+- [x] api call -> answer/predict job (fetch trained model from s3)
+- [x] jobs table ttl so we dont need to clean it up manually
 - [blocked] implement full api set (blocked on followups / cookies)
+- [x] monitoring & alerting (sqs dlq sends to slack, lambda to sentry)
+- [x] infrastructure code
+- [x] api gateway
 - [x] LFS for /shared
 - [x] CORS headers
 - [x] secure headers
