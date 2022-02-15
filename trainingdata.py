@@ -5,18 +5,12 @@
 ## The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 ##
 import json
-import os
 from module.api import fetch_training_data
 from module.utils import append_cors_headers, append_secure_headers
-
-SHARED = os.environ.get('SHARED_ROOT')
 
 
 def handler(event, context):
     print(json.dumps(event))
-    
-    if "pathParameters" not in event or "mentor" not in event['pathParameters']:
-        raise Exception("bad request")
     mentor = event['pathParameters']["mentor"]
     print(f"fetching training data for {mentor}")
 

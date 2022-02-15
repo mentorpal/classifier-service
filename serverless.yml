@@ -206,8 +206,12 @@ functions:
     timeout: 60 # it takes time to provision docker image
     events:
       - http:
-          path: /trainingdata
+          path: /trainingdata/{mentor}
           method: get
+          request:
+            parameters:
+              paths:
+                mentor: true
 
 
 resources:
