@@ -17,18 +17,19 @@ s3 = boto3.client("s3")
 MODELS_DIR='/tmp/models'
 
 def handler(event, context):
-    if "queryParameters" not in event:
+    print(json.dumps(event))
+    if "queryStringParameters" not in event:
        raise Exception("bad request")
-    if "mentor" not in event['queryParameters'] or "query" not in event['queryParameters']:
+    if "mentor" not in event['queryStringParameters'] or "query" not in event['queryStringParameters']:
         raise Exception("bad request")
-    mentor = event['queryParameters']["mentor"]
-    question = event['queryParameters']["query"]
+    mentor = event['queryStringParameters']["mentor"]
+    question = event['queryStringParameters']["query"]
 
     # todo cache models
-    model_file = os.path.join(MODELS_DIR, mentor, 'module.arch.lr_transformer', 'model.pkl')
-    mentor_model_path(MODELS_DIR, mentor, 'module.arch.lr_transformer')
+    relative_path = os.path.join(mentor, 'module.arch.lr_transformer', 'model.pkl')
+    model_file = os.path.join(MODELS_DIR, relative_path)
     os.makedirs(os.path.dirname(model_file), exist_ok = True)
-    s3.download_file(MODELS_BUCKET, mentor, 'module.arch.lr_transformer', 'model.pkl', model_file)
+    s3.download_file(MODELS_BUCKET, relative_path, model_file)
 
     result = (
             ClassifierFactory()
