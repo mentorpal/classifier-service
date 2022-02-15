@@ -56,7 +56,7 @@ def handler(event, context):
             "id": job_id,
             "mentor": mentor,
             "status": 'QUEUED',
-            "statusUrl":f"/status/{job_id}",
+            "statusUrl":f"/train/status/{job_id}",
         }
     }
     headers = {}
