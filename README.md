@@ -1,16 +1,17 @@
 # TODO
 
 - [ ] separate set of requirements for api lambdas (if they could be made small)
-- [ ] github repo
-- [ ] sentry
 - [ ] authentication & authorization
+- [ ] sentry
+- [ ] architecture diagram
 - [ ] dns name for the api gateway plus base path mapping
 - [ ] logging
-- [ ] architecture diagram
-- [ ] validate request in api gateway
+- [ ] github repo
 - [ ] remove panda from fetch_training_data and use csv
 - [ ] monitoring & alerting on slow responses
 - [ ] default gateway response 4xx 5xx
+- [ ] validate request in api gateway
+- [x] sample events and document how to invoke locally
 - [x] api call -> status reporting
 - [x] api call -> train job (upload res to s3)
 - [x] api call -> answer/predict job (fetch trained model from s3)
@@ -23,37 +24,91 @@
 - [x] CORS headers
 - [x] secure headers
 
-# Serverless - AWS Python Docker
 
-This project has been generated using the `aws-python-docker` template from the [Serverless framework](https://www.serverless.com/).
+# Intro
+
+This is a serverless service that can train mentors and answer questions:
+
+![high l evel architecture](./classifier-service.drawio.png)
+
+The code was generated using the `aws-python-docker` template from the [Serverless framework](https://www.serverless.com/).
 
 For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/).
 
 ## Deployment instructions
 
+There's no cicd pipeline yet, it must be deployed manually
+
 > **Requirements**: Docker. In order to build images locally and push them to ECR, you need to have Docker installed on your local machine. Please refer to [official documentation](https://docs.docker.com/get-docker/).
+> **Requirements**: npm. Run once `npm ci` to get all the tools.
 
-In order to deploy your service, run the following command
+In order to deploy the service, run the following command:
 
 ```
-sls deploy -s dev
+sls deploy -s <stage>
+# where stage is one of dev|qa|prod
 ```
 
-## Testing locally
+# Monitoring
+
+All lambdas use sentry to report issues. If processing fails, SQS will move messages to corresponding DLQ,
+and there're alarms that monitor DLQs and send message to alerting topic (currently forwards to slack).
+
+
+# Manual Testing
 
 sls deploy builds a docker image: `<acc>.dkr.ecr.<region>.amazonaws.com/serverless-mentor-classifier-service-<stage>` which can be started and invoked locally:
 ```
 docker run -e SHARED_ROOT=/app/shared -e GRAPHQL_ENDPOINT=https://v2.mentorpal.org/graphql -e API_SECRET=... --rm -p 9000:8080 <image_name>
-curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"param1":"parameter 1 value"}'
+curl -XPOST "http://localhost:9000/2015-03-31/functions/http_train/invocations" -d '{"mentor":"<id>"}'
 ```
 
-## Test your service
 
 After successful deployment, you can test the service remotely by using the following command:
 
 ```
-sls invoke --function train-mentor
+sls invoke --function http_train -p <event payload>
 ```
+
+## Asynchronous triggers
+
+In order to run handlers for asynchronous event triggers locally, e.g. events fired by `SNS` or `SQS`, execute `sls invoke --local -f <function>`. To define a custom event payload, create a `*event.json` file and point to its path with `sls invoke --local -f <function> -p <path_to_event.json>`. Be sure to commit a `.dist` version of it for other developers to be used.
+
+**Example**
+
+```
+predict.py -> handler to test
+predict-event.json -> your local copy of event.json.dist, which is ignored by git
+predict-event.json.dist -> reference event for other developers to be copied and used locally
+```
+
+## Debugging
+
+To debug in VS Code, use this config:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "justMyCode": false,
+      "env": {
+        "GRAPHQL_ENDPOINT": "https://v2.mentorpal.org/graphql",
+        "API_SECRET": "<redacted>",
+        "AWS_REGION": "us-east-1",
+        "SHARED_ROOT": "shared",
+        "JOBS_TABLE_NAME": "classifier-jobs-dev",
+      },
+      "console": "integratedTerminal"
+    }
+  ]
+}
+```
+
 
 # Resources
 
