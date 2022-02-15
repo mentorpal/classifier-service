@@ -25,11 +25,14 @@ job_table = dynamodb.Table(JOBS_TABLE_NAME)
 
 def handler(event, context):
     print(json.dumps(event))
-    # todo validate request in api gateway
     if "body" not in event:
         raise Exception("bad request")
 
-    train_request = json.loads(base64.b64decode(event["body"]))
+    if event["isBase64Encoded"]:
+        body = base64.b64decode(event["body"])
+    else:
+        body = event["body"]
+    train_request = json.loads(body)
     if "mentor" not in train_request:
         raise Exception("bad request")
     mentor = train_request["mentor"]
