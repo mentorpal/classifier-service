@@ -151,7 +151,7 @@ functions:
     memorySize: 1024
     timeout: 60 # until its taken out of docker
     events:
-      - httpApi:
+      - http:
           path: /train
           method: post
   http_train_status:
@@ -162,9 +162,13 @@ functions:
     memorySize: 2048
     timeout: 60
     events:
-      - httpApi:
+      - http:
           path: /train/status/{id}
           method: get
+          request:
+            parameters:
+              paths:
+                id: true
   sqs_train:
     image:
       name: train
@@ -185,9 +189,14 @@ functions:
     memorySize: 2048
     timeout: 60
     events:
-      - httpApi:
+      - http:
           path: /questions
           method: get
+          request:
+            parameters:
+              querystrings:
+                mentor: true
+                query: true
   http_training_data:
     image:
       name: train
@@ -196,7 +205,7 @@ functions:
     memorySize: 2048
     timeout: 60 # it takes time to provision docker image
     events:
-      - httpApi:
+      - http:
           path: /trainingdata
           method: get
 
