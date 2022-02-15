@@ -82,12 +82,19 @@ provider:
         path: ./
         file: Dockerfile
   endpointType: regional
+  apiGateway:
+    minimumCompressionSize: 1024
+    usagePlan:
+      throttle:
+        burstLimit: 100
+        rateLimit: 10
+
   tracing:
     lambda: true
-  # httpApi:
-  #   cors: true # probably sets 'Origin: *'
+    apiGateway: true
   logRetentionInDays: 30
   logs:
+    restApi:
       # Enables HTTP access logs (default: true)
       accessLogging: true
       # # Log format to use for access logs
@@ -96,7 +103,7 @@ provider:
       executionLogging: true
       level: INFO  # INFO or ERROR
       # Log full requests/responses for execution logging (default: true)
-      fullExecutionData: true
+      fullExecutionData: false
   region: us-east-1
   architecture: x86_64 # in case deploy is run on a different architecture (apple arm...)
   environment:
@@ -154,6 +161,7 @@ functions:
       - http:
           path: /train
           method: post
+          private: false
   http_train_status:
     image:
       name: train
@@ -169,6 +177,7 @@ functions:
             parameters:
               paths:
                 id: true
+          private: false
   sqs_train:
     image:
       name: train
@@ -197,6 +206,7 @@ functions:
               querystrings:
                 mentor: true
                 query: true
+          private: false
   http_training_data:
     image:
       name: train
@@ -212,6 +222,7 @@ functions:
             parameters:
               paths:
                 mentor: true
+          private: false
 
 
 resources:

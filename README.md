@@ -10,7 +10,7 @@
 - [ ] remove panda from fetch_training_data and use csv
 - [ ] monitoring & alerting on slow responses
 - [ ] default gateway response 4xx 5xx
-- [ ] validate request in api gateway
+- [ ] train: validate request in api gateway
 - [x] sample events and document how to invoke locally
 - [x] api call -> status reporting
 - [x] api call -> train job (upload res to s3)
@@ -70,6 +70,16 @@ After successful deployment, you can test the service remotely by using the foll
 sls invoke --function http_train -p <event payload>
 ```
 
+To test the api via api gateway (dev is the stage):
+
+```bash
+curl https://g2x9qy4f86.execute-api.us-east-1.amazonaws.com/dev/train \
+  --data-raw '{"mentor":"6109d2a86e6fa01e5bf3219f"}'
+curl https://g2x9qy4f86.execute-api.us-east-1.amazonaws.com/dev/questions?mentor=6109d2a86e6fa01e5bf3219f&query=what+do+you+think+about+serverless
+curl https://g2x9qy4f86.execute-api.us-east-1.amazonaws.com/dev/trainingdata/6109d2a86e6fa01e5bf3219f
+curl https://g2x9qy4f86.execute-api.us-east-1.amazonaws.com/dev/train/status/5e09da8f-d8cc-4d19-80d8-d94b28741a58
+```
+
 ## Asynchronous triggers
 
 In order to run handlers for asynchronous event triggers locally, e.g. events fired by `SNS` or `SQS`, execute `sls invoke --local -f <function>`. To define a custom event payload, create a `*event.json` file and point to its path with `sls invoke --local -f <function> -p <path_to_event.json>`. Be sure to commit a `.dist` version of it for other developers to be used.
@@ -112,6 +122,8 @@ To debug in VS Code, use this config:
 
 # Resources
 
+ - https://www.serverless.com/guides/aws-http-apis
+ - https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml
+ - https://www.serverless.com/framework/docs/providers/aws/events/apigateway
  - https://www.serverless.com/blog/container-support-for-lambda
  - https://dev.to/aws-builders/container-images-for-aws-lambda-with-python-286c
- - https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml
