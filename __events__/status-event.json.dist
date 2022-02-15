@@ -1,0 +1,47 @@
+{
+    "resource": "/train/status/{id}",
+    "path": "/train/status/5e09da8f-d8cc-4d19-80d8-d94b28741a58",
+    "httpMethod": "GET",
+    "headers": null,
+    "multiValueHeaders": null,
+    "queryStringParameters": null,
+    "multiValueQueryStringParameters": null,
+    "pathParameters": {
+        "id": "5e09da8f-d8cc-4d19-80d8-d94b28741a58"
+    },
+    "stageVariables": null,
+    "requestContext": {
+        "resourceId": "r08vqp",
+        "resourcePath": "/train/status/{id}",
+        "httpMethod": "GET",
+        "extendedRequestId": "NlEhEG4doAMFrgg=",
+        "requestTime": "15/Feb/2022:10:32:25 +0000",
+        "path": "/train/status/{id}",
+        "accountId": "111111000655",
+        "protocol": "HTTP/1.1",
+        "stage": "test-invoke-stage",
+        "domainPrefix": "testPrefix",
+        "requestTimeEpoch": 1644921145901,
+        "requestId": "537fd66d-3903-45b3-97e0-cf5e06639be8",
+        "identity": {
+            "cognitoIdentityPoolId": null,
+            "cognitoIdentityId": null,
+            "apiKey": "test-invoke-api-key",
+            "principalOrgId": null,
+            "cognitoAuthenticationType": null,
+            "userArn": "arn:aws:iam::111111000655:user/mentorpal-ebs-terraform",
+            "apiKeyId": "test-invoke-api-key-id",
+            "userAgent": "aws-internal/3 aws-sdk-java/1.12.154 Linux/5.4.156-94.273.amzn2int.x86_64 OpenJDK_64-Bit_Server_VM/25.322-b06 java/1.8.0_322 vendor/Oracle_Corporation cfg/retry-mode/standard",
+            "accountId": "111111000655",
+            "caller": "AIDAZJTHKSXLWZU3FSAMK",
+            "sourceIp": "test-invoke-source-ip",
+            "accessKey": "ASIAZJTHKSXL4PERB7WF",
+            "cognitoAuthenticationProvider": null,
+            "user": "AIDAZJTHKSXLWZU3FSAMK"
+        },
+        "domainName": "testPrefix.testDomainName",
+        "apiId": "g2x9qy4f86"
+    },
+    "body": null,
+    "isBase64Encoded": false
+}

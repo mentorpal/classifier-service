@@ -50,6 +50,6 @@ def handler(event, context):
 # if __name__ == '__main__':
 #     handler({"pathParameters": {"id": "e67bc912-1d1f-448e-9c3c-01b10450f3d7"}}, {})
 # if __name__ == '__main__':
-#     with open('__events__/train-event.json.dist') as f:
+#     with open('__events__/status-event.json.dist') as f:
 #         event = json.loads(f.read())
 #         handler(event, {})

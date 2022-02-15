@@ -65,6 +65,6 @@ def update_status(id, status):
 # if __name__ == '__main__':
 #     handler({}, {})
 # if __name__ == '__main__':
-#     with open('__events__/train-event.json.dist') as f:
+#     with open('__events__/trainjob-event.json.dist') as f:
 #         event = json.loads(f.read())
 #         handler(event, {})
