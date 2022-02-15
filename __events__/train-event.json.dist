@@ -1,0 +1,37 @@
+{
+    "version": "2.0",
+    "routeKey": "POST /train",
+    "rawPath": "/train",
+    "rawQueryString": "",
+    "headers": {
+        "accept": "*/*",
+        "content-length": "37",
+        "content-type": "application/x-www-form-urlencoded",
+        "host": "pq31pyghka.execute-api.us-east-1.amazonaws.com",
+        "user-agent": "curl/7.77.0",
+        "x-amzn-trace-id": "Root=1-620aa0d2-45f834ab620ad1ad5fe02bda",
+        "x-forwarded-for": "185.9.18.174",
+        "x-forwarded-port": "443",
+        "x-forwarded-proto": "https"
+    },
+    "requestContext": {
+        "accountId": "111111000655",
+        "apiId": "pq31pyghka",
+        "domainName": "pq31pyghka.execute-api.us-east-1.amazonaws.com",
+        "domainPrefix": "pq31pyghka",
+        "http": {
+            "method": "POST",
+            "path": "/train",
+            "protocol": "HTTP/1.1",
+            "sourceIp": "185.9.18.174",
+            "userAgent": "curl/7.77.0"
+        },
+        "requestId": "Ni4Q6hQsoAMEJCw=",
+        "routeKey": "POST /train",
+        "stage": "$default",
+        "time": "14/Feb/2022:18:34:58 +0000",
+        "timeEpoch": 1644863698427
+    },
+    "body": "eyJtZW50b3IiOiI2MTA5ZDJhODZlNmZhMDFlNWJmMzIxOWYifQ==",
+    "isBase64Encoded": true
+}

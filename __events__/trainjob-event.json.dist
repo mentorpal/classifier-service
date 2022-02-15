@@ -1,0 +1,20 @@
+{
+    "Records": [
+        {
+            "messageId": "868c29b7-5815-44de-b4eb-8d1c40b61436",
+            "receiptHandle": "AQEBuq9DXdJmHVkeLD6G1d0+3kpmqRKu3AlszOtHcxAl30hSkJWUlQI2PeFy23077wwe2BKqqV+IUOyADfukUEquzJe/aQx0m79i26/Um4MONysEQ9HYBcH4bQs7z3wIHyqlH73LHR4nRMJb/Bl9/lFY260Po3Y+B6HIrrfX37szNG6QZ6XIR01oklHKktrietjGDAsZpgaHKjSevHIpBZt6rmN9eCg0yLXTmDakoCK4Glg8T1mIlUBKhc0ZaV5y2mxfoosyG7udxCKg8CGu1c/LG3vBZbWZSuu5K0Tu+AJibVfnntPYoKZIr3AtaEiszviWBk6XQzeBEBEWVSR9zxviLaDsy3qu6+WHPLdaixXrAwCS33b49UMjrNUXBrN20DjX4TjFfjQ6Wfn1fxdSkQTunw==",
+            "body": "{\"id\": \"5e09da8f-d8cc-4d19-80d8-d94b28741a58\", \"mentor\": \"6109d2a86e6fa01e5bf3219f\", \"status\": \"QUEUED\", \"created\": \"2022-02-14T18:35:03.259021\", \"ttl\": 1646591703}",
+            "attributes": {
+                "ApproximateReceiveCount": "1",
+                "SentTimestamp": "1644863703266",
+                "SenderId": "AROAZJTHKSXLVXDYNXESL:mentor-classifier-service-dev-http_train",
+                "ApproximateFirstReceiveTimestamp": "1644863703272"
+            },
+            "messageAttributes": {},
+            "md5OfBody": "75efe88b676a22ff56feca03ec8e0b73",
+            "eventSource": "aws:sqs",
+            "eventSourceARN": "arn:aws:sqs:us-east-1:111111000655:classifier-jobs-dev",
+            "awsRegion": "us-east-1"
+        }
+    ]
+}

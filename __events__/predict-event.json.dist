@@ -1,0 +1,55 @@
+{
+    "resource": "/questions",
+    "path": "/questions",
+    "httpMethod": "GET",
+    "headers": null,
+    "multiValueHeaders": null,
+    "queryStringParameters": {
+        "mentor": "6109d2a86e6fa01e5bf3219f",
+        "query": "what+do+you+think+about+serverless"
+    },
+    "multiValueQueryStringParameters": {
+        "mentor": [
+            "6109d2a86e6fa01e5bf3219f"
+        ],
+        "query": [
+            "what+do+you+think+about+serverless"
+        ]
+    },
+    "pathParameters": null,
+    "stageVariables": null,
+    "requestContext": {
+        "resourceId": "7nvyap",
+        "resourcePath": "/questions",
+        "httpMethod": "GET",
+        "extendedRequestId": "NlBcXHIpoAMFThw=",
+        "requestTime": "15/Feb/2022:10:11:26 +0000",
+        "path": "/questions",
+        "accountId": "111111000655",
+        "protocol": "HTTP/1.1",
+        "stage": "test-invoke-stage",
+        "domainPrefix": "testPrefix",
+        "requestTimeEpoch": 1644919886919,
+        "requestId": "a2a5ad6b-9549-4f5f-8653-8c3a101d4f78",
+        "identity": {
+            "cognitoIdentityPoolId": null,
+            "cognitoIdentityId": null,
+            "apiKey": "test-invoke-api-key",
+            "principalOrgId": null,
+            "cognitoAuthenticationType": null,
+            "userArn": "arn:aws:iam::111111000655:user/mentorpal-ebs-terraform",
+            "apiKeyId": "test-invoke-api-key-id",
+            "userAgent": "aws-internal/3 aws-sdk-java/1.12.154 Linux/5.4.156-94.273.amzn2int.x86_64 OpenJDK_64-Bit_Server_VM/25.322-b06 java/1.8.0_322 vendor/Oracle_Corporation cfg/retry-mode/standard",
+            "accountId": "111111000655",
+            "caller": "AIDAZJTHKSXLWZU3FSAMK",
+            "sourceIp": "test-invoke-source-ip",
+            "accessKey": "ASIAZJTHKSXL4PERB7WF",
+            "cognitoAuthenticationProvider": null,
+            "user": "AIDAZJTHKSXLWZU3FSAMK"
+        },
+        "domainName": "testPrefix.testDomainName",
+        "apiId": "g2x9qy4f86"
+    },
+    "body": null,
+    "isBase64Encoded": false
+}
