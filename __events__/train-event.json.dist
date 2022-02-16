@@ -21,22 +21,6 @@
         "domainPrefix": "testPrefix",
         "requestTimeEpoch": 1644923243486,
         "requestId": "79217fa4-9c1c-43ad-8549-a3e881c83bcb",
-        "identity": {
-            "cognitoIdentityPoolId": null,
-            "cognitoIdentityId": null,
-            "apiKey": "test-invoke-api-key",
-            "principalOrgId": null,
-            "cognitoAuthenticationType": null,
-            "userArn": "arn:aws:iam::639093085655:user/mentorpal-ebs-terraform",
-            "apiKeyId": "test-invoke-api-key-id",
-            "userAgent": "aws-internal/3 aws-sdk-java/1.12.154 Linux/5.4.156-94.273.amzn2int.x86_64 OpenJDK_64-Bit_Server_VM/25.322-b06 java/1.8.0_322 vendor/Oracle_Corporation cfg/retry-mode/standard",
-            "accountId": "639093085655",
-            "caller": "AIDAZJTHKSXLWZU3FSAMK",
-            "sourceIp": "test-invoke-source-ip",
-            "accessKey": "ASIAZJTHKSXL4PERB7WF",
-            "cognitoAuthenticationProvider": null,
-            "user": "AIDAZJTHKSXLWZU3FSAMK"
-        },
         "domainName": "testPrefix.testDomainName",
         "apiId": "g2x9qy4f86"
     },

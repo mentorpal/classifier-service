@@ -8,12 +8,9 @@ import json
 import os
 import requests
 from typing import Dict, List, TypedDict, Tuple
-
-import pandas as pd
-
-from module.ner import FollowupQuestion, NamedEntities
 from .types import AnswerInfo
 
+import pandas as pd
 
 class GQLQueryBody(TypedDict):
     query: str
@@ -228,30 +225,6 @@ def fetch_category(
         query_category_answers(category), cookies=cookies, headers=headers
     )
     return tdjson.get("data") or {}
-
-
-def generate_followups(
-    category: str,
-    cookies: Dict[str, str] = {},
-    headers: Dict[str, str] = {},
-) -> List[FollowupQuestion]:
-    data = fetch_category(category, cookies=cookies, headers=headers)
-    me = data.get("me")
-    if me is None:
-        raise NameError("me not found")
-    category_answer = me.get("categoryAnswers", [])
-    category_answers = [
-        AnswerInfo(
-            answer_text=answer_data.get("answerText") or "",
-            question_text=answer_data.get("questionText") or "",
-        )
-        for answer_data in category_answer
-    ]
-    all_answered, name = fetch_mentor_answers_and_name(cookies=cookies, headers=headers)
-    followups = NamedEntities(category_answers, name).generate_questions(
-        category_answers, all_answered
-    )
-    return followups
 
 
 def update_training(mentor: str):

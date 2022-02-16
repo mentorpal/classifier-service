@@ -8,7 +8,7 @@ import json
 import os
 import boto3
 import datetime
-from module import ClassifierFactory
+from module.classifier import ClassifierFactory
 from module.utils import require_env
 
 shared = os.environ.get("SHARED_ROOT")
@@ -31,13 +31,13 @@ def handler(event, context):
                 mentor=mentor,
                 shared_root=shared,
                 data_path=MODELS_DIR,
-                arch="module.arch.lr_transformer",
+                arch="module.classifier.arch.lr_transformer",
             )
             training.train(shared)
             s3.upload_file(
-                os.path.join(MODELS_DIR, mentor, 'module.arch.lr_transformer', 'model.pkl'),
+                os.path.join(MODELS_DIR, mentor, 'module.classifier.arch.lr_transformer', 'model.pkl'),
                 MODELS_BUCKET,
-                os.path.join(mentor, 'module.arch.lr_transformer', 'model.pkl'),
+                os.path.join(mentor, 'module.classifier.arch.lr_transformer', 'model.pkl'),
             )
             update_status(request["id"], "DONE")
         except Exception as e:

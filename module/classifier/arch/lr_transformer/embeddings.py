@@ -4,7 +4,7 @@
 #
 # The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 #
-from module.sentence_transformer import find_or_load_sentence_transformer
+from module.classifier.sentence_transformer import find_or_load_sentence_transformer
 from sentence_transformers import SentenceTransformer
 from os import path
 from typing import List

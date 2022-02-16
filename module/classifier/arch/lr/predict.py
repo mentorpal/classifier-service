@@ -14,7 +14,7 @@ from module.api import (
     create_user_question,
     get_off_topic_threshold,
 )
-from module import (
+from module.classifier import (
     QuestionClassifierPrediction,
     QuestionClassiferPredictionResult,
     mentor_model_path,
@@ -22,7 +22,7 @@ from module import (
 )
 from module.mentor import Mentor
 from module.utils import file_last_updated_at, sanitize_string
-from module.spacy_preprocessor import SpacyPreprocessor
+from module.classifier.spacy_preprocessor import SpacyPreprocessor
 from .word2vec import W2V
 
 AnswerIdTextAndMedia = Tuple[str, str, list]

@@ -10,7 +10,7 @@ import random
 
 import joblib
 
-from module import (
+from module.classifier import (
     QuestionClassifierPrediction,
     QuestionClassiferPredictionResult,
     mentor_model_path,

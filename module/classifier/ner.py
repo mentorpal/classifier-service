@@ -16,15 +16,15 @@ from spacy.tokens.span import Span
 from spacy.tokens import Doc
 from spacy.symbols import VERB, nsubj
 
-from module.spacy_model import find_or_load_spacy
+from module.classifier.spacy_model import find_or_load_spacy
 from module.types import AnswerInfo
 from module.utils import get_shared_root, props_to_bool
 
 from sentence_transformers import util, SentenceTransformer
 import torch
 from torch import Tensor
-from module.sentence_transformer import find_or_load_sentence_transformer
-from module.stopwords import STOPWORDS
+from module.classifier.sentence_transformer import find_or_load_sentence_transformer
+from module.classifier.stopwords import STOPWORDS
 import csv
 
 from .constants import AVERAGE_EMBEDDING, SEMANTIC_DEDUP

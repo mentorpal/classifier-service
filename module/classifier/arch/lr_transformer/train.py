@@ -13,7 +13,7 @@ from sklearn.linear_model import RidgeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score
 
-from module import (
+from module.classifier import (
     QuestionClassifierTraining,
     QuestionClassifierTrainingResult,
     mentor_model_path,
@@ -21,8 +21,8 @@ from module import (
 )
 from module.mentor import Mentor
 from .embeddings import TransformerEmbeddings
-from ...api import update_training
-from ...utils import sanitize_string
+from module.api import update_training
+from module.utils import sanitize_string
 from typing import Union, Tuple, List
 
 
@@ -59,7 +59,7 @@ class TransformersQuestionClassifierTraining(QuestionClassifierTraining):
         update_training(self.mentor.id)
         os.makedirs(self.model_path, exist_ok=True)
         joblib.dump(classifier, os.path.join(self.model_path, "model.pkl"))
-        joblib.dump(self.transformer, os.path.join(self.model_path, "transformer.pkl"))
+        # joblib.dump(self.transformer, os.path.join(self.model_path, "transformer.pkl"))
         return QuestionClassifierTrainingResult(
             scores, training_accuracy, self.model_path
         )

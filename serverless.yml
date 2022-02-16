@@ -195,8 +195,8 @@ functions:
       name: train
       command:
         - predict.handler
-    memorySize: 2048
-    timeout: 60
+    memorySize: 8192
+    timeout: 120
     events:
       - http:
           path: /questions

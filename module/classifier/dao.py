@@ -7,7 +7,7 @@
 from os import environ
 
 import pylru
-from . import (
+from .. import (
     ClassifierFactory,
     QuestionClassifierPrediction,
     ARCH_DEFAULT,

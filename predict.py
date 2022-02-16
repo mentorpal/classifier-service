@@ -7,11 +7,11 @@
 import json
 import os
 import boto3
-from module import ClassifierFactory, mentor_model_path
+from module.classifier import ClassifierFactory
 from module.utils import append_cors_headers, append_secure_headers, require_env
 
 SHARED = os.environ.get('SHARED_ROOT')
-os.environ['CLASSIFIER_ARCH'] = 'module.arch.lr_transformer'
+os.environ['CLASSIFIER_ARCH'] = 'module.classifier.arch.lr_transformer'
 MODELS_BUCKET = require_env('MODELS_BUCKET')
 s3 = boto3.client("s3")
 MODELS_DIR='/tmp/models'
@@ -26,7 +26,7 @@ def handler(event, context):
     question = event['queryStringParameters']["query"]
 
     # todo cache models
-    relative_path = os.path.join(mentor, 'module.arch.lr_transformer', 'model.pkl')
+    relative_path = os.path.join(mentor, 'module.classifier.arch.lr_transformer', 'model.pkl')
     model_file = os.path.join(MODELS_DIR, relative_path)
     os.makedirs(os.path.dirname(model_file), exist_ok = True)
     s3.download_file(MODELS_BUCKET, relative_path, model_file)
@@ -64,6 +64,6 @@ def handler(event, context):
 # if __name__ == '__main__':
 #     handler({}, {})
 # if __name__ == '__main__':
-#     with open('__events__/transcribe-collect-event.json.dist') as f:
+#     with open('__events__/predict-event.json.dist') as f:
 #         event = json.loads(f.read())
 #         handler(event, {})

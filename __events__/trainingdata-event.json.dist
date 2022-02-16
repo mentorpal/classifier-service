@@ -1,22 +1,22 @@
 {
-    "resource": "/train/status/{id}",
-    "path": "/train/status/5e09da8f-d8cc-4d19-80d8-d94b28741a58",
+    "resource": "/trainingdata/{mentor}",
+    "path": "/trainingdata/6109d2a86e6fa01e5bf3219f",
     "httpMethod": "GET",
     "headers": null,
     "multiValueHeaders": null,
     "queryStringParameters": null,
     "multiValueQueryStringParameters": null,
     "pathParameters": {
-        "id": "5e09da8f-d8cc-4d19-80d8-d94b28741a58"
+        "mentor": "6109d2a86e6fa01e5bf3219f"
     },
     "stageVariables": null,
     "requestContext": {
         "resourceId": "r08vqp",
-        "resourcePath": "/train/status/{id}",
+        "resourcePath": "/trainingdata/{mentor}",
         "httpMethod": "GET",
         "extendedRequestId": "NlEhEG4doAMFrgg=",
         "requestTime": "15/Feb/2022:10:32:25 +0000",
-        "path": "/train/status/{id}",
+        "path": "/trainingdata/{mentor}",
         "accountId": "111111000655",
         "protocol": "HTTP/1.1",
         "stage": "test-invoke-stage",

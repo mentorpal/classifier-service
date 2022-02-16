@@ -112,6 +112,8 @@ To debug in VS Code, use this config:
         "AWS_REGION": "us-east-1",
         "SHARED_ROOT": "shared",
         "JOBS_TABLE_NAME": "classifier-jobs-dev",
+        "JOBS_SQS_NAME": "classifier-jobs-dev",
+        "MODELS_BUCKET": "classifier-models-dev",
       },
       "console": "integratedTerminal"
     }

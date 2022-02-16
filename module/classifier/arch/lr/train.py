@@ -14,7 +14,7 @@ from sklearn import metrics
 from sklearn.linear_model import RidgeClassifier
 from sklearn.model_selection import cross_val_score, cross_val_predict
 
-from module import (
+from module.classifier import (
     QuestionClassifierTraining,
     QuestionClassifierTrainingResult,
     mentor_model_path,
@@ -22,7 +22,7 @@ from module import (
 )
 from module.api import update_training
 from module.mentor import Mentor
-from module.spacy_preprocessor import SpacyPreprocessor
+from module.classifier.spacy_preprocessor import SpacyPreprocessor
 from .word2vec import W2V
 
 
