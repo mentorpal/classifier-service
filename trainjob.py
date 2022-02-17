@@ -8,14 +8,14 @@ import json
 import os
 import boto3
 import datetime
-from module.classifier import ClassifierFactory
+from module.classifier.arch.lr_transformer import TransformersQuestionClassifierTraining
 from module.utils import require_env
 
 shared = os.environ.get("SHARED_ROOT")
 JOBS_TABLE_NAME = require_env("JOBS_TABLE_NAME")
 MODELS_BUCKET = require_env('MODELS_BUCKET')
 s3 = boto3.client("s3")
-dynamodb = boto3.resource("dynamodb")
+dynamodb = boto3.resource("dynamodb", region_name='us-east-1')
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
 MODELS_DIR='/tmp/models'
 
@@ -26,14 +26,12 @@ def handler(event, context):
         mentor = request["mentor"]
         update_status(request["id"], "IN_PROGRESS")
         try:
-            classifier = ClassifierFactory()
-            training = classifier.new_training(
+            classifier = TransformersQuestionClassifierTraining(
                 mentor=mentor,
                 shared_root=shared,
-                data_path=MODELS_DIR,
-                arch="module.classifier.arch.lr_transformer",
+                output_dir=MODELS_DIR
             )
-            training.train(shared)
+            classifier.train()
             s3.upload_file(
                 os.path.join(MODELS_DIR, mentor, 'module.classifier.arch.lr_transformer', 'model.pkl'),
                 MODELS_BUCKET,

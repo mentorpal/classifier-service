@@ -5,28 +5,23 @@
 # The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 #
 import logging
-import os
 import random
-
 import joblib
-
+from typing import Union, Tuple, List
 from module.classifier import (
-    QuestionClassifierPrediction,
-    QuestionClassiferPredictionResult,
     mentor_model_path,
     ARCH_LR_TRANSFORMER,
+    QuestionClassiferPredictionResult,
     Media,
 )
 from module.api import create_user_question, OFF_TOPIC_THRESHOLD_DEFAULT
 from module.mentor import Mentor
 from module.utils import file_last_updated_at, sanitize_string
-from typing import Union, Tuple, List
 
 AnswerIdTextAndMedia = Tuple[str, str, list]
 
-
-class TransformersQuestionClassifierPrediction(QuestionClassifierPrediction):
-    def __init__(self, mentor: Union[str, Mentor], shared_root: str, data_path: str):
+class TransformersQuestionClassifierPrediction():
+    def __init__(self, mentor: Union[str, Mentor], transformer, data_path: str):
         if isinstance(mentor, str):
             logging.info("loading mentor id {}...".format(mentor))
             mentor = Mentor(mentor)
@@ -39,14 +34,11 @@ class TransformersQuestionClassifierPrediction(QuestionClassifierPrediction):
         self.model_file = mentor_model_path(
             data_path, mentor.id, ARCH_LR_TRANSFORMER, "model.pkl"
         )
-        self.transformer = self.__load_transformer(
-            # os.path.join(data_path, mentor.id, ARCH_LR_TRANSFORMER, "transformer.pkl")
-            os.path.join(shared_root, "transformer.pkl")
-        )
+        self.transformer = transformer
         self.model = self.__load_model()
 
     def evaluate(
-        self, question: str, shared_root, canned_question_match_disabled: bool = False
+        self, question: str, canned_question_match_disabled: bool = False
     ) -> QuestionClassiferPredictionResult:
 
         sanitized_question = sanitize_string(question)
@@ -117,7 +109,3 @@ class TransformersQuestionClassifierPrediction(QuestionClassifierPrediction):
             return (id, text, media)
         except KeyError:
             return ("_OFF_TOPIC_", "_OFF_TOPIC_", [])
-
-    @staticmethod
-    def __load_transformer(path):
-        return joblib.load(path)

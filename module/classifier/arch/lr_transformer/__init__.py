@@ -4,33 +4,5 @@
 #
 # The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 #
-from module.classifier import (
-    ArchClassifierFactory,
-    QuestionClassifierTraining,
-    QuestionClassifierPrediction,
-    register_classifier_factory,
-    ARCH_LR_TRANSFORMER,
-)
-from module.mentor import Mentor
 from .predict import TransformersQuestionClassifierPrediction
 from .train import TransformersQuestionClassifierTraining
-from typing import Union
-
-
-class TransformerClassifierFactory(ArchClassifierFactory):
-    def new_training(
-        self, mentor, shared_root: str = "shared", output_dir: str = "out"
-    ) -> QuestionClassifierTraining:
-        return TransformersQuestionClassifierTraining(
-            mentor=mentor, shared_root=shared_root, output_dir=output_dir
-        )
-
-    def new_prediction(
-        self, mentor: Union[str, Mentor], shared_root: str, data_path: str
-    ) -> QuestionClassifierPrediction:
-        return TransformersQuestionClassifierPrediction(
-            mentor=mentor, shared_root=shared_root, data_path=data_path
-        )
-
-
-register_classifier_factory(ARCH_LR_TRANSFORMER, TransformerClassifierFactory())

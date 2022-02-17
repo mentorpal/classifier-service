@@ -14,8 +14,6 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score
 
 from module.classifier import (
-    QuestionClassifierTraining,
-    QuestionClassifierTrainingResult,
     mentor_model_path,
     ARCH_LR_TRANSFORMER,
 )
@@ -24,9 +22,15 @@ from .embeddings import TransformerEmbeddings
 from module.api import update_training
 from module.utils import sanitize_string
 from typing import Union, Tuple, List
+from dataclasses import dataclass
 
+@dataclass
+class QuestionClassifierTrainingResult:
+    scores: List[float]
+    accuracy: float
+    model_path: str
 
-class TransformersQuestionClassifierTraining(QuestionClassifierTraining):
+class TransformersQuestionClassifierTraining():
     def __init__(
         self,
         mentor: Union[str, Mentor],
@@ -45,7 +49,7 @@ class TransformersQuestionClassifierTraining(QuestionClassifierTraining):
         self.model_path = mentor_model_path(output_dir, mentor.id, ARCH_LR_TRANSFORMER)
         self.transformer = TransformerEmbeddings(shared_root)
 
-    def train(self, shared_root) -> QuestionClassifierTrainingResult:
+    def train(self) -> QuestionClassifierTrainingResult:
         x_train, y_train = self.__load_training_data()
         x_train, y_train = self.__load_transformer_embeddings(x_train, y_train)
         classifier = self.train_ridge_classifier(x_train, y_train)
@@ -59,6 +63,7 @@ class TransformersQuestionClassifierTraining(QuestionClassifierTraining):
         update_training(self.mentor.id)
         os.makedirs(self.model_path, exist_ok=True)
         joblib.dump(classifier, os.path.join(self.model_path, "model.pkl"))
+        # this is identical to all the models and is kept in the shared folder:
         # joblib.dump(self.transformer, os.path.join(self.model_path, "transformer.pkl"))
         return QuestionClassifierTrainingResult(
             scores, training_accuracy, self.model_path
