@@ -10,7 +10,7 @@ import pylru
 from .. import (
     ClassifierFactory,
     QuestionClassifierPrediction,
-    ARCH_DEFAULT,
+    ARCH_LR_TRANSFORMER,
 )
 
 
@@ -27,7 +27,7 @@ class Dao:
         self.cache = pylru.lrucache(int(environ.get("CACHE_MAX_SIZE", "100")))
 
     def find_classifier(
-        self, mentor_id: str, arch: str = ARCH_DEFAULT
+        self, mentor_id: str, arch: str = ARCH_LR_TRANSFORMER
     ) -> QuestionClassifierPrediction:
         if mentor_id in self.cache:
             e = self.cache[mentor_id]

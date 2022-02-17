@@ -7,11 +7,11 @@
 from abc import ABC, abstractmethod
 from importlib import import_module
 from typing import List, Dict
-from os import environ
 import os
 from dataclasses import dataclass
-
 from module.mentor import Media
+
+ARCH_LR_TRANSFORMER = "module.classifier.arch.lr_transformer"
 
 
 def mentor_model_path(models_path: str, mentor_id: str, arch: str, p: str = "") -> str:
@@ -77,14 +77,9 @@ def register_classifier_factory(arch: str, fac: ArchClassifierFactory) -> None:
     _factories_by_arch[arch] = fac
 
 
-ARCH_LR = "module.classifier.arch.lr"
-ARCH_LR_TRANSFORMER = "module.classifier.arch.lr_transformer"
-ARCH_DEFAULT = ARCH_LR_TRANSFORMER
-
-
 class ClassifierFactory:
     def _find_arch_fac(self, arch: str) -> ArchClassifierFactory:
-        arch = arch or environ.get("CLASSIFIER_ARCH") or ARCH_DEFAULT
+        arch = arch or ARCH_LR_TRANSFORMER
         if arch not in _factories_by_arch:
             import_module(arch)
         f = _factories_by_arch[arch]

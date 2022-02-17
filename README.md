@@ -1,6 +1,7 @@
 # TODO
 
-- [ ] separate docker images for train & predict, to make answer/predict as small as possible
+- [ ] separate docker images for train/predict and followup (needs torch), to make answer/predict as small as possible
+- [ ] cpu-only torch
 - [ ] authentication & authorization
 - [ ] architecture diagram
 - [ ] dns name for the api gateway plus base path mapping
@@ -9,6 +10,7 @@
 - [ ] default gateway response 4xx 5xx
 - [ ] monitoring & alerting on slow responses
 - [ ] train: validate request in api gateway
+- [x] remove unused dependencies
 - [x] submit feature request for --squash
 - [blocked] implement full api set (blocked on followups / cookies)
 - [x] remove panda from fetch_training_data and use csv
@@ -25,6 +27,26 @@
 - [x] LFS for /shared
 - [x] CORS headers
 - [x] secure headers
+
+# Torch
+
+Benjamin Nye  6:54 PM
+I put in an issue for sentence transformers and got this info from someone who was able to use PyTorch CPU with pip. If they can do it with Pip, I think we can do it with Poetry:
+https://github.com/UKPLab/sentence-transformers/issues/1409
+#1409 Poetry: Using PyTorch CPU (or other methods to reduce size)
+In some projects we are doing, we are running into some issues with docker container sizes getting quite large. One of the main culprits is PyTorch. As we are deploying to systems that don't have GPU's, we believe could save space by using the PyTorch CPU only release. However, we have had some trouble trying to get Poetry to set up dependencies in a way where S-BERT will use PyTorch CPU rather than also installing its preferred PyTorch flavor.
+Is there any advice or recipies for using Poetry to install a version of PyTorch CPU-only that S-BERT will accept to fill its dependencies (or to override the dependencies in a way that is safe)? We are also welcome to hear other methods to try to redu… Show more
+Comments
+3
+<https://github.com/UKPLab/sentence-transformers|UKPLab/sentence-transformers>UKPLab/sentence-transformers | Feb 3rd | Added by GitHub
+
+Their install order was:
+torch CPU
+transformers
+tqdm numpy scikit-learn scipy nltk sentencepiece
+Install sentence transformers without dependencies
+This seems like something we should look at if size continues to be an issue for either RACR or CareerFair
+"No specific version needed. For pytorch I used 1.8.0 as it was the most recent when I created the docker." (was the follow up when I asked) (edited) 
 
 
 # Intro
@@ -82,8 +104,7 @@ sls invoke --function http_train -p <event payload>
 To test the api via api gateway (dev is the stage):
 
 ```bash
-curl https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/train \
-  --data-raw '{"mentor":"6109d2a86e6fa01e5bf3219f"}'
+curl https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/train --data-raw '{"mentor":"6109d2a86e6fa01e5bf3219f"}'
 curl https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/train/status/5e09da8f-d8cc-4d19-80d8-d94b28741a58
 curl https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/questions?mentor=6109d2a86e6fa01e5bf3219f&query=what+do+you+think+about+serverless
 curl https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/trainingdata/6109d2a86e6fa01e5bf3219f
