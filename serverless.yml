@@ -198,6 +198,22 @@ functions:
               querystrings:
                 mentor: true
                 query: true
+  # blocked on cookie auth
+  # http_followup:
+  #   image:
+  #     name: train
+  #     command:
+  #       - followup.handler
+  #   memorySize: 8192
+  #   timeout: 120
+  #   events:
+  #     - http:
+  #         path: /me/followups/category/<category>
+  #         method: get
+  #         request:
+  #           parameters:
+  #             paths:
+  #               category: true
   http_training_data:
     handler: trainingdata.handler
     memorySize: 2048
