@@ -9,6 +9,7 @@
 - [ ] default gateway response 4xx 5xx
 - [ ] monitoring & alerting on slow responses
 - [ ] train: validate request in api gateway
+- [x] submit feature request for --squash
 - [blocked] implement full api set (blocked on followups / cookies)
 - [x] remove panda from fetch_training_data and use csv
 - [x] separate set of requirements for api lambdas (if they could be made small)

@@ -10,8 +10,9 @@ COPY pyproject.toml poetry.lock ./
 COPY *.py ./
 COPY module module
 
-# sls does not support docker build --squash, and the image is 6GB
-# so to avoid multiple layers lets do everything in one:
+# sls does not support docker build --squash, i filed an issue:
+# https://github.com/serverless/serverless/issues/10712
+# the image is 6GB so to avoid multiple layers lets do everything in one:
 RUN python -m pip install --upgrade pip \
     && pip install --upgrade poetry \
     && poetry config virtualenvs.create false \
