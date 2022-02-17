@@ -7,9 +7,10 @@
 - [ ] logging
 - [ ] github repo
 - [ ] default gateway response 4xx 5xx
-- [ ] remove panda from fetch_training_data and use csv
 - [ ] monitoring & alerting on slow responses
 - [ ] train: validate request in api gateway
+- [blocked] implement full api set (blocked on followups / cookies)
+- [x] remove panda from fetch_training_data and use csv
 - [x] separate set of requirements for api lambdas (if they could be made small)
 - [x] sentry
 - [x] sample events and document how to invoke locally
@@ -17,7 +18,6 @@
 - [x] api call -> train job (upload res to s3)
 - [x] api call -> answer/predict job (fetch trained model from s3)
 - [x] jobs table ttl so we dont need to clean it up manually
-- [blocked] implement full api set (blocked on followups / cookies)
 - [x] monitoring & alerting (sqs dlq sends to slack, lambda to sentry)
 - [x] infrastructure code
 - [x] api gateway

@@ -14,8 +14,7 @@ def handler(event, context):
     mentor = event['pathParameters']["mentor"]
     print(f"fetching training data for {mentor}")
 
-    data = fetch_training_data(mentor)
-    data_csv = data.to_csv(index=False)
+    data_csv = fetch_training_data(mentor)
 
     headers = {
         "Content-Disposition": f"attachment; filename={mentor}-trainingdata.csv",
