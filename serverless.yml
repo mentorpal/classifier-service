@@ -17,9 +17,9 @@ service: mentor-classifier-service
 frameworkVersion: '2'
 variablesResolutionMode: 20210326
 
-# plugins:
-#   - serverless-deployment-bucket
-#   - serverless-layers
+plugins:
+  - serverless-deployment-bucket
+  - serverless-layers
 
 custom:
   stages:
@@ -49,28 +49,27 @@ custom:
       # ALERT_SNS_ARN: ${ssm:/mentorpal/careerfair/shared/sns_alert_topic_arn}
 
   # serverless-layers requires a deployment bucket to be created before deploying this stack
-  # serverless-layers:
-  #   - dependencies:
-  #       layersDeploymentBucket: ${self:provider.deploymentBucket.name}
-  #       dependenciesPath: ./requirements.txt
-  #       compatibleRuntimes:
-  #         - python3.7
-  #         - python3.8
-  #       functions:
-  #         - http_train
-  #         - http_answer
-  #         - http_training_data
-
+  serverless-layers:
+    - dependencies:
+        layersDeploymentBucket: ${self:provider.deploymentBucket.name}
+        dependenciesPath: ./requirements.txt
+        compatibleRuntimes:
+          - python3.8
+        functions:
+          - http_train
+          - http_train_status
+          - http_training_data
 
 provider:
   name: aws
   stage: ${opt:stage, 'dev'} # stage is dev unless otherwise specified with --stage flag
   lambdaHashingVersion: 20201221
-  # deploymentBucket:
-  #   name: '${self:service}-sls-deploy-${self:provider.stage}'
-  #   blockPublicAccess: true
-  #   serverSideEncryption: AES256
-  #   versioning: false
+  runtime: python3.8
+  deploymentBucket:
+    name: '${self:service}-sls-deploy-${self:provider.stage}'
+    blockPublicAccess: true
+    serverSideEncryption: AES256
+    versioning: false
   stackTags:
     ENVIRONMENT: ${self:provider.stage}
     PROJECT: ${self:service}-${self:provider.stage}
@@ -141,34 +140,28 @@ provider:
           Resource:
             Fn::GetAtt: [TrainQueue, Arn]
 
-# package:
-# #  individually: false
-#  patterns:
-#     # exclude everything:
-#      - '!./**'
-#     # and then add back in only the files we need:
-#      - '*.py'
+package:
+ individually: false
+ patterns:
+    # exclude everything:
+     - '!./**'
+    # and then add back in only the files we need:
+     - '*.py'
+     - 'module/**'
 
 functions:
   http_train:
-    image:
-      name: train
-      command:
-        - train.handler
+    handler: train.handler
     memorySize: 1024
-    timeout: 60 # until its taken out of docker
+    timeout: 30
     events:
       - http:
           path: /train
           method: post
-          private: false
   http_train_status:
-    image:
-      name: train
-      command:
-        - status.handler
-    memorySize: 2048
-    timeout: 60
+    handler: status.handler
+    memorySize: 512
+    timeout: 10
     events:
       - http:
           path: /train/status/{id}
@@ -177,7 +170,6 @@ functions:
             parameters:
               paths:
                 id: true
-          private: false
   sqs_train:
     image:
       name: train
@@ -206,14 +198,10 @@ functions:
               querystrings:
                 mentor: true
                 query: true
-          private: false
   http_training_data:
-    image:
-      name: train
-      command:
-        - trainingdata.handler
+    handler: trainingdata.handler
     memorySize: 2048
-    timeout: 60 # it takes time to provision docker image
+    timeout: 30
     events:
       - http:
           path: /trainingdata/{mentor}
@@ -222,7 +210,6 @@ functions:
             parameters:
               paths:
                 mentor: true
-          private: false
 
 
 resources:

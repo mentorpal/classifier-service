@@ -1,0 +1,26 @@
+{
+  "name": "mentor-classifier-service",
+  "version": "1.0.0",
+  "description": "Serverless mentor classifier",
+  "devDependencies": {
+    "serverless": "^2.72.1",
+    "serverless-deployment-bucket": "^1.5.1",
+    "serverless-layers": "^2.5.1"
+  },
+  "scripts": {
+    "deploy:dev": "sls deploy -s dev",
+    "deploy:qa": "sls deploy -s qa",
+    "deploy:prod": "sls deploy -s prod"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mentorpal/mentor-classifier-service.git"
+  },
+  "keywords": [
+    "sqs",
+    "lambda",
+    "mentorpal"
+  ],
+  "author": "USC ICT",
+  "license": "SEE LICENSE IN ../LICENSE"
+}

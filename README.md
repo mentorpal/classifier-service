@@ -1,16 +1,17 @@
 # TODO
 
-- [ ] separate set of requirements for api lambdas (if they could be made small)
+- [ ] separate docker images for train & predict, to make answer/predict as small as possible
 - [ ] authentication & authorization
-- [ ] sentry
 - [ ] architecture diagram
 - [ ] dns name for the api gateway plus base path mapping
 - [ ] logging
 - [ ] github repo
+- [ ] default gateway response 4xx 5xx
 - [ ] remove panda from fetch_training_data and use csv
 - [ ] monitoring & alerting on slow responses
-- [ ] default gateway response 4xx 5xx
 - [ ] train: validate request in api gateway
+- [x] separate set of requirements for api lambdas (if they could be made small)
+- [x] sentry
 - [x] sample events and document how to invoke locally
 - [x] api call -> status reporting
 - [x] api call -> train job (upload res to s3)
@@ -37,7 +38,7 @@ For detailed instructions, please refer to the [documentation](https://www.serve
 
 ## Deployment instructions
 
-There's no cicd pipeline yet, it must be deployed manually
+There's no cicd pipeline yet, it must be deployed manually (using appropriate credentials)
 
 > **Requirements**: Docker. In order to build images locally and push them to ECR, you need to have Docker installed on your local machine. Please refer to [official documentation](https://docs.docker.com/get-docker/).
 > **Requirements**: npm. Run once `npm ci` to get all the tools.
@@ -47,6 +48,13 @@ In order to deploy the service, run the following command:
 ```
 sls deploy -s <stage>
 # where stage is one of dev|qa|prod
+```
+
+### Removing all resources
+
+Make sure to first manually empty all the buckets, otherwise the stack cannot be removed, and then:
+```
+sls remove -s <stage>
 ```
 
 # Monitoring
@@ -73,11 +81,11 @@ sls invoke --function http_train -p <event payload>
 To test the api via api gateway (dev is the stage):
 
 ```bash
-curl https://g2x9qy4f86.execute-api.us-east-1.amazonaws.com/dev/train \
+curl https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/train \
   --data-raw '{"mentor":"6109d2a86e6fa01e5bf3219f"}'
-curl https://g2x9qy4f86.execute-api.us-east-1.amazonaws.com/dev/questions?mentor=6109d2a86e6fa01e5bf3219f&query=what+do+you+think+about+serverless
-curl https://g2x9qy4f86.execute-api.us-east-1.amazonaws.com/dev/trainingdata/6109d2a86e6fa01e5bf3219f
-curl https://g2x9qy4f86.execute-api.us-east-1.amazonaws.com/dev/train/status/5e09da8f-d8cc-4d19-80d8-d94b28741a58
+curl https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/train/status/5e09da8f-d8cc-4d19-80d8-d94b28741a58
+curl https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/questions?mentor=6109d2a86e6fa01e5bf3219f&query=what+do+you+think+about+serverless
+curl https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/trainingdata/6109d2a86e6fa01e5bf3219f
 ```
 
 ## Asynchronous triggers
