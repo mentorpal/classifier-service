@@ -1,13 +1,13 @@
 # TODO
 
 - [ ] authentication & authorization
-- [ ] architecture diagram
 - [ ] dns name for the api gateway plus base path mapping
 - [ ] logging
 - [ ] github repo
 - [ ] default gateway response 4xx 5xx
 - [ ] monitoring & alerting on slow responses
 - [ ] train: validate request in api gateway
+- [x] architecture diagram
 - [x] try to improve answer/predict performance (if-modified-since for models, cache classifiers..)
 - [x] cpu-only torch
 - [x] remove unused dependencies
@@ -28,6 +28,16 @@
 - [x] CORS headers
 - [x] secure headers
 
+# Intro
+
+This is a serverless service that can train mentors and answer questions:
+
+![high level architecture](./mentor-classifier-service.drawio.png)
+
+The code was generated using the `aws-python-docker` template from the [Serverless framework](https://www.serverless.com/).
+
+For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/).
+
 # Torch
 
 When poetry installs sentence transformers that brings the full torch package (1.7GB). 
@@ -42,16 +52,6 @@ Install order:
 - transformers
 - tqdm numpy scikit-learn scipy nltk sentencepiece
 - Install sentence transformers without dependencies
-
-# Intro
-
-This is a serverless service that can train mentors and answer questions:
-
-![high l evel architecture](./classifier-service.drawio.png)
-
-The code was generated using the `aws-python-docker` template from the [Serverless framework](https://www.serverless.com/).
-
-For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/).
 
 ## Deployment instructions
 
