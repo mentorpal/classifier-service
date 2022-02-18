@@ -1,6 +1,5 @@
 # TODO
 
-- [ ] try to improve answer/predict performance
 - [ ] authentication & authorization
 - [ ] architecture diagram
 - [ ] dns name for the api gateway plus base path mapping
@@ -9,6 +8,7 @@
 - [ ] default gateway response 4xx 5xx
 - [ ] monitoring & alerting on slow responses
 - [ ] train: validate request in api gateway
+- [x] try to improve answer/predict performance (if-modified-since for models, cache classifiers..)
 - [x] cpu-only torch
 - [x] remove unused dependencies
 - [x] submit feature request for --squash

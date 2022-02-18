@@ -7,6 +7,8 @@
 import json
 import os
 import boto3
+import botocore
+from datetime import datetime
 from module.classifier.dao import Dao
 from module.utils import append_cors_headers, append_secure_headers, require_env
 
@@ -31,13 +33,26 @@ def handler(event, context):
     mentor = event["queryStringParameters"]["mentor"]
     question = event["queryStringParameters"]["query"]
 
-    # todo cache models
     relative_path = os.path.join(
         mentor, "module.classifier.arch.lr_transformer", "model.pkl"
     )
     model_file = os.path.join(MODELS_DIR, relative_path)
-    os.makedirs(os.path.dirname(model_file), exist_ok=True)
-    s3.download_file(MODELS_BUCKET, relative_path, model_file)
+    if os.path.exists(model_file):
+        modified_time = os.path.getmtime(model_file)
+        utc_mod_time = datetime.utcfromtimestamp(modified_time)
+        try:
+            r = s3.get_object(Bucket=MODELS_BUCKET, Key=relative_path, IfModifiedSince=utc_mod_time)
+            with open(model_file, 'wb') as f:
+                for chunk in r['Body'].iter_chunks(chunk_size=4096):
+                    f.write(chunk)
+        except botocore.exceptions.ClientError as e:
+            if e.response["Error"]["Code"] != '304':
+                print(e)
+                raise e
+            # not modified otherwise
+    else:
+        os.makedirs(os.path.dirname(model_file), exist_ok=True)
+        s3.download_file(MODELS_BUCKET, relative_path, model_file)
 
     result = classifier_dao.find_classifier(mentor).evaluate(question)
 
@@ -60,8 +75,12 @@ def handler(event, context):
 
 # # for local debugging:
 # if __name__ == '__main__':
-#     handler({}, {})
-# if __name__ == '__main__':
 #     with open('__events__/predict-event.json.dist') as f:
 #         event = json.loads(f.read())
+#         handler(event, {}) # warmup
+#         import cProfile
+#         pr = cProfile.Profile()
+#         pr.enable()
 #         handler(event, {})
+#         pr.disable()
+#         pr.dump_stats('predict2.prof')
