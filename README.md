@@ -2,11 +2,12 @@
 
 - [ ] authentication & authorization
 - [ ] dns name for the api gateway plus base path mapping
-- [ ] logging
-- [ ] github repo
 - [ ] default gateway response 4xx 5xx
 - [ ] monitoring & alerting on slow responses
 - [ ] train: validate request in api gateway
+- [ ] add logging to module.classifier to track execution
+- [x] json logging
+- [x] github repo
 - [x] architecture diagram
 - [x] try to improve answer/predict performance (if-modified-since for models, cache classifiers..)
 - [x] cpu-only torch

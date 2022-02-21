@@ -8,18 +8,22 @@ import json
 import boto3
 from botocore.exceptions import ClientError
 from module.utils import append_cors_headers, append_secure_headers, require_env
+from module.logger import get_logger
 
+log = get_logger('status')
 
 JOBS_TABLE_NAME = require_env("JOBS_TABLE_NAME")
+log.info(f'using table {JOBS_TABLE_NAME}')
 dynamodb = boto3.resource("dynamodb")
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
 
 
 def handler(event, context):
-    print(json.dumps(event))
+    log.debug(json.dumps(event))
     status_id = event["pathParameters"]["id"]
     try:
         response = job_table.get_item(Key={"id": status_id})
+        log.debug(json.dumps(response))
         item = response["Item"]
         data = {
             "id": item["id"],
@@ -30,7 +34,7 @@ def handler(event, context):
         }
         status = 200
     except ClientError as e:
-        print(e.response["Error"]["Message"])
+        log.error(e.response["Error"]["Message"])
         data = {
             "error": "failed to fetch",
             "message": e.response["Error"]["Message"],

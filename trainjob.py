@@ -10,17 +10,23 @@ import boto3
 import datetime
 from module.classifier.arch.lr_transformer import TransformersQuestionClassifierTraining
 from module.utils import require_env
+from module.logger import get_logger
+
+log = get_logger('train-job')
 
 shared = os.environ.get("SHARED_ROOT")
+log.info(f'shared: {shared}')
 JOBS_TABLE_NAME = require_env("JOBS_TABLE_NAME")
+log.info(f'using table {JOBS_TABLE_NAME}')
 MODELS_BUCKET = require_env('MODELS_BUCKET')
+log.info(f'bucket: {MODELS_BUCKET}')
 s3 = boto3.client("s3")
 dynamodb = boto3.resource("dynamodb", region_name='us-east-1')
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
 MODELS_DIR='/tmp/models'
 
 def handler(event, context):
-    print(json.dumps(event))
+    log.debug(json.dumps(event))
     for record in event["Records"]:
         request = json.loads(str(record["body"]))
         mentor = request["mentor"]
@@ -39,7 +45,7 @@ def handler(event, context):
             )
             update_status(request["id"], "DONE")
         except Exception as e:
-            print(e)
+            log.error(e)
             update_status(request["id"], "FAILED")
 
 

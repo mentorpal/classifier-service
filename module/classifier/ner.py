@@ -6,7 +6,7 @@
 #
 
 from dataclasses import dataclass
-import logging
+from module.logger import get_logger
 from os import path, environ
 from string import Template
 from typing import List, Dict, Set
@@ -26,8 +26,9 @@ from torch import Tensor
 from module.classifier.sentence_transformer import find_or_load_sentence_transformer
 from module.classifier.stopwords import STOPWORDS
 import csv
-
 from .constants import AVERAGE_EMBEDDING, SEMANTIC_DEDUP
+
+log = get_logger('ner')
 
 SIMILARITY_THRESHOLD = 0.92
 I_WEIGHT = 0.5
@@ -239,7 +240,7 @@ class NamedEntities:
         followups: Dict[str, FollowupQuestion],
     ) -> None:
         if entity_name not in QUESTION_TEMPLATES:
-            logging.warning("invalid entity name")
+            log.warning(f"invalid entity name: {entity_name}, recognized: {QUESTION_TEMPLATES}")
             return  # no template for this entity
         template = QUESTION_TEMPLATES[entity_name]
         for e in entity_vals.keys():

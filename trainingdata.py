@@ -7,12 +7,14 @@
 import json
 from module.api import fetch_training_data
 from module.utils import append_cors_headers, append_secure_headers
+from module.logger import get_logger
 
+log = get_logger('training-data')
 
 def handler(event, context):
-    print(json.dumps(event))
+    log.debug(json.dumps(event))
     mentor = event['pathParameters']["mentor"]
-    print(f"fetching training data for {mentor}")
+    log.info(f"fetching training data for {mentor}")
 
     data_csv = fetch_training_data(mentor)
 

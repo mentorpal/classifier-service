@@ -11,20 +11,23 @@ import os
 from module.utils import append_cors_headers, append_secure_headers, require_env
 import datetime
 import base64
+from module.logger import get_logger
 
+log = get_logger('train')
 ttl_sec = os.environ.get("TTL_SEC", (60 * 60 * 24) * 20) # 20 days
 
 JOBS_TABLE_NAME = require_env('JOBS_TABLE_NAME')
+log.info(f'using table {JOBS_TABLE_NAME}')
 JOBS_SQS_NAME = require_env('JOBS_SQS_NAME')
 aws_region = os.environ.get("AWS_REGION", "us-east-1")
 sqs = boto3.client("sqs", region_name=aws_region)
 queueUrl = sqs.get_queue_url(QueueName=JOBS_SQS_NAME)['QueueUrl']
-
+log.info(f'using queue {queueUrl}')
 dynamodb = boto3.resource('dynamodb') # todo , endpoint_url="http://localhost:8000") for localstack
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
 
 def handler(event, context):
-    print(json.dumps(event))
+    log.debug(json.dumps(event))
     if "body" not in event:
         raise Exception("bad request")
 
@@ -48,9 +51,9 @@ def handler(event, context):
         # https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/time-to-live-ttl-before-you-start.html#time-to-live-ttl-before-you-start-formatting
         "ttl": int(datetime.datetime.now().timestamp()) + ttl_sec
     }
-    print(train_job)
+    log.debug(train_job)
     sqs_msg = sqs.send_message(QueueUrl= queueUrl, MessageBody=json.dumps(train_job))
-    print(sqs_msg) # for debugging
+    log.info(sqs_msg)
 
     job_table.put_item(Item=train_job)
 
@@ -62,6 +65,7 @@ def handler(event, context):
             "statusUrl":f"/train/status/{job_id}",
         }
     }
+    log.debug(body["data"])
     headers = {}
     append_cors_headers(headers, event)
     append_secure_headers(headers)
