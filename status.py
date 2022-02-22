@@ -6,7 +6,6 @@
 ##
 import json
 import boto3
-from botocore.exceptions import ClientError
 from module.utils import append_cors_headers, append_secure_headers, require_env
 from module.logger import get_logger
 
@@ -14,30 +13,29 @@ log = get_logger('status')
 
 JOBS_TABLE_NAME = require_env("JOBS_TABLE_NAME")
 log.info(f'using table {JOBS_TABLE_NAME}')
-dynamodb = boto3.resource("dynamodb")
+dynamodb = boto3.resource("dynamodb", region_name='us-east-1')
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
 
 
 def handler(event, context):
     log.debug(json.dumps(event))
     status_id = event["pathParameters"]["id"]
-    try:
-        response = job_table.get_item(Key={"id": status_id})
-        log.debug(json.dumps(response))
+
+    response = job_table.get_item(Key={"id": status_id})
+    log.debug(json.dumps(response))
+    if "Item" in response:
         item = response["Item"]
         data = {
             "id": item["id"],
-            # "mentor": mentor,
             "status": item["status"],
             "updated": item["updated"],
             "statusUrl": f"/status/{status_id}",
         }
         status = 200
-    except ClientError as e:
-        log.error(e.response["Error"]["Message"])
+    else:
         data = {
-            "error": "failed to fetch",
-            "message": e.response["Error"]["Message"],
+            "error": "not found",
+            "message": f"{status_id} not found",
         }
         status = 400
 
@@ -52,7 +50,7 @@ def handler(event, context):
 
 # # for local debugging:
 # if __name__ == '__main__':
-#     handler({"pathParameters": {"id": "e67bc912-1d1f-448e-9c3c-01b10450f3d7"}}, {})
+#     handler({"pathParameters": {"id": "e67bc912-1d1f-448e-9c3c-01b10450f3d8"}}, {})
 # if __name__ == '__main__':
 #     with open('__events__/status-event.json.dist') as f:
 #         event = json.loads(f.read())
