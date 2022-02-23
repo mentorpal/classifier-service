@@ -4,6 +4,7 @@
 - [ ] monitoring & alerting on slow responses
 - [ ] train: validate request in api gateway
 - [ ] add logging to module.classifier to track execution
+- [x] provisioned concurrency for answer/predict only on prod
 - [x] run flake and black
 - [x] default gateway response 4xx 5xx
 - [x] authentication & authorization

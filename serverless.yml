@@ -47,6 +47,7 @@ custom:
       LOG_LEVEL: 'info'
       IS_SENTRY_ENABLED: true
       GRAPHQL_ENDPOINT: 'https://careerfair.mentorpal.org/graphql'
+      provisionedConcurrency: 1
       # TODO
       # ALERT_SNS_ARN: ${ssm:/mentorpal/careerfair/shared/sns_alert_topic_arn}
       # API_SECRET: '${ssm:/mentorpal/v2/shared/api_secret}'
@@ -209,6 +210,7 @@ functions:
         - predict.handler
     memorySize: 8192
     timeout: 120
+    provisionedConcurrency: ${self:custom.stages.${self:provider.stage}.provisionedConcurrency, null}
     events:
       - http:
           path: /questions
