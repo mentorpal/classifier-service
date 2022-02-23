@@ -63,7 +63,7 @@ custom:
           - http_train
           - http_train_status
           - http_training_data
-          - authorizerFunc
+          - authorizer_func
 
 provider:
   name: aws
