@@ -1,11 +1,11 @@
 # TODO
 
 - [ ] dns name for the api gateway plus base path mapping
-- [ ] default gateway response 4xx 5xx
 - [ ] monitoring & alerting on slow responses
 - [ ] train: validate request in api gateway
 - [ ] add logging to module.classifier to track execution
-- [ ] add flake and black
+- [x] run flake and black
+- [x] default gateway response 4xx 5xx
 - [x] authentication & authorization
 - [x] json logging
 - [x] github repo
@@ -108,10 +108,10 @@ sls invoke --function http_train -p <event payload>
 To test the api via api gateway (dev is the stage):
 
 ```bash
-curl https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/train --data-raw '{"mentor":"6109d2a86e6fa01e5bf3219f"}'
-curl https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/train/status/5e09da8f-d8cc-4d19-80d8-d94b28741a58
-curl https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/questions?mentor=6109d2a86e6fa01e5bf3219f&query=what+do+you+think+about+serverless
-curl https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/trainingdata/6109d2a86e6fa01e5bf3219f
+curl -H "Authorization: Bearer ey***" https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/train --data-raw '{"mentor":"6109d2a86e6fa01e5bf3219f"}'
+curl -H "Authorization: Bearer ey***" https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/train/status/5e09da8f-d8cc-4d19-80d8-d94b28741a58
+curl -H "Authorization: Bearer ey***" https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/questions?mentor=6109d2a86e6fa01e5bf3219f&query=what+do+you+think+about+serverless
+curl -H "Authorization: Bearer ey***" https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/trainingdata/6109d2a86e6fa01e5bf3219f
 ```
 
 ## Asynchronous triggers

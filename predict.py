@@ -13,11 +13,11 @@ from datetime import datetime
 from module.classifier.dao import Dao
 from module.utils import append_cors_headers, append_secure_headers, require_env
 
-log = get_logger('predict')
+log = get_logger("predict")
 SHARED = os.environ.get("SHARED_ROOT")
-log.info(f'shared: {SHARED}')
+log.info(f"shared: {SHARED}")
 MODELS_BUCKET = require_env("MODELS_BUCKET")
-log.info(f'bucket: {MODELS_BUCKET}')
+log.info(f"bucket: {MODELS_BUCKET}")
 s3 = boto3.client("s3")
 MODELS_DIR = "/tmp/models"
 
@@ -46,21 +46,23 @@ def handler(event, context):
         utc_mod_time = datetime.utcfromtimestamp(modified_time)
         log.debug(f"model file modified at {utc_mod_time}")
         try:
-            r = s3.get_object(Bucket=MODELS_BUCKET, Key=relative_path, IfModifiedSince=utc_mod_time)
-            with open(model_file, 'wb') as f:
-                for chunk in r['Body'].iter_chunks(chunk_size=4096):
+            r = s3.get_object(
+                Bucket=MODELS_BUCKET, Key=relative_path, IfModifiedSince=utc_mod_time
+            )
+            with open(model_file, "wb") as f:
+                for chunk in r["Body"].iter_chunks(chunk_size=4096):
                     f.write(chunk)
-            log.debug('model file updated')
+            log.debug("model file updated")
         except botocore.exceptions.ClientError as e:
-            if e.response["Error"]["Code"] != '304':
+            if e.response["Error"]["Code"] != "304":
                 log.error(e)
                 raise e
-            log.debug('model file not updated in s3 since last fetch')
+            log.debug("model file not updated in s3 since last fetch")
     else:
-        log.debug(f'fetching {model_file} from s3')
+        log.debug(f"fetching {model_file} from s3")
         os.makedirs(os.path.dirname(model_file), exist_ok=True)
         s3.download_file(MODELS_BUCKET, relative_path, model_file)
-        log.debug(f'model file download completed')
+        log.debug(f"model file download completed")
 
     result = classifier_dao.find_classifier(mentor).evaluate(question)
 

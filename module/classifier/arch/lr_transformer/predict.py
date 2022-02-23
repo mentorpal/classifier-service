@@ -20,7 +20,8 @@ from module.utils import file_last_updated_at, sanitize_string
 
 AnswerIdTextAndMedia = Tuple[str, str, list]
 
-class TransformersQuestionClassifierPrediction():
+
+class TransformersQuestionClassifierPrediction:
     def __init__(self, mentor: Union[str, Mentor], transformer, data_path: str):
         if isinstance(mentor, str):
             logging.info("loading mentor id {}...".format(mentor))

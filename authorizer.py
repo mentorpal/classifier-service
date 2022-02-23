@@ -35,7 +35,7 @@ def validate_json(json_data, json_schema):
 
 
 def extract_token_from_header(request):
-    if request["type"] != 'TOKEN' or "authorizationToken" not in request:
+    if request["type"] != "TOKEN" or "authorizationToken" not in request:
         raise Exception("no authentication token provided")
     bearer_token = request["authorizationToken"]
     token_authentication = bearer_token.lower().startswith("bearer")
@@ -59,7 +59,7 @@ def handler(event, context):
     log.debug(f"{event['type']}, {event['methodArn']}")
     try:
         verified = extract_token_from_header(event)
-        log.debug('token valid')
+        log.debug("token valid")
         return {
             "principalId": "apigateway.amazonaws.com",
             "policyDocument": {

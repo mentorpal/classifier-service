@@ -24,13 +24,15 @@ from module.utils import sanitize_string
 from typing import Union, Tuple, List
 from dataclasses import dataclass
 
+
 @dataclass
 class QuestionClassifierTrainingResult:
     scores: List[float]
     accuracy: float
     model_path: str
 
-class TransformersQuestionClassifierTraining():
+
+class TransformersQuestionClassifierTraining:
     def __init__(
         self,
         mentor: Union[str, Mentor],

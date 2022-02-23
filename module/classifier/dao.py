@@ -11,6 +11,7 @@ from module.classifier.arch.lr_transformer import (
     TransformersQuestionClassifierPrediction,
 )
 
+
 class Entry:
     def __init__(self, classifier: TransformersQuestionClassifierPrediction):
         self.classifier = classifier
@@ -31,6 +32,8 @@ class Dao:
             e = self.cache[mentor_id]
             if e and e.last_trained_at >= e.classifier.get_last_trained_at():
                 return e.classifier
-        c = TransformersQuestionClassifierPrediction(mentor_id, self.transformers, self.data_root)
+        c = TransformersQuestionClassifierPrediction(
+            mentor_id, self.transformers, self.data_root
+        )
         self.cache[mentor_id] = Entry(c)
         return c

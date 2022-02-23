@@ -9,6 +9,7 @@ from module.classifier.ner import FollowupQuestion, NamedEntities
 from .types import AnswerInfo
 from .api import fetch_category, fetch_mentor_answers_and_name
 
+
 def generate_followups(
     category: str,
     cookies: Dict[str, str] = {},

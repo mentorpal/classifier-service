@@ -28,7 +28,7 @@ from module.classifier.stopwords import STOPWORDS
 import csv
 from .constants import AVERAGE_EMBEDDING, SEMANTIC_DEDUP
 
-log = get_logger('ner')
+log = get_logger("ner")
 
 SIMILARITY_THRESHOLD = 0.92
 I_WEIGHT = 0.5
@@ -240,7 +240,9 @@ class NamedEntities:
         followups: Dict[str, FollowupQuestion],
     ) -> None:
         if entity_name not in QUESTION_TEMPLATES:
-            log.warning(f"invalid entity name: {entity_name}, recognized: {QUESTION_TEMPLATES}")
+            log.warning(
+                f"invalid entity name: {entity_name}, recognized: {QUESTION_TEMPLATES}"
+            )
             return  # no template for this entity
         template = QUESTION_TEMPLATES[entity_name]
         for e in entity_vals.keys():

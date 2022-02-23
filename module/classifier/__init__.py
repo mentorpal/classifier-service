@@ -19,6 +19,7 @@ def mentor_model_path(models_path: str, mentor_id: str, arch: str, p: str = "") 
         else os.path.join(models_path, mentor_id, arch)
     )
 
+
 @dataclass
 class QuestionClassiferPredictionResult:
     answer_id: str

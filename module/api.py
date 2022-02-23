@@ -12,6 +12,7 @@ import requests
 from typing import Dict, List, TypedDict, Tuple
 from .types import AnswerInfo
 
+
 class GQLQueryBody(TypedDict):
     query: str
     variables: dict
@@ -191,10 +192,9 @@ def fetch_training_data(mentor: str):
     data_csv = StringIO()
     csv_writer = csv.writer(data_csv)
     csv_writer.writerow(["id", "question", "paraphrases", "answer", "topic"])
-    csv_writer.writerows(data_list) 
-    
-    return data_csv.getvalue()
+    csv_writer.writerows(data_list)
 
+    return data_csv.getvalue()
 
 
 def fetch_mentor_data(mentor: str) -> dict:
