@@ -19,9 +19,8 @@ def is_authorized(mentor, token):
     )
 
 
-def create_json_response(status, data, event):
+def create_json_response(status, data, event, headers = {}):
     body = {"data": data}
-    headers = {}
     append_cors_headers(headers, event)
     append_secure_headers(headers)
     response = {"statusCode": status, "body": json.dumps(body), "headers": headers}

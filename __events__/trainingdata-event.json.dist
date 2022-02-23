@@ -12,6 +12,10 @@
     "stageVariables": null,
     "requestContext": {
         "resourceId": "r08vqp",
+        "authorizer": {
+            "principalId": "apigateway.amazonaws.com",
+            "token": "{\"id\": \"6196af5e068d43dc686194ed\", \"role\": \"ADMIN\", \"mentorIds\": [\"6196af5e068d43dc686194f8\"], \"expirationDate\": \"2022-05-23T10:50:40.099Z\", \"iat\": 1645527040, \"exp\": 1653303040}"
+        },        
         "resourcePath": "/trainingdata/{mentor}",
         "httpMethod": "GET",
         "extendedRequestId": "NlEhEG4doAMFrgg=",

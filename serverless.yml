@@ -246,6 +246,11 @@ functions:
             parameters:
               paths:
                 mentor: true
+          authorizer: 
+            name: authorizer_func
+            resultTtlInSeconds: 300
+            identitySource: method.request.header.Authorization
+            type: token
 
 
 resources:

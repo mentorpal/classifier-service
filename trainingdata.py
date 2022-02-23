@@ -6,7 +6,7 @@
 ##
 import json
 from module.api import fetch_training_data
-from module.utils import append_cors_headers, append_secure_headers
+from module.utils import is_authorized, create_json_response
 from module.logger import get_logger
 
 log = get_logger('training-data')
@@ -14,6 +14,14 @@ log = get_logger('training-data')
 def handler(event, context):
     log.debug(json.dumps(event))
     mentor = event['pathParameters']["mentor"]
+    token = json.loads(event["requestContext"]["authorizer"]["token"])
+    if not is_authorized(mentor, token):
+        data = {
+            "error": "not authorized",
+            "message": "not authorized",
+        }
+        return create_json_response(401, data, event)
+
     log.info(f"fetching training data for {mentor}")
 
     data_csv = fetch_training_data(mentor)
@@ -22,20 +30,10 @@ def handler(event, context):
         "Content-Disposition": f"attachment; filename={mentor}-trainingdata.csv",
         "Content-type": "text/csv",
     }
-    append_cors_headers(headers, event)
-    append_secure_headers(headers)
-    response = {
-        "statusCode": 200,
-        "body": data_csv,
-        "headers": headers
-    }
-
-    return response
+    return create_json_response(200, data_csv, event, headers)
 
 
 # # for local debugging:
-# if __name__ == '__main__':
-#     handler({}, {})
 # if __name__ == '__main__':
 #     with open('__events__/trainingdata-event.json.dist') as f:
 #         event = json.loads(f.read())
