@@ -2,7 +2,9 @@
     "resource": "/train/status/{id}",
     "path": "/train/status/5e09da8f-d8cc-4d19-80d8-d94b28741a58",
     "httpMethod": "GET",
-    "headers": null,
+    "headers": {
+        "Authorization": "Bearer eyJhbG***",
+    },
     "multiValueHeaders": null,
     "queryStringParameters": null,
     "multiValueQueryStringParameters": null,
@@ -12,6 +14,10 @@
     "stageVariables": null,
     "requestContext": {
         "resourceId": "r08vqp",
+        "authorizer": {
+            "principalId": "apigateway.amazonaws.com",
+            "token": "{\"id\": \"6196af5e068d43dc686194ed\", \"role\": \"ADMIN\", \"mentorIds\": [\"6196af5e068d43dc686194f8\"], \"expirationDate\": \"2022-05-23T10:50:40.099Z\", \"iat\": 1645527040, \"exp\": 1653303040}"
+        },        
         "resourcePath": "/train/status/{id}",
         "httpMethod": "GET",
         "extendedRequestId": "NlEhEG4doAMFrgg=",

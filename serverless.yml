@@ -34,12 +34,14 @@ custom:
       # v2 is hardcoded, we could use fallback stages instead
       GRAPHQL_ENDPOINT: 'https://v2.mentorpal.org/graphql'
       API_SECRET: '${ssm:/mentorpal/v2/shared/api_secret}'
+      JWT_SECRET: '${ssm:/mentorpal/v2/shared/jwt_secret}'
       ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn}
     qa:
       LOG_LEVEL: 'debug'
       IS_SENTRY_ENABLED: true
       GRAPHQL_ENDPOINT: 'https://v2.mentorpal.org/graphql'
       API_SECRET: '${ssm:/mentorpal/v2/shared/api_secret}'
+      JWT_SECRET: '${ssm:/mentorpal/v2/shared/jwt_secret}'
       ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn}
     prod:
       LOG_LEVEL: 'info'
@@ -47,6 +49,8 @@ custom:
       GRAPHQL_ENDPOINT: 'https://careerfair.mentorpal.org/graphql'
       # TODO
       # ALERT_SNS_ARN: ${ssm:/mentorpal/careerfair/shared/sns_alert_topic_arn}
+      # API_SECRET: '${ssm:/mentorpal/v2/shared/api_secret}'
+      # JWT_SECRET: '${ssm:/mentorpal/v2/shared/jwt_secret}'
 
   # serverless-layers requires a deployment bucket to be created before deploying this stack
   serverless-layers:
@@ -59,6 +63,7 @@ custom:
           - http_train
           - http_train_status
           - http_training_data
+          - authorizerFunc
 
 provider:
   name: aws
@@ -110,6 +115,7 @@ provider:
     PYTHON_ENV: careerfair-${self:provider.stage}
     GRAPHQL_ENDPOINT: ${self:custom.stages.${self:provider.stage}.GRAPHQL_ENDPOINT}
     API_SECRET: ${self:custom.stages.${self:provider.stage}.API_SECRET}
+    JWT_SECRET: ${self:custom.stages.${self:provider.stage}.JWT_SECRET}
     IS_SENTRY_ENABLED: ${self:custom.stages.${self:provider.stage}.IS_SENTRY_ENABLED}
     SENTRY_DSN_MENTOR_CLASSIFIER: '${ssm:/mentorpal/upload/sentry_dsn}'
     SHARED_ROOT: '/app/shared' # as defined in Dockerfile
@@ -150,6 +156,9 @@ package:
      - 'module/**'
 
 functions:
+  authorizer_func:
+    handler: authorizer.handler
+
   http_train:
     handler: train.handler
     memorySize: 1024
@@ -158,6 +167,7 @@ functions:
       - http:
           path: /train
           method: post
+
   http_train_status:
     handler: status.handler
     memorySize: 512
@@ -166,6 +176,11 @@ functions:
       - http:
           path: /train/status/{id}
           method: get
+          authorizer: 
+            name: authorizer_func
+            resultTtlInSeconds: 300
+            identitySource: method.request.header.Authorization
+            type: token
           request:
             parameters:
               paths:

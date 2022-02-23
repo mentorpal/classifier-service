@@ -9,29 +9,43 @@ import boto3
 from module.utils import append_cors_headers, append_secure_headers, require_env
 from module.logger import get_logger
 
-log = get_logger('status')
+log = get_logger("status")
 
 JOBS_TABLE_NAME = require_env("JOBS_TABLE_NAME")
-log.info(f'using table {JOBS_TABLE_NAME}')
-dynamodb = boto3.resource("dynamodb", region_name='us-east-1')
+log.info(f"using table {JOBS_TABLE_NAME}")
+dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
 
 
 def handler(event, context):
     log.debug(json.dumps(event))
     status_id = event["pathParameters"]["id"]
+    token = json.loads(event["requestContext"]["authorizer"]["token"])
 
     response = job_table.get_item(Key={"id": status_id})
-    log.debug(json.dumps(response))
+    log.debug(response)
     if "Item" in response:
         item = response["Item"]
-        data = {
-            "id": item["id"],
-            "status": item["status"],
-            "updated": item["updated"],
-            "statusUrl": f"/status/{status_id}",
-        }
-        status = 200
+        is_authorized = (
+            token["role"] == "CONTENT_MANAGER"
+            or token["role"] == "ADMIN"
+            or item["mentor"] in token["mentorIds"]
+        )
+        if not is_authorized:
+            status = 401
+            data = {
+                "error": "not authorized",
+                "message": "not authorized",
+            }
+        else:
+            status = 200
+            data = {
+                "id": item["id"],
+                "status": item["status"],
+                "updated": item["updated"],
+                "mentor": item["mentor"],
+                "statusUrl": f"/status/{status_id}",
+            }
     else:
         data = {
             "error": "not found",
@@ -49,8 +63,6 @@ def handler(event, context):
 
 
 # # for local debugging:
-# if __name__ == '__main__':
-#     handler({"pathParameters": {"id": "e67bc912-1d1f-448e-9c3c-01b10450f3d8"}}, {})
 # if __name__ == '__main__':
 #     with open('__events__/status-event.json.dist') as f:
 #         event = json.loads(f.read())
