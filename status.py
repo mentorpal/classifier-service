@@ -36,10 +36,11 @@ def handler(event, context):
             data = {
                 "id": item["id"],
                 "status": item["status"],
-                "updated": item["updated"],
                 "mentor": item["mentor"],
                 "statusUrl": f"/status/{status_id}",
             }
+            if "updated" in item:  # added only when trainjob runs
+                data["updated"] = item["updated"]
     else:
         data = {
             "error": "not found",
