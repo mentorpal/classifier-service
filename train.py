@@ -8,7 +8,7 @@ import json
 import uuid
 import boto3
 import os
-from module.utils import append_cors_headers, append_secure_headers, require_env
+from module.utils import create_json_response, require_env, is_authorized
 import datetime
 import base64
 from module.logger import get_logger
@@ -23,8 +23,9 @@ aws_region = os.environ.get("AWS_REGION", "us-east-1")
 sqs = boto3.client("sqs", region_name=aws_region)
 queueUrl = sqs.get_queue_url(QueueName=JOBS_SQS_NAME)['QueueUrl']
 log.info(f'using queue {queueUrl}')
-dynamodb = boto3.resource('dynamodb') # todo , endpoint_url="http://localhost:8000") for localstack
+dynamodb = boto3.resource('dynamodb', region_name=aws_region) # todo , endpoint_url="http://localhost:8000") for localstack
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
+
 
 def handler(event, context):
     log.debug(json.dumps(event))
@@ -39,6 +40,14 @@ def handler(event, context):
     if "mentor" not in train_request:
         raise Exception("bad request")
     mentor = train_request["mentor"]
+    token = json.loads(event["requestContext"]["authorizer"]["token"])
+
+    if not is_authorized(mentor, token):
+        data = {
+            "error": "not authorized",
+            "message": "not authorized",
+        }
+        return create_json_response(401, data, event)
 
     # reject if there's already a train job for this mentor?
 
@@ -57,30 +66,16 @@ def handler(event, context):
 
     job_table.put_item(Item=train_job)
 
-    body = {
-        "data": {
+    data = {
             "id": job_id,
             "mentor": mentor,
             "status": 'QUEUED',
             "statusUrl":f"/train/status/{job_id}",
-        }
     }
-    log.debug(body["data"])
-    headers = {}
-    append_cors_headers(headers, event)
-    append_secure_headers(headers)
-    dynamo_msg = {
-        "statusCode": 200, # or 201?
-        "body": json.dumps(body),
-        "headers": headers
-    }
-
-    return dynamo_msg
+    return create_json_response(200, data, event)        
 
 
 # # for local debugging:
-# if __name__ == '__main__':
-#     handler({}, {})
 # if __name__ == '__main__':
 #     with open('__events__/train-event.json.dist') as f:
 #         event = json.loads(f.read())

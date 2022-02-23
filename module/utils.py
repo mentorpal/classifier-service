@@ -8,6 +8,24 @@
 from os import _Environ, environ
 from typing import Any, Dict, Union, List
 from pathlib import Path
+import json
+
+
+def is_authorized(mentor, token):
+    return (
+        token["role"] == "CONTENT_MANAGER"
+        or token["role"] == "ADMIN"
+        or mentor in token["mentorIds"]
+    )
+
+
+def create_json_response(status, data, event):
+    body = {"data": data}
+    headers = {}
+    append_cors_headers(headers, event)
+    append_secure_headers(headers)
+    response = {"statusCode": status, "body": json.dumps(body), "headers": headers}
+    return response
 
 
 def require_env(n: str) -> str:
@@ -19,27 +37,29 @@ def require_env(n: str) -> str:
 
 def append_secure_headers(headers):
     secure = {
-        "content-security-policy":"upgrade-insecure-requests;",
-        "referrer-policy":"no-referrer-when-downgrade",
-        "strict-transport-security":"max-age=31536000",
-        "x-content-type-options":"nosniff",
-        "x-frame-options":"SAMEORIGIN",
-        "x-xss-protection":"1; mode=block"
+        "content-security-policy": "upgrade-insecure-requests;",
+        "referrer-policy": "no-referrer-when-downgrade",
+        "strict-transport-security": "max-age=31536000",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
     }
     for h in secure:
         headers[h] = secure[h]
 
 
 def append_cors_headers(headers, event):
-    origin = environ.get('CORS_ORIGIN', '*')
+    origin = environ.get("CORS_ORIGIN", "*")
     # TODO specify allowed list of origins and if event["headers"]["origin"] is one of them then allow it
     # if "origin" in event["headers"] and getenv.array('CORS_ORIGIN').includes(event["headers"]["origin"]):
     #     origin = event["headers"]["origin"]
 
-    headers['Access-Control-Allow-Origin'] = origin
-    headers['Access-Control-Allow-Origin'] = '*'
-    headers['Access-Control-Allow-Headers']= 'GET,PUT,POST,DELETE,OPTIONS'
-    headers['Access-Control-Allow-Methods']=  'Authorization,Origin,Accept,Accept-Language,Content-Language,Content-Type'
+    headers["Access-Control-Allow-Origin"] = origin
+    headers["Access-Control-Allow-Origin"] = "*"
+    headers["Access-Control-Allow-Headers"] = "GET,PUT,POST,DELETE,OPTIONS"
+    headers[
+        "Access-Control-Allow-Methods"
+    ] = "Authorization,Origin,Accept,Accept-Language,Content-Language,Content-Type"
 
 
 def use_average_embedding() -> bool:

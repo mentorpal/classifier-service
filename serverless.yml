@@ -167,6 +167,11 @@ functions:
       - http:
           path: /train
           method: post
+          authorizer: 
+            name: authorizer_func
+            resultTtlInSeconds: 300
+            identitySource: method.request.header.Authorization
+            type: token
 
   http_train_status:
     handler: status.handler

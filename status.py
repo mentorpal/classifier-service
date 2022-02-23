@@ -6,11 +6,10 @@
 ##
 import json
 import boto3
-from module.utils import append_cors_headers, append_secure_headers, require_env
+from module.utils import create_json_response, require_env, is_authorized
 from module.logger import get_logger
 
 log = get_logger("status")
-
 JOBS_TABLE_NAME = require_env("JOBS_TABLE_NAME")
 log.info(f"using table {JOBS_TABLE_NAME}")
 dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
@@ -22,16 +21,11 @@ def handler(event, context):
     status_id = event["pathParameters"]["id"]
     token = json.loads(event["requestContext"]["authorizer"]["token"])
 
-    response = job_table.get_item(Key={"id": status_id})
-    log.debug(response)
-    if "Item" in response:
-        item = response["Item"]
-        is_authorized = (
-            token["role"] == "CONTENT_MANAGER"
-            or token["role"] == "ADMIN"
-            or item["mentor"] in token["mentorIds"]
-        )
-        if not is_authorized:
+    db_item = job_table.get_item(Key={"id": status_id})
+    log.debug(db_item)
+    if "Item" in db_item:
+        item = db_item["Item"]
+        if not is_authorized(item["mentor"], token):
             status = 401
             data = {
                 "error": "not authorized",
@@ -53,13 +47,7 @@ def handler(event, context):
         }
         status = 400
 
-    body = {"data": data}
-    headers = {}
-    append_cors_headers(headers, event)
-    append_secure_headers(headers)
-    dynamo_msg = {"statusCode": status, "body": json.dumps(body), "headers": headers}
-
-    return dynamo_msg
+    return create_json_response(status, data, event)
 
 
 # # for local debugging:
