@@ -1,11 +1,12 @@
 # TODO
 
-- [ ] authentication & authorization
 - [ ] dns name for the api gateway plus base path mapping
 - [ ] default gateway response 4xx 5xx
 - [ ] monitoring & alerting on slow responses
 - [ ] train: validate request in api gateway
 - [ ] add logging to module.classifier to track execution
+- [ ] add flake and black
+- [x] authentication & authorization
 - [x] json logging
 - [x] github repo
 - [x] architecture diagram
@@ -66,6 +67,14 @@ In order to deploy the service, run the following command:
 ```
 sls deploy -s <stage>
 # where stage is one of dev|qa|prod
+```
+
+This will build and push a ~2-3GB docker image and can take a while.
+Only sqs_train lambda uses docker, so if you want to deploy any other function,
+then it's much faster to just deploy one function:
+
+```
+sls deploy function -f http_train
 ```
 
 ### Removing all resources

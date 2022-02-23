@@ -218,7 +218,8 @@ functions:
               querystrings:
                 mentor: true
                 query: true
-  # blocked on cookie auth
+  
+  # BLOCKED on cookie auth
   # http_followup:
   #   image:
   #     name: train
@@ -230,10 +231,16 @@ functions:
   #     - http:
   #         path: /me/followups/category/<category>
   #         method: get
+  #         authorizer: 
+  #           name: authorizer_func
+  #           resultTtlInSeconds: 300
+  #           identitySource: method.request.header.Authorization
+  #           type: token
   #         request:
   #           parameters:
   #             paths:
   #               category: true
+
   http_training_data:
     handler: trainingdata.handler
     memorySize: 2048
@@ -242,15 +249,15 @@ functions:
       - http:
           path: /trainingdata/{mentor}
           method: get
-          request:
-            parameters:
-              paths:
-                mentor: true
           authorizer: 
             name: authorizer_func
             resultTtlInSeconds: 300
             identitySource: method.request.header.Authorization
             type: token
+          request:
+            parameters:
+              paths:
+                mentor: true
 
 
 resources:
