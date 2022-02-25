@@ -6,9 +6,11 @@
 #
 import json
 from module.api import fetch_training_data
-from module.utils import is_authorized, create_json_response
+from module.utils import is_authorized, create_json_response, load_sentry
 from module.logger import get_logger
 
+
+load_sentry()
 log = get_logger("training-data")
 
 

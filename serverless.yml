@@ -132,7 +132,7 @@ provider:
     API_SECRET: ${self:custom.stages.${self:provider.stage}.API_SECRET}
     JWT_SECRET: ${self:custom.stages.${self:provider.stage}.JWT_SECRET}
     IS_SENTRY_ENABLED: ${self:custom.stages.${self:provider.stage}.IS_SENTRY_ENABLED}
-    SENTRY_DSN_MENTOR_CLASSIFIER: '${ssm:/mentorpal/upload/sentry_dsn}'
+    SENTRY_DSN_MENTOR_CLASSIFIER: '${ssm:/mentorpal/classifier/sentry_dsn}'
     SHARED_ROOT: '/app/shared' # as defined in Dockerfile
     MODELS_BUCKET: classifier-models-${self:provider.stage}
     JOBS_TABLE_NAME: classifier-jobs-${self:provider.stage}

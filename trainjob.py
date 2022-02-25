@@ -9,11 +9,12 @@ import os
 import boto3
 import datetime
 from module.classifier.arch.lr_transformer import TransformersQuestionClassifierTraining
-from module.utils import require_env
+from module.utils import require_env, load_sentry
 from module.logger import get_logger
 
-log = get_logger("train-job")
 
+load_sentry()
+log = get_logger("train-job")
 shared = os.environ.get("SHARED_ROOT")
 log.info(f"shared: {shared}")
 JOBS_TABLE_NAME = require_env("JOBS_TABLE_NAME")

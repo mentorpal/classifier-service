@@ -94,6 +94,7 @@ curl -H "Authorization: Bearer ey***" https://api-dev.mentorpal.org/classifier/t
 curl -H "Authorization: Bearer ey***" https://api-dev.mentorpal.org/classifier/train/status/5e09da8f-d8cc-4d19-80d8-d94b28741a58
 curl -H "Authorization: Bearer ey***" https://api-dev.mentorpal.org/classifier/questions?mentor=6109d2a86e6fa01e5bf3219f&query=what+do+you+think+about+serverless
 curl -H "Authorization: Bearer ey***" https://api-dev.mentorpal.org/classifier/trainingdata/6109d2a86e6fa01e5bf3219f
+curl -X POST -H "Authorization: Bearer ey***" https://api-dev.mentorpal.org/classifier/me/followups/category/a335c6df-da3e-4972-b0c3-c822f8144470
 ```
 
 

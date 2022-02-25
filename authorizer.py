@@ -4,12 +4,15 @@
 #
 # The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 #
-from jsonschema import validate, ValidationError
 import json
 import jwt
-from module.logger import get_logger
 from os import environ
+from jsonschema import validate, ValidationError
+from module.logger import get_logger
+from module.utils import load_sentry
 
+
+load_sentry()
 log = get_logger("authorizer")
 jwt_secret = environ.get("JWT_SECRET")
 jwt_payload_schema = {

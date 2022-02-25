@@ -5,10 +5,31 @@
 # The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 #
 
+import json
+from logger import get_logger
 from os import _Environ, environ
 from typing import Any, Dict, Union, List
 from pathlib import Path
-import json
+
+log = get_logger()
+
+
+def load_sentry():
+    if environ.get("IS_SENTRY_ENABLED", "") == "true":
+        log.info("SENTRY enabled, calling init")
+        import sentry_sdk  # NOQA E402
+        from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration  # NOQA E402
+
+        sentry_sdk.init(
+            dsn=environ.get("SENTRY_DSN_MENTOR_CLASSIFIER"),
+            # include project so issues can be filtered in sentry:
+            environment=environ.get("PYTHON_ENV"),
+            integrations=[AwsLambdaIntegration(timeout_warning=True)],
+            # Set traces_sample_rate to 1.0 to capture 100%
+            # of transactions for performance monitoring.
+            traces_sample_rate=0.20,
+            debug=environ.get("SENTRY_DEBUG_CLASSIFIER", "") == "true",
+        )
 
 
 def is_authorized(mentor, token):

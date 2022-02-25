@@ -8,14 +8,15 @@ import json
 import uuid
 import boto3
 import os
-from module.utils import create_json_response, require_env, is_authorized
+from module.utils import create_json_response, require_env, is_authorized, load_sentry
 import datetime
 import base64
 from module.logger import get_logger
 
+
+load_sentry()
 log = get_logger("train")
 ttl_sec = os.environ.get("TTL_SEC", (60 * 60 * 24) * 20)  # 20 days
-
 JOBS_TABLE_NAME = require_env("JOBS_TABLE_NAME")
 log.info(f"using table {JOBS_TABLE_NAME}")
 JOBS_SQS_NAME = require_env("JOBS_SQS_NAME")

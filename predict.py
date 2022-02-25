@@ -11,8 +11,14 @@ import botocore
 from module.logger import get_logger
 from datetime import datetime
 from module.classifier.dao import Dao
-from module.utils import append_cors_headers, append_secure_headers, require_env
+from module.utils import (
+    load_sentry,
+    append_cors_headers,
+    append_secure_headers,
+    require_env,
+)
 
+load_sentry()
 log = get_logger("predict")
 SHARED = os.environ.get("SHARED_ROOT")
 log.info(f"shared: {SHARED}")
