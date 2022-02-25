@@ -1,9 +1,9 @@
-##
-## This software is Copyright ©️ 2020 The University of Southern California. All Rights Reserved.
-## Permission to use, copy, modify, and distribute this software and its documentation for educational, research and non-profit purposes, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and subject to the full license file found in the root of this software deliverable. Permission to make commercial use of this software may be obtained by contacting:  USC Stevens Center for Innovation University of Southern California 1150 S. Olive Street, Suite 2300, Los Angeles, CA 90115, USA Email: accounting@stevens.usc.edu
-##
-## The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
-##
+#
+# This software is Copyright ©️ 2020 The University of Southern California. All Rights Reserved.
+# Permission to use, copy, modify, and distribute this software and its documentation for educational, research and non-profit purposes, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and subject to the full license file found in the root of this software deliverable. Permission to make commercial use of this software may be obtained by contacting:  USC Stevens Center for Innovation University of Southern California 1150 S. Olive Street, Suite 2300, Los Angeles, CA 90115, USA Email: accounting@stevens.usc.edu
+#
+# The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
+#
 import json
 import uuid
 import boto3
@@ -21,8 +21,8 @@ log.info(f"using table {JOBS_TABLE_NAME}")
 JOBS_SQS_NAME = require_env("JOBS_SQS_NAME")
 aws_region = os.environ.get("AWS_REGION", "us-east-1")
 sqs = boto3.client("sqs", region_name=aws_region)
-queueUrl = sqs.get_queue_url(QueueName=JOBS_SQS_NAME)["QueueUrl"]
-log.info(f"using queue {queueUrl}")
+queue_url = sqs.get_queue_url(QueueName=JOBS_SQS_NAME)["QueueUrl"]
+log.info(f"using queue {queue_url}")
 # todo endpoint_url="http://localhost:8000") for localstack
 dynamodb = boto3.resource("dynamodb", region_name=aws_region)
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
@@ -62,7 +62,7 @@ def handler(event, context):
         "ttl": int(datetime.datetime.now().timestamp()) + ttl_sec,
     }
     log.debug(train_job)
-    sqs_msg = sqs.send_message(QueueUrl=queueUrl, MessageBody=json.dumps(train_job))
+    sqs_msg = sqs.send_message(QueueUrl=queue_url, MessageBody=json.dumps(train_job))
     log.info(sqs_msg)
 
     job_table.put_item(Item=train_job)
