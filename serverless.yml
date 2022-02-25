@@ -235,27 +235,26 @@ functions:
                 mentor: true
                 query: true
   
-  # BLOCKED on cookie auth
-  # http_followup:
-  #   image:
-  #     name: train
-  #     command:
-  #       - followup.handler
-  #   memorySize: 8192
-  #   timeout: 120
-  #   events:
-  #     - http:
-  #         path: /me/followups/category/<category>
-  #         method: get
-  #         authorizer: 
-  #           name: authorizer_func
-  #           resultTtlInSeconds: 300
-  #           identitySource: method.request.header.Authorization
-  #           type: token
-  #         request:
-  #           parameters:
-  #             paths:
-  #               category: true
+  http_followup:
+    image:
+      name: train
+      command:
+        - followup.handler
+    memorySize: 8192
+    timeout: 120
+    events:
+      - http:
+          path: /me/followups/category/{category}
+          method: post
+          authorizer: 
+            name: authorizer_func
+            resultTtlInSeconds: 300
+            identitySource: method.request.header.Authorization
+            type: token
+          request:
+            parameters:
+              paths:
+                category: true
 
   http_training_data:
     handler: trainingdata.handler

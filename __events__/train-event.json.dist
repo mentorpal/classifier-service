@@ -19,7 +19,7 @@
         "extendedRequestId": "NlJo0GQ-IAMFy9g=",
         "requestTime": "15/Feb/2022:11:07:23 +0000",
         "path": "/train",
-        "accountId": "639093085655",
+        "accountId": "111111000655",
         "protocol": "HTTP/1.1",
         "stage": "test-invoke-stage",
         "domainPrefix": "testPrefix",

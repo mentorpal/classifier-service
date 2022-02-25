@@ -1,36 +1,3 @@
-# TODO
-
-- [ ] dns name for the api gateway plus base path mapping
-- [ ] monitoring & alerting on slow responses
-- [ ] train: validate request in api gateway
-- [ ] add logging to module.classifier to track execution
-- [x] provisioned concurrency for answer/predict only on prod
-- [x] run flake and black
-- [x] default gateway response 4xx 5xx
-- [x] authentication & authorization
-- [x] json logging
-- [x] github repo
-- [x] architecture diagram
-- [x] try to improve answer/predict performance (if-modified-since for models, cache classifiers..)
-- [x] cpu-only torch
-- [x] remove unused dependencies
-- [x] submit feature request for --squash
-- [blocked] implement full api set (blocked on followups / cookies)
-- [x] remove panda from fetch_training_data and use csv
-- [x] separate set of requirements for api lambdas (if they could be made small)
-- [x] sentry
-- [x] sample events and document how to invoke locally
-- [x] api call -> status reporting
-- [x] api call -> train job (upload res to s3)
-- [x] api call -> answer/predict job (fetch trained model from s3)
-- [x] jobs table ttl so we dont need to clean it up manually
-- [x] monitoring & alerting (sqs dlq sends to slack, lambda to sentry)
-- [x] infrastructure code
-- [x] api gateway
-- [x] LFS for /shared
-- [x] CORS headers
-- [x] secure headers
-
 # Intro
 
 This is a serverless service that can train mentors and answer questions:
@@ -170,6 +137,39 @@ To debug in VS Code, use this config:
   ]
 }
 ```
+
+# TODO
+
+- [ ] monitoring & alerting on slow responses
+- [ ] train: validate request in api gateway
+- [ ] add logging to module.classifier to track execution
+- [x] dns name for the api gateway plus base path mapping
+- [x] implement full api set
+- [x] provisioned concurrency for answer/predict only on prod
+- [x] run flake and black
+- [x] default gateway response 4xx 5xx
+- [x] authentication & authorization
+- [x] json logging
+- [x] github repo
+- [x] architecture diagram
+- [x] try to improve answer/predict performance (if-modified-since for models, cache classifiers..)
+- [x] cpu-only torch
+- [x] remove unused dependencies
+- [x] submit feature request for --squash
+- [x] remove panda from fetch_training_data and use csv
+- [x] separate set of requirements for api lambdas (if they could be made small)
+- [x] sentry
+- [x] sample events and document how to invoke locally
+- [x] api call -> status reporting
+- [x] api call -> train job (upload res to s3)
+- [x] api call -> answer/predict job (fetch trained model from s3)
+- [x] jobs table ttl so we dont need to clean it up manually
+- [x] monitoring & alerting (sqs dlq sends to slack, lambda to sentry)
+- [x] infrastructure code
+- [x] api gateway
+- [x] LFS for /shared
+- [x] CORS headers
+- [x] secure headers
 
 
 # Resources

@@ -114,10 +114,8 @@ query Mentor{
 } """
 
 
-def __auth_gql(
-    query: GQLQueryBody, cookies: Dict[str, str] = {}, headers: Dict[str, str] = {}
-) -> dict:
-    res = requests.post(GRAPHQL_ENDPOINT, json=query, cookies=cookies, headers=headers)
+def __auth_gql(query: GQLQueryBody, headers: Dict[str, str] = {}) -> dict:
+    res = requests.post(GRAPHQL_ENDPOINT, json=query, headers=headers)
     res.raise_for_status()
     return res.json()
 
@@ -206,11 +204,9 @@ def fetch_mentor_data(mentor: str) -> dict:
 
 
 def fetch_mentor_answers_and_name(
-    cookies: Dict[str, str] = {}, headers: Dict[str, str] = {}
+    headers: Dict[str, str] = {}
 ) -> Tuple[List[AnswerInfo], str]:
-    tdjson = __auth_gql(
-        query_mentor_answers_and_name(), cookies=cookies, headers=headers
-    )
+    tdjson = __auth_gql(query_mentor_answers_and_name(), headers=headers)
     if "errors" in tdjson:
         raise Exception(json.dumps(tdjson.get("errors")))
     data = tdjson["data"]["me"]["mentor"]
@@ -222,12 +218,8 @@ def fetch_mentor_answers_and_name(
     return all_answered, name
 
 
-def fetch_category(
-    category: str, cookies: Dict[str, str] = {}, headers: Dict[str, str] = {}
-) -> dict:
-    tdjson = __auth_gql(
-        query_category_answers(category), cookies=cookies, headers=headers
-    )
+def fetch_category(category: str, headers: Dict[str, str] = {}) -> dict:
+    tdjson = __auth_gql(query_category_answers(category), headers=headers)
     return tdjson.get("data") or {}
 
 

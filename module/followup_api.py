@@ -12,10 +12,9 @@ from .api import fetch_category, fetch_mentor_answers_and_name
 
 def generate_followups(
     category: str,
-    cookies: Dict[str, str] = {},
     headers: Dict[str, str] = {},
 ) -> List[FollowupQuestion]:
-    data = fetch_category(category, cookies=cookies, headers=headers)
+    data = fetch_category(category, headers=headers)
     me = data.get("me")
     if me is None:
         raise NameError("me not found")
@@ -27,7 +26,7 @@ def generate_followups(
         )
         for answer_data in category_answer
     ]
-    all_answered, name = fetch_mentor_answers_and_name(cookies=cookies, headers=headers)
+    all_answered, name = fetch_mentor_answers_and_name(headers=headers)
     followups = NamedEntities(category_answers, name).generate_questions(
         category_answers, all_answered
     )
