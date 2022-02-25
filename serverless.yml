@@ -20,8 +20,22 @@ variablesResolutionMode: 20210326
 plugins:
   - serverless-deployment-bucket
   - serverless-layers
+  - serverless-domain-manager
 
 custom:
+  customDomain:
+    domainName: api-${self:provider.stage}.mentorpal.org
+    basePath: 'classifier'
+    # certificateName: '*.mentorpal.org' didnt work
+    # certificateName: 'c6107db7-c2ef-4e85-a21f-bee7d1ac008a' didnt work either
+    stage: ${self:provider.stage}
+    endpointType: 'regional'
+    apiType: rest
+    createRoute53Record: true
+    securityPolicy: tls_1_2
+    # we might have multiple services, better to manually invoke `sls create_domain`
+    autoDomain: false
+
   stages:
     offline:
       LOG_LEVEL: 'trace'

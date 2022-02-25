@@ -63,6 +63,12 @@ There's no cicd pipeline yet, it must be deployed manually (using appropriate cr
 > **Requirements**: Docker. In order to build images locally and push them to ECR, you need to have Docker installed on your local machine. Please refer to [official documentation](https://docs.docker.com/get-docker/).
 > **Requirements**: npm. Run once `npm ci` to get all the tools.
 
+To create the domain name mapping run this command just once:
+
+```
+sls create_domain -s <prod|qa|dev>
+``
+
 In order to deploy the service, run the following command:
 
 ```
@@ -114,6 +120,15 @@ curl -H "Authorization: Bearer ey***" https://nuj9elv2we.execute-api.us-east-1.a
 curl -H "Authorization: Bearer ey***" https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/questions?mentor=6109d2a86e6fa01e5bf3219f&query=what+do+you+think+about+serverless
 curl -H "Authorization: Bearer ey***" https://nuj9elv2we.execute-api.us-east-1.amazonaws.com/dev/trainingdata/6109d2a86e6fa01e5bf3219f
 ```
+Or against the custom domain name:
+
+```bash
+curl -H "Authorization: Bearer ey***" https://api-dev.mentorpal.org/classifier/train --data-raw '{"mentor":"6109d2a86e6fa01e5bf3219f"}'
+curl -H "Authorization: Bearer ey***" https://api-dev.mentorpal.org/classifier/train/status/5e09da8f-d8cc-4d19-80d8-d94b28741a58
+curl -H "Authorization: Bearer ey***" https://api-dev.mentorpal.org/classifier/questions?mentor=6109d2a86e6fa01e5bf3219f&query=what+do+you+think+about+serverless
+curl -H "Authorization: Bearer ey***" https://api-dev.mentorpal.org/classifier/trainingdata/6109d2a86e6fa01e5bf3219f
+```
+
 
 ## Asynchronous triggers
 
