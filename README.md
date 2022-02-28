@@ -33,7 +33,7 @@ There's no cicd pipeline yet, it must be deployed manually (using appropriate cr
 To create the domain name mapping run this command just once:
 
 ```
-sls create_domain -s <prod|qa|dev>
+sls create_domain --stage <prod|qa|dev>
 ``
 
 In order to deploy the service, run the following command:

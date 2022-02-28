@@ -23,8 +23,12 @@ plugins:
   - serverless-domain-manager
 
 custom:
+  domain:
+    dev: api-dev.mentorpal.org
+    qa: api-qa.mentorpal.org
+    prod: api.mentorpal.org
   customDomain:
-    domainName: api-${self:provider.stage}.mentorpal.org
+    domainName: ${self:custom.domain.${opt:stage, 'dev'}}
     basePath: 'classifier'
     # certificateName: '*.mentorpal.org' didnt work
     # certificateName: 'c6107db7-c2ef-4e85-a21f-bee7d1ac008a' didnt work either
@@ -57,6 +61,7 @@ custom:
       API_SECRET: '${ssm:/mentorpal/v2/shared/api_secret}'
       JWT_SECRET: '${ssm:/mentorpal/v2/shared/jwt_secret}'
       ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn}
+      provisionedConcurrency: 1
     prod:
       LOG_LEVEL: 'info'
       IS_SENTRY_ENABLED: true
@@ -64,8 +69,8 @@ custom:
       provisionedConcurrency: 1
       # TODO
       # ALERT_SNS_ARN: ${ssm:/mentorpal/careerfair/shared/sns_alert_topic_arn}
-      # API_SECRET: '${ssm:/mentorpal/v2/shared/api_secret}'
-      # JWT_SECRET: '${ssm:/mentorpal/v2/shared/jwt_secret}'
+      # API_SECRET: '${ssm:/mentorpal/careerfair/shared/api_secret}'
+      # JWT_SECRET: '${ssm:/mentorpal/careerfair/shared/jwt_secret}'
 
   # serverless-layers requires a deployment bucket to be created before deploying this stack
   serverless-layers:
