@@ -180,3 +180,4 @@ To debug in VS Code, use this config:
  - https://www.serverless.com/framework/docs/providers/aws/events/apigateway
  - https://www.serverless.com/blog/container-support-for-lambda
  - https://dev.to/aws-builders/container-images-for-aws-lambda-with-python-286c
+ - https://aws.plainenglish.io/serverless-framework-setting-up-a-custom-domain-to-api-gateway-91064a598f1d
