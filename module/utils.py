@@ -6,7 +6,7 @@
 #
 
 import json
-from logger import get_logger
+from module.logger import get_logger
 from os import _Environ, environ
 from typing import Any, Dict, Union, List
 from pathlib import Path

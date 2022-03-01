@@ -66,5 +66,5 @@ dictConfig(
 )
 
 
-def get_logger(name):
+def get_logger(name='root'):
     return logging.getLogger(name)
