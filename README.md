@@ -4,9 +4,7 @@ This is a serverless service that can train mentors and answer questions:
 
 ![high level architecture](./mentor-classifier-service.drawio.png)
 
-The code was generated using the `aws-python-docker` template from the [Serverless framework](https://www.serverless.com/).
-
-For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/).
+It's a replacement for [mentor-classifier](https://github.com/mentorpal/mentor-classifier).
 
 # Torch
 
