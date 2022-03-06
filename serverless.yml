@@ -46,31 +46,29 @@ custom:
       GRAPHQL_ENDPOINT: 'http://127.0.0.1:3001/graphql'
       IS_SENTRY_ENABLED: false
     dev:
-      # TODO cors
       LOG_LEVEL: 'trace'
       IS_SENTRY_ENABLED: false
       # v2 is hardcoded, we could use fallback stages instead
       GRAPHQL_ENDPOINT: 'https://v2.mentorpal.org/graphql'
-      API_SECRET: '${ssm:/mentorpal/v2/shared/api_secret}'
-      JWT_SECRET: '${ssm:/mentorpal/v2/shared/jwt_secret}'
-      ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn}
+      API_SECRET: ${ssm:/mentorpal/v2/shared/api_secret, ''}
+      JWT_SECRET: ${ssm:/mentorpal/v2/shared/jwt_secret, ''}
+      ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn, ''}
     qa:
       LOG_LEVEL: 'debug'
       IS_SENTRY_ENABLED: true
       GRAPHQL_ENDPOINT: 'https://v2.mentorpal.org/graphql'
-      API_SECRET: '${ssm:/mentorpal/v2/shared/api_secret}'
-      JWT_SECRET: '${ssm:/mentorpal/v2/shared/jwt_secret}'
-      ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn}
+      API_SECRET: ${ssm:/mentorpal/v2/shared/api_secret, ''}
+      JWT_SECRET: ${ssm:/mentorpal/v2/shared/jwt_secret, ''}
+      ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn, ''}
       provisionedConcurrency: 1
     prod:
       LOG_LEVEL: 'info'
       IS_SENTRY_ENABLED: true
       GRAPHQL_ENDPOINT: 'https://careerfair.mentorpal.org/graphql'
+      ALERT_SNS_ARN: ${ssm:/mentorpal/cf/shared/sns_alert_topic_arn, ''}
+      API_SECRET: ${ssm:/mentorpal/cf/shared/api_secret, ''}
+      JWT_SECRET: ${ssm:/mentorpal/cf/shared/jwt_secret, ''}
       provisionedConcurrency: 1
-      # TODO
-      # ALERT_SNS_ARN: ${ssm:/mentorpal/careerfair/shared/sns_alert_topic_arn}
-      # API_SECRET: '${ssm:/mentorpal/careerfair/shared/api_secret}'
-      # JWT_SECRET: '${ssm:/mentorpal/careerfair/shared/jwt_secret}'
 
   # serverless-layers requires a deployment bucket to be created before deploying this stack
   serverless-layers:
@@ -128,7 +126,7 @@ provider:
       level: INFO  # INFO or ERROR
       # Log full requests/responses for execution logging (default: true)
       fullExecutionData: false
-  region: us-east-1
+  region: ${opt:region, 'us-east-1'}
   architecture: x86_64 # in case deploy is run on a different architecture (apple arm...)
   environment:
     STAGE: ${self:provider.stage}
