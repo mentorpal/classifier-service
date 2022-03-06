@@ -20,7 +20,7 @@ ttl_sec = os.environ.get("TTL_SEC", (60 * 60 * 24) * 20)  # 20 days
 JOBS_TABLE_NAME = require_env("JOBS_TABLE_NAME")
 log.info(f"using table {JOBS_TABLE_NAME}")
 JOBS_SQS_NAME = require_env("JOBS_SQS_NAME")
-aws_region = os.environ.get("AWS_REGION", "us-east-1")
+aws_region = os.environ.get("REGION", "us-east-1")
 sqs = boto3.client("sqs", region_name=aws_region)
 queue_url = sqs.get_queue_url(QueueName=JOBS_SQS_NAME)["QueueUrl"]
 log.info(f"using queue {queue_url}")

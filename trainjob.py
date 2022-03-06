@@ -22,7 +22,8 @@ log.info(f"using table {JOBS_TABLE_NAME}")
 MODELS_BUCKET = require_env("MODELS_BUCKET")
 log.info(f"bucket: {MODELS_BUCKET}")
 s3 = boto3.client("s3")
-dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
+aws_region = os.environ.get("REGION", "us-east-1")
+dynamodb = boto3.resource("dynamodb", region_name=aws_region)
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
 MODELS_DIR = "/tmp/models"
 

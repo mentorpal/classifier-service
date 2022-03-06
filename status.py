@@ -6,6 +6,7 @@
 #
 import json
 import boto3
+import os
 from module.utils import load_sentry, create_json_response, require_env, is_authorized
 from module.logger import get_logger
 
@@ -13,7 +14,8 @@ load_sentry()
 log = get_logger("status")
 JOBS_TABLE_NAME = require_env("JOBS_TABLE_NAME")
 log.info(f"using table {JOBS_TABLE_NAME}")
-dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
+aws_region = os.environ.get("REGION", "us-east-1")
+dynamodb = boto3.resource("dynamodb", region_name=aws_region)
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
 
 

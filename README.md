@@ -141,6 +141,7 @@ To debug in VS Code, use this config:
 
 # TODO
 
+- [ ] Functions http_answer and followup have timeout of 120 seconds, however, they are attached to API Gateway so it's automatically limited to 30 seconds.
 - [ ] monitoring & alerting on slow responses
 - [ ] train: validate request in api gateway
 - [ ] add logging to module.classifier to track execution

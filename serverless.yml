@@ -140,6 +140,7 @@ provider:
     MODELS_BUCKET: classifier-models-${self:provider.stage}
     JOBS_TABLE_NAME: classifier-jobs-${self:provider.stage}
     JOBS_SQS_NAME: classifier-jobs-${self:provider.stage}
+    REGION: ${self:provider.region}
   iam:
     role:
       statements:
