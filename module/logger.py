@@ -39,8 +39,8 @@ class JSONFormatter(logging.Formatter):
         return json.dumps(payload)
 
 
-log_level = os.environ.get("LOG_LEVEL_CLASSIFIER_SERVICE", "DEBUG")
-log_format = os.environ.get("LOG_FORMAT_CLASSIFIER_SERVICE", "json")
+log_level = os.environ.get("LOG_LEVEL", "DEBUG")
+log_format = os.environ.get("LOG_FORMAT", "json")
 
 dictConfig(
     {
@@ -66,5 +66,5 @@ dictConfig(
 )
 
 
-def get_logger(name='root'):
+def get_logger(name="root"):
     return logging.getLogger(name)
