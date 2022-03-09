@@ -29,6 +29,12 @@ MODELS_DIR = "/tmp/models"
 
 classifier_dao = Dao(SHARED, MODELS_DIR)
 
+def make_response(status, body, event):
+    headers = {}
+    append_cors_headers(headers, event)
+    append_secure_headers(headers)
+    response = {"statusCode": status, "body": json.dumps(body), "headers": headers}
+    return response
 
 def handler(event, context):
     log.debug(json.dumps(event))
@@ -67,7 +73,14 @@ def handler(event, context):
     else:
         log.debug(f"fetching {model_file} from s3")
         os.makedirs(os.path.dirname(model_file), exist_ok=True)
-        s3.download_file(MODELS_BUCKET, relative_path, model_file)
+        try:
+            s3.download_file(MODELS_BUCKET, relative_path, model_file)
+        except botocore.exceptions.ClientError as e:
+            if e.response["Error"]["Code"] != "404":
+                log.error(e)
+                raise e
+            body = {"message": f"No models found for mentor {mentor}."}
+            return make_response(404, body, event)
         log.debug("model file download completed")
 
     result = classifier_dao.find_classifier(mentor).evaluate(question)
@@ -81,19 +94,16 @@ def handler(event, context):
         "feedback_id": result.feedback_id,
         "classifier": "",
     }
-    headers = {}
-    append_cors_headers(headers, event)
-    append_secure_headers(headers)
-    response = {"statusCode": 200, "body": json.dumps(body), "headers": headers}
+    response = make_response(200, body, event)
     log.debug(json.dumps(response))
     return response
 
 
 # # for local debugging:
-# if __name__ == '__main__':
-#     with open('__events__/predict-event.json.dist') as f:
-#         event = json.loads(f.read())
-#         handler(event, {}) # warmup
+if __name__ == '__main__':
+    with open('__events__/predict-event.json.dist') as f:
+        event = json.loads(f.read())
+        handler(event, {}) # warmup
 #         import cProfile
 #         pr = cProfile.Profile()
 #         pr.enable()
