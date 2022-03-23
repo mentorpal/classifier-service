@@ -12,15 +12,12 @@ import requests
 from typing import Dict, List, TypedDict, Tuple
 from .types import AnswerInfo
 
+OFF_TOPIC_THRESHOLD_DEFAULT = -0.631
+
 
 class GQLQueryBody(TypedDict):
     query: str
     variables: dict
-
-
-OFF_TOPIC_THRESHOLD_DEFAULT = (
-    -0.55
-)  # todo: this should probably be specific to the classifier arch?
 
 
 def get_off_topic_threshold() -> float:
