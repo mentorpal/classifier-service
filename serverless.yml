@@ -83,7 +83,6 @@ custom:
           - python3.8
         functions:
           - http_train
-          - http_answer
           - http_train_status
           - http_training_data
           - authorizer_func
@@ -103,11 +102,15 @@ provider:
     PROJECT: ${self:service}-${self:provider.stage}
     REPOSITORY: mentor-classifier-service
   ecr:
-    # In this section you can define images that will be built locally and uploaded to ECR
+    # define images that will be built locally and uploaded to ECR
     images:
       train:
         path: ./
         file: Dockerfile
+      predict:
+        path: ./
+        file: Dockerfile.predict
+
   endpointType: regional
   apiGateway:
     minimumCompressionSize: 1024
@@ -115,7 +118,6 @@ provider:
       throttle:
         burstLimit: 100
         rateLimit: 10
-
   tracing:
     lambda: true
     apiGateway: true
@@ -228,10 +230,13 @@ functions:
             Fn::GetAtt: [TrainQueue, Arn]
           batchSize: 1
   http_answer:
-    handler: predict.handler
+    image:
+      name: predict
+      command:
+        - predict.handler
     memorySize: 8192
     timeout: 120
-    provisionedConcurrency: ${self:custom.stages.${self:provider.stage}.provisionedConcurrency, null}
+    # provisionedConcurrency: ${self:custom.stages.${self:provider.stage}.provisionedConcurrency, null}
     events:
       - http:
           path: /questions
