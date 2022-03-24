@@ -44,12 +44,14 @@ custom:
     offline:
       LOG_LEVEL: 'trace'
       GRAPHQL_ENDPOINT: 'http://127.0.0.1:3001/graphql'
+      SBERT_ENDPOINT: 'http://127.0.0.1:5566/v1'
       IS_SENTRY_ENABLED: false
     dev:
       LOG_LEVEL: 'trace'
       IS_SENTRY_ENABLED: false
       # v2 is hardcoded, we could use fallback stages instead
       GRAPHQL_ENDPOINT: 'https://v2.mentorpal.org/graphql'
+      SBERT_ENDPOINT: 'https://sbert-qa.mentorpal.org/v1'
       API_SECRET: ${ssm:/mentorpal/v2/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/v2/shared/jwt_secret, ''}
       ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn, ''}
@@ -57,6 +59,7 @@ custom:
       LOG_LEVEL: 'debug'
       IS_SENTRY_ENABLED: true
       GRAPHQL_ENDPOINT: 'https://v2.mentorpal.org/graphql'
+      SBERT_ENDPOINT: 'https://sbert-qa.mentorpal.org/v1'
       API_SECRET: ${ssm:/mentorpal/v2/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/v2/shared/jwt_secret, ''}
       ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn, ''}
@@ -65,6 +68,7 @@ custom:
       LOG_LEVEL: 'info'
       IS_SENTRY_ENABLED: true
       GRAPHQL_ENDPOINT: 'https://careerfair.mentorpal.org/graphql'
+      SBERT_ENDPOINT: 'https://sbert.mentorpal.org/v1'
       ALERT_SNS_ARN: ${ssm:/mentorpal/cf/shared/sns_alert_topic_arn, ''}
       API_SECRET: ${ssm:/mentorpal/cf/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/cf/shared/jwt_secret, ''}
@@ -79,6 +83,7 @@ custom:
           - python3.8
         functions:
           - http_train
+          - http_answer
           - http_train_status
           - http_training_data
           - authorizer_func
@@ -132,6 +137,7 @@ provider:
     STAGE: ${self:provider.stage}
     PYTHON_ENV: careerfair-${self:provider.stage}
     GRAPHQL_ENDPOINT: ${self:custom.stages.${self:provider.stage}.GRAPHQL_ENDPOINT}
+    SBERT_ENDPOINT: ${self:custom.stages.${self:provider.stage}.SBERT_ENDPOINT}
     API_SECRET: ${self:custom.stages.${self:provider.stage}.API_SECRET}
     JWT_SECRET: ${self:custom.stages.${self:provider.stage}.JWT_SECRET}
     IS_SENTRY_ENABLED: ${self:custom.stages.${self:provider.stage}.IS_SENTRY_ENABLED}
@@ -222,10 +228,7 @@ functions:
             Fn::GetAtt: [TrainQueue, Arn]
           batchSize: 1
   http_answer:
-    image:
-      name: train
-      command:
-        - predict.handler
+    handler: predict.handler
     memorySize: 8192
     timeout: 120
     provisionedConcurrency: ${self:custom.stages.${self:provider.stage}.provisionedConcurrency, null}

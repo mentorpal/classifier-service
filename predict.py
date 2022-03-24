@@ -100,10 +100,10 @@ def handler(event, context):
 
 
 # # for local debugging:
-if __name__ == '__main__':
-    with open('__events__/predict-event.json.dist') as f:
-        event = json.loads(f.read())
-        handler(event, {}) # warmup
+# if __name__ == '__main__':
+#     with open('__events__/predict-event.json.dist') as f:
+#         event = json.loads(f.read())
+#         handler(event, {}) # warmup
 #         import cProfile
 #         pr = cProfile.Profile()
 #         pr.enable()

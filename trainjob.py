@@ -75,7 +75,10 @@ def update_status(id, status):
 
 # # for local debugging:
 # if __name__ == '__main__':
-#     handler({}, {})
+#     classifier = TransformersQuestionClassifierTraining(
+#         mentor='6109d2a86e6fa01e5bf3219f', shared_root='./shared', output_dir='./models'
+#     )
+#     classifier.train()
 # if __name__ == '__main__':
 #     with open('__events__/trainjob-event.json.dist') as f:
 #         event = json.loads(f.read())

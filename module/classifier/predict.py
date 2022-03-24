@@ -7,6 +7,7 @@
 import logging
 import random
 import joblib
+import numpy
 from typing import Union, Tuple, List
 from module.classifier import (
     mentor_model_path,
@@ -14,7 +15,7 @@ from module.classifier import (
     QuestionClassiferPredictionResult,
     Media,
 )
-from module.api import create_user_question, OFF_TOPIC_THRESHOLD_DEFAULT
+from module.api import create_user_question, OFF_TOPIC_THRESHOLD_DEFAULT, sbert_encode
 from module.mentor import Mentor
 from module.utils import file_last_updated_at, sanitize_string
 
@@ -22,7 +23,7 @@ AnswerIdTextAndMedia = Tuple[str, str, list]
 
 
 class TransformersQuestionClassifierPrediction:
-    def __init__(self, mentor: Union[str, Mentor], transformer, data_path: str):
+    def __init__(self, mentor: Union[str, Mentor], data_path: str):
         if isinstance(mentor, str):
             logging.info("loading mentor id {}...".format(mentor))
             mentor = Mentor(mentor)
@@ -35,7 +36,6 @@ class TransformersQuestionClassifierPrediction:
         self.model_file = mentor_model_path(
             data_path, mentor.id, ARCH_LR_TRANSFORMER, "model.pkl"
         )
-        self.transformer = transformer
         self.model = self.__load_model()
 
     def evaluate(
@@ -61,7 +61,8 @@ class TransformersQuestionClassifierPrediction:
                 return QuestionClassiferPredictionResult(
                     answer_id, answer, answer_media, 1.0, feedback_id
                 )
-        embedded_question = self.transformer.get_embeddings(question)
+        encoding_json = sbert_encode(question)
+        embedded_question = numpy.array(encoding_json["encoding"])
         answer_id, answer, answer_media, highest_confidence = self.__get_prediction(
             embedded_question
         )

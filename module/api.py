@@ -13,7 +13,9 @@ from typing import Dict, List, TypedDict, Tuple
 from .types import AnswerInfo
 
 OFF_TOPIC_THRESHOLD_DEFAULT = -0.631
-
+SBERT_ENDPOINT = os.environ.get("SBERT_ENDPOINT")
+GRAPHQL_ENDPOINT = os.environ.get("GRAPHQL_ENDPOINT")
+API_SECRET = os.environ.get("API_SECRET")
 
 class GQLQueryBody(TypedDict):
     query: str
@@ -31,7 +33,13 @@ def get_off_topic_threshold() -> float:
         return OFF_TOPIC_THRESHOLD_DEFAULT
 
 
-GRAPHQL_ENDPOINT = os.environ.get("GRAPHQL_ENDPOINT") or "http://graphql/graphql"
+def sbert_encode(question: str):
+    headers = {"Authorization": f"Bearer {API_SECRET}"}
+    res = requests.get(f"{SBERT_ENDPOINT}/encode", params={"query": question}, headers=headers)
+    res.raise_for_status()
+    return res.json()
+
+
 GQL_QUERY_MENTOR = """
 query Mentor($id: ID!) {
     mentor(id: $id) {
