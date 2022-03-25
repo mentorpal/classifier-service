@@ -89,18 +89,20 @@ custom:
 
 provider:
   name: aws
+  region: ${opt:region, 'us-east-1'}
   stage: ${opt:stage, 'dev'} # stage is dev unless otherwise specified with --stage flag
-  lambdaHashingVersion: 20201221
   runtime: python3.8
+  lambdaHashingVersion: 20201221
+  stackTags:
+    ENVIRONMENT: ${self:provider.stage}
+    PROJECT: ${self:service}-${self:provider.stage}
+    REPOSITORY: mentor-classifier-service
   deploymentBucket:
     name: '${self:service}-sls-deploy-${self:provider.stage}'
     blockPublicAccess: true
     serverSideEncryption: AES256
     versioning: false
-  stackTags:
-    ENVIRONMENT: ${self:provider.stage}
-    PROJECT: ${self:service}-${self:provider.stage}
-    REPOSITORY: mentor-classifier-service
+  architecture: x86_64 # since we build on x86 and have native modules   
   ecr:
     # define images that will be built locally and uploaded to ECR
     images:
@@ -133,8 +135,6 @@ provider:
       level: INFO  # INFO or ERROR
       # Log full requests/responses for execution logging (default: true)
       fullExecutionData: false
-  region: ${opt:region, 'us-east-1'}
-  architecture: x86_64 # in case deploy is run on a different architecture (apple arm...)
   environment:
     STAGE: ${self:provider.stage}
     PYTHON_ENV: careerfair-${self:provider.stage}
@@ -234,7 +234,7 @@ functions:
       name: predict
       command:
         - predict.handler
-    memorySize: 1024
+    memorySize: 2048
     timeout: 30
     # provisionedConcurrency: ${self:custom.stages.${self:provider.stage}.provisionedConcurrency, null}
     events:
