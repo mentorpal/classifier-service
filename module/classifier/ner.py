@@ -113,7 +113,7 @@ class NamedEntities:
         self.model: Language
         self.transformer: SentenceTransformer
         self.pop_culture: Set[str] = set()
-        self.answers = Tensor
+        self.answers: Tensor
         self.load(answers, mentor_name, shared_root or get_shared_root())
 
     def load(
@@ -179,10 +179,10 @@ class NamedEntities:
         text_list = [answer.answer_text for answer in answers]
         tensors = []
         for answer in text_list:
-            for word in answer:
-                if word in STOPWORDS:
+            for word in answer.split():
+                if word.lower() in STOPWORDS:
                     answer.replace(word, " ")
-            tensors.append(self.transformer.encode(answer, convert_to_tensor=True))
+            tensors.append(self.transformer.encode(answer, convert_to_tensor=True, show_progress_bar=False))
         length = len(tensors)
         tensor = tensors[0]
         for i in range(1, length):
@@ -192,13 +192,13 @@ class NamedEntities:
     def answer_blob(self, answers: List[AnswerInfo]) -> Tensor:
         text_list = [answer.answer_text for answer in answers]
         answer_text = " ".join(text_list)
-        for word in answer_text:
-            if word in STOPWORDS:
-                answer_text.replace(word, " ")
-        return self.transformer.encode(answer_text, convert_to_tensor=True)
+        for word in answer_text.split():
+            if word.lower() in STOPWORDS:
+                answer_text.replace(word, " ")                
+        return self.transformer.encode(answer_text, convert_to_tensor=True, show_progress_bar=False)
 
     def ent_sim(self, blob: Tensor, entity: EntityObject):
-        ent_tensor = self.transformer.encode(entity.text, convert_to_tensor=True)
+        ent_tensor = self.transformer.encode(entity.text, convert_to_tensor=True, show_progress_bar=False)
         weight = float(util.pytorch_cos_sim(blob, ent_tensor))
         return weight
 
@@ -229,7 +229,7 @@ class NamedEntities:
                         break
                 if ent.verb == "":
                     ent.verb = verbs[0].text
-                verb_tensor = self.transformer.encode(ent.verb, convert_to_tensor=True)
+                verb_tensor = self.transformer.encode(ent.verb, convert_to_tensor=True, show_progress_bar=False)
                 ent.weight = ent.weight + float(util.pytorch_cos_sim(blob, verb_tensor))
         return entity_vals
 
@@ -303,7 +303,7 @@ class NamedEntities:
         return followups
 
     def generate_questions(
-        self, category_answers: List[AnswerInfo], all_answered: List[AnswerInfo]
+        self, all_answered: List[AnswerInfo]
     ) -> List[FollowupQuestion]:
         followups: Dict[str, FollowupQuestion] = {}
         self.people = self.clean_ents(self.people, all_answered, "person")

@@ -1,6 +1,6 @@
 {
     "resource": "/me/followups/category/{category}",
-    "path": "/classifier/me/followups/category/a335c6df-da3e-4972-b0c3-c822f8144470",
+    "path": "/classifier/me/followups/category/d9695b31-ad12-4fc9-949e-58103659b761",
     "httpMethod": "POST",
     "headers": {
         "Authorization": "Bearer eyJhbGci***redacted"
@@ -9,20 +9,20 @@
     "queryStringParameters": null,
     "multiValueQueryStringParameters": null,
     "pathParameters": {
-        "category": "a335c6df-da3e-4972-b0c3-c822f8144470"
+        "category": "d9695b31-ad12-4fc9-949e-58103659b761"
     },
     "stageVariables": null,
     "requestContext": {
         "resourceId": "abcabc",
         "authorizer": {
             "principalId": "apigateway.amazonaws.com",
-            "token": "{\"id\": \"6196af5e068d43dc686194ed\", \"role\": \"ADMIN\", \"mentorIds\": [\"6196af5e068d43dc686194f8\"], \"expirationDate\": \"2022-05-23T10:50:40.099Z\", \"iat\": 1645527040, \"exp\": 1653303040}"
+            "token": "{\"id\": \"61292a5fdaded52a65409d1a\", \"role\": \"ADMIN\", \"mentorIds\": [\"61292a5fdaded52a65409d25\"], \"expirationDate\": \"2022-05-23T10:50:40.099Z\", \"iat\": 1645527040, \"exp\": 1653303040}"
         },                
         "resourcePath": "/me/followups/category/{category}",
         "httpMethod": "POST",
         "extendedRequestId": "NlJo0GQ-IAMFy9g=",
         "requestTime": "24/Feb/2022:15:24:39 +0000",
-        "path": "/classifier/me/followups/category/a335c6df-da3e-4972-b0c3-c822f8144470",
+        "path": "/classifier/me/followups/category/d9695b31-ad12-4fc9-949e-58103659b761",
         "accountId": "111111000655",
         "protocol": "HTTP/1.1",
         "stage": "dev",

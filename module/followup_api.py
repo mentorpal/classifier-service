@@ -17,7 +17,7 @@ def generate_followups(
     data = fetch_category(category, headers=headers)
     me = data.get("me")
     if me is None:
-        raise NameError("me not found")
+        raise Exception("failed to fetch category answers")
     category_answer = me.get("categoryAnswers", [])
     category_answers = [
         AnswerInfo(
@@ -28,6 +28,6 @@ def generate_followups(
     ]
     all_answered, name = fetch_mentor_answers_and_name(headers=headers)
     followups = NamedEntities(category_answers, name).generate_questions(
-        category_answers, all_answered
+        all_answered
     )
     return followups
