@@ -10,7 +10,3 @@ COPY requirements-predict.txt ./requirements.txt
 RUN pip install --no-cache -r requirements.txt
 COPY predict.py ./
 COPY module module
-
-# sls does not support docker build --squash, i filed an issue:
-# https://github.com/serverless/serverless/issues/10712
-RUN pip install --no-cache-dir -r requirements.txt
