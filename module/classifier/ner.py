@@ -5,9 +5,9 @@
 # The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 #
 
-from dataclasses import dataclass
-from module.logger import get_logger
+import csv
 from os import path, environ
+from dataclasses import dataclass
 from string import Template
 from typing import List, Dict, Set
 from spacy.matcher import PhraseMatcher
@@ -15,18 +15,12 @@ from spacy import Language
 from spacy.tokens.span import Span
 from spacy.tokens import Doc
 from spacy.symbols import VERB, nsubj
-
 from module.classifier.spacy_model import find_or_load_spacy
 from module.types import AnswerInfo
 from module.utils import get_shared_root, props_to_bool
-
-from sentence_transformers import util, SentenceTransformer
-import torch
-from torch import Tensor
-from module.classifier.sentence_transformer import find_or_load_sentence_transformer
-from module.classifier.stopwords import STOPWORDS
-import csv
-from .constants import AVERAGE_EMBEDDING, SEMANTIC_DEDUP
+from module.logger import get_logger
+from module.api import sbert_cos_sim_weight, sbert_paraphrase
+from .constants import SEMANTIC_DEDUP
 
 log = get_logger("ner")
 
@@ -90,9 +84,6 @@ class EntityObject:
     verb: str = ""
 
 
-def answer_average_embedding_enabled() -> bool:
-    return props_to_bool(AVERAGE_EMBEDDING, environ)
-
 
 def semantic_deduplication_enabled() -> bool:
     return props_to_bool(SEMANTIC_DEDUP, environ)
@@ -104,16 +95,14 @@ class NamedEntities:
         answers: List[AnswerInfo],
         mentor_name: str,
         shared_root: str = "",
-        test: bool = False,
     ):
         self.people: Dict[str, EntityObject] = {}
         self.places: Dict[str, EntityObject] = {}
         self.acronyms: Dict[str, EntityObject] = {}
         self.family: Dict[str, EntityObject] = {}
         self.model: Language
-        self.transformer: SentenceTransformer
         self.pop_culture: Set[str] = set()
-        self.answers: Tensor
+        self.answers_text: str
         self.load(answers, mentor_name, shared_root or get_shared_root())
 
     def load(
@@ -124,14 +113,9 @@ class NamedEntities:
         test: bool = False,
     ):
         self.model = find_or_load_spacy(path.join(shared_root, "spacy-model"))
-        self.transformer = find_or_load_sentence_transformer(
-            path.join(shared_root, "sentence-transformer")
-        )
         self.load_pop_culture(shared_root, test)
-        if answer_average_embedding_enabled():
-            self.answers = self.answer_blob_average(answers)
-        else:
-            self.answers = self.answer_blob(answers)
+        self.answers_text = " ".join([answer.answer_text for answer in answers])
+
         matcher = PhraseMatcher(self.model.vocab)
         terms = FAMILY_MEMBERS.keys()
         patterns = [self.model.make_doc(text) for text in terms]
@@ -175,43 +159,18 @@ class NamedEntities:
             for row in csv_reader:
                 self.pop_culture.add(row[0])
 
-    def answer_blob_average(self, answers: List[AnswerInfo]) -> Tensor:
-        text_list = [answer.answer_text for answer in answers]
-        tensors = []
-        for answer in text_list:
-            for word in answer.split():
-                if word.lower() in STOPWORDS:
-                    answer.replace(word, " ")
-            tensors.append(self.transformer.encode(answer, convert_to_tensor=True, show_progress_bar=False))
-        length = len(tensors)
-        tensor = tensors[0]
-        for i in range(1, length):
-            tensor.add(tensors[i])
-        return torch.div(tensor, length)
-
-    def answer_blob(self, answers: List[AnswerInfo]) -> Tensor:
-        text_list = [answer.answer_text for answer in answers]
-        answer_text = " ".join(text_list)
-        for word in answer_text.split():
-            if word.lower() in STOPWORDS:
-                answer_text.replace(word, " ")                
-        return self.transformer.encode(answer_text, convert_to_tensor=True, show_progress_bar=False)
-
-    def ent_sim(self, blob: Tensor, entity: EntityObject):
-        ent_tensor = self.transformer.encode(entity.text, convert_to_tensor=True, show_progress_bar=False)
-        weight = float(util.pytorch_cos_sim(blob, ent_tensor))
+    def ent_sim(self, entity: EntityObject):
+        weight = sbert_cos_sim_weight(self.answers_text, entity.text)
         return weight
 
     def check_relevance(
         self,
         entity_vals: Dict[str, EntityObject],
-        entity_type: str,
         i_weight: float = I_WEIGHT,
     ) -> Dict[str, EntityObject]:
-        blob = self.answers
         for entity in entity_vals.keys():
             ent = entity_vals[entity]
-            self.check_pop_culture(ent, blob)
+            self.check_pop_culture(ent)
             verbs = [token for token in ent.doc if token.pos == VERB]
             if verbs == []:
                 ent.weight = -1
@@ -224,13 +183,12 @@ class NamedEntities:
                         ent.verb = token.text
                         for child in token.children:
                             if child.dep == nsubj and child.text == "I":
-                                ent.weight = ent.weight + I_WEIGHT
+                                ent.weight = ent.weight + i_weight
                     if token == token.head:
                         break
                 if ent.verb == "":
                     ent.verb = verbs[0].text
-                verb_tensor = self.transformer.encode(ent.verb, convert_to_tensor=True, show_progress_bar=False)
-                ent.weight = ent.weight + float(util.pytorch_cos_sim(blob, verb_tensor))
+                ent.weight = ent.weight + sbert_cos_sim_weight(self.answers_text, ent.verb)
         return entity_vals
 
     def add_followups(
@@ -260,15 +218,14 @@ class NamedEntities:
         self,
         entity_vals: Dict[str, EntityObject],
         all_answered: List[AnswerInfo],
-        entity_type: str,
     ) -> Dict[str, EntityObject]:
         deduped = self.remove_duplicates(entity_vals, all_answered)
-        relevant = self.check_relevance(deduped, entity_type)
+        relevant = self.check_relevance(deduped)
         return relevant
 
-    def check_pop_culture(self, ent: EntityObject, blob: Tensor) -> None:
+    def check_pop_culture(self, ent: EntityObject) -> None:
         lemma = ent.span.lemma_
-        sim = self.ent_sim(blob, ent)
+        sim = self.ent_sim(ent)
         if lemma in self.pop_culture:
             ent.weight = ent.weight - (1 - sim)
 
@@ -292,7 +249,7 @@ class NamedEntities:
         followups_text = [followups[followup].question for followup in followups.keys()]
         answered_text = [question.question_text for question in answered]
         questions = answered_text + followups_text
-        paraphrases = util.paraphrase_mining(self.transformer, questions)
+        paraphrases = sbert_paraphrase(questions)
         for paraphrase in paraphrases:
             score, i, j = paraphrase
             if score > similarity_threshold:
@@ -306,10 +263,10 @@ class NamedEntities:
         self, all_answered: List[AnswerInfo]
     ) -> List[FollowupQuestion]:
         followups: Dict[str, FollowupQuestion] = {}
-        self.people = self.clean_ents(self.people, all_answered, "person")
-        self.places = self.clean_ents(self.places, all_answered, "place")
-        self.acronyms = self.clean_ents(self.acronyms, all_answered, "acronym")
-        self.family = self.clean_ents(self.family, all_answered, "family")
+        self.people = self.clean_ents(self.people, all_answered)
+        self.places = self.clean_ents(self.places, all_answered)
+        self.acronyms = self.clean_ents(self.acronyms, all_answered)
+        self.family = self.clean_ents(self.family, all_answered)
         self.add_followups("family", self.family, followups)
         self.add_followups("person", self.people, followups)
         self.add_followups("place", self.places, followups)

@@ -112,6 +112,9 @@ provider:
       predict:
         path: ./
         file: Dockerfile.predict
+      followup:
+        path: ./
+        file: Dockerfile.followup
 
   endpointType: regional
   apiGateway:
@@ -249,11 +252,11 @@ functions:
   
   http_followup:
     image:
-      name: train
+      name: followup
       command:
         - followup.handler
-    memorySize: 8192
-    timeout: 120
+    memorySize: 1024
+    timeout: 30
     events:
       - http:
           path: /me/followups/category/{category}

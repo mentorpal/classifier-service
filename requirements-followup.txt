@@ -1,0 +1,2 @@
+sentry-sdk==1.5.4
+spacy==3.1.0

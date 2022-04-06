@@ -1,0 +1,14 @@
+FROM public.ecr.aws/lambda/python:3.8
+
+WORKDIR /app
+
+ENV PYTHONPATH /app
+ENV PATH="/app/bin:${PATH}"
+
+COPY shared/spacy-model shared/spacy-model
+COPY shared/pop_culture.csv shared/pop_culture.csv
+COPY requirements-followup.txt ./requirements.txt
+# RUN python -m pip install --upgrade pip
+RUN pip install --no-cache -r requirements.txt
+COPY followup.py ./
+COPY module module

@@ -11,6 +11,7 @@ from io import StringIO
 import requests
 from typing import Dict, List, TypedDict, Tuple
 from .types import AnswerInfo
+import logging
 
 OFF_TOPIC_THRESHOLD_DEFAULT = -0.631
 SBERT_ENDPOINT = os.environ.get("SBERT_ENDPOINT")
@@ -38,6 +39,22 @@ def sbert_encode(question: str):
     res = requests.get(f"{SBERT_ENDPOINT}/encode", params={"query": question}, headers=headers)
     res.raise_for_status()
     return res.json()
+
+
+def sbert_cos_sim_weight(a: str, b:str) -> float:
+    headers = {"Authorization": f"Bearer {API_SECRET}"}
+    res = requests.post(f"{SBERT_ENDPOINT}/encode/cos_sim_weight", json={"a": a, "b": b}, headers=headers)
+    res.raise_for_status()
+    logging.debug(res.json())
+    return res.json()["cos_sim_weight"]
+
+
+def sbert_paraphrase(sentences: list) -> float:
+    headers = {"Authorization": f"Bearer {API_SECRET}"}
+    res = requests.post(f"{SBERT_ENDPOINT}/paraphrase", json={"sentences": sentences}, headers=headers)
+    res.raise_for_status()
+    logging.debug(res.json())
+    return res.json()["pairs"]
 
 
 GQL_QUERY_MENTOR = """

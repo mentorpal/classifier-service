@@ -139,13 +139,13 @@ To debug in VS Code, use this config:
 
 # TODO
 
-- [ ] refactor followup to use the sberts service (need to figure out how to serialize Tensors)
 - [ ] cicd pipeline
-- [ ] monitoring & alerting on slow responses
-- [ ] train: validate request in api gateway
-- [ ] add logging to module.classifier to track execution
 - [ ] unit tests from beanstalk classifier
+- [ ] monitoring & alerting on slow responses
+- [ ] add logging to module.classifier to track execution
 - [ ] integration tests
+- [ ] train: validate request in api gateway
+- [x] refactor followup to use the sberts service
 - [x] pull out berts into a service to improve cold starts (Functions http_answer and followup have timeout of 120 seconds, however, they are attached to API Gateway so it's automatically limited to 30 seconds.)
 - [x] dns name for the api gateway plus base path mapping
 - [x] implement full api set
