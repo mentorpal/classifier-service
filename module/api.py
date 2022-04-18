@@ -18,6 +18,7 @@ SBERT_ENDPOINT = os.environ.get("SBERT_ENDPOINT")
 GRAPHQL_ENDPOINT = os.environ.get("GRAPHQL_ENDPOINT")
 API_SECRET = os.environ.get("API_SECRET")
 
+
 class GQLQueryBody(TypedDict):
     query: str
     variables: dict
@@ -36,14 +37,20 @@ def get_off_topic_threshold() -> float:
 
 def sbert_encode(question: str):
     headers = {"Authorization": f"Bearer {API_SECRET}"}
-    res = requests.get(f"{SBERT_ENDPOINT}/encode", params={"query": question}, headers=headers)
+    res = requests.get(
+        f"{SBERT_ENDPOINT}/encode", params={"query": question}, headers=headers
+    )
     res.raise_for_status()
     return res.json()
 
 
-def sbert_cos_sim_weight(a: str, b:str) -> float:
+def sbert_cos_sim_weight(a: str, b: str) -> float:
     headers = {"Authorization": f"Bearer {API_SECRET}"}
-    res = requests.post(f"{SBERT_ENDPOINT}/encode/cos_sim_weight", json={"a": a, "b": b}, headers=headers)
+    res = requests.post(
+        f"{SBERT_ENDPOINT}/encode/cos_sim_weight",
+        json={"a": a, "b": b},
+        headers=headers,
+    )
     res.raise_for_status()
     logging.debug(res.json())
     return res.json()["cos_sim_weight"]
@@ -51,7 +58,9 @@ def sbert_cos_sim_weight(a: str, b:str) -> float:
 
 def sbert_paraphrase(sentences: list) -> float:
     headers = {"Authorization": f"Bearer {API_SECRET}"}
-    res = requests.post(f"{SBERT_ENDPOINT}/paraphrase", json={"sentences": sentences}, headers=headers)
+    res = requests.post(
+        f"{SBERT_ENDPOINT}/paraphrase", json={"sentences": sentences}, headers=headers
+    )
     res.raise_for_status()
     logging.debug(res.json())
     return res.json()["pairs"]

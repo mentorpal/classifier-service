@@ -84,7 +84,6 @@ class EntityObject:
     verb: str = ""
 
 
-
 def semantic_deduplication_enabled() -> bool:
     return props_to_bool(SEMANTIC_DEDUP, environ)
 
@@ -188,7 +187,9 @@ class NamedEntities:
                         break
                 if ent.verb == "":
                     ent.verb = verbs[0].text
-                ent.weight = ent.weight + sbert_cos_sim_weight(self.answers_text, ent.verb)
+                ent.weight = ent.weight + sbert_cos_sim_weight(
+                    self.answers_text, ent.verb
+                )
         return entity_vals
 
     def add_followups(

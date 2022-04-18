@@ -29,12 +29,14 @@ MODELS_DIR = "/tmp/models"
 
 classifier_dao = Dao(SHARED, MODELS_DIR)
 
+
 def make_response(status, body, event):
     headers = {}
     append_cors_headers(headers, event)
     append_secure_headers(headers)
     response = {"statusCode": status, "body": json.dumps(body), "headers": headers}
     return response
+
 
 def handler(event, context):
     log.debug(json.dumps(event))
