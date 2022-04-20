@@ -1,0 +1,24 @@
+version: 0.2
+
+env:
+  variables:
+    SENTRY_ORG: 'usc-ict-ls'
+    SENTRY_PROJECT: 'mentor-classifier'
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+
+  pre_build:
+  # TODO
+    # commands:
+    #   - export SENTRY_RELEASE=${SENTRY_PROJECT}-$(cat .VERSION)
+  build:
+    commands:
+      - echo Deploying stack
+      - sls deploy -- -s ${STAGE} --region us-west-2
+
+      # TODO
+      # - echo sentry release: ${SENTRY_RELEASE}
+      # - bash sentry-release.sh

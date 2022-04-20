@@ -1,0 +1,39 @@
+version: 0.2
+
+env:
+  variables:
+    SENTRY_ORG: 'usc-ict-ls'
+    SENTRY_PROJECT: 'mentor-classifier'
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+    commands:
+      - pip install poetry
+
+  pre_build:
+    commands:
+      - NODE_ENV=dev npm ci
+      - poetry install
+
+  build:
+    commands:
+      - echo Checking formatting
+      - flake8 .
+      # TODO 
+      # - echo Running tests
+      # - npm run test:ci
+
+      - echo Checking packaging
+      # the serverless-layers plugin must be removed since it does not work with local packaging without access to S3
+      - cp serverless.yml serverless.yml.backup
+      - sed -i -e '/serverless-layers/d' serverless.yml
+      - npm run package -- -s offline
+      # revert removal of plugin
+      - mv serverless.yml.backup serverless.yml
+
+artifacts:
+  files:
+    - '**/*'
+  enable-symlinks: yes
