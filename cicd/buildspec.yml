@@ -11,11 +11,9 @@ phases:
       nodejs: 14
     commands:
       - pyenv global $PYTHON_38_VERSION
-      - pip install poetry
-
-  pre_build:
-    commands:
-      - poetry config virtualenvs.create false
+      - python3 -m venv /root/venv
+      - . /root/venv/bin/activate
+      - pip3 install pytest && pip3 install poetry
       - poetry install --no-root
       - n 16 # workaround https://github.com/aws/aws-codebuild-docker-images/issues/490
       - NODE_ENV=dev npm ci
@@ -26,17 +24,13 @@ phases:
       - flake8 .
       # TODO 
       # - echo Running tests
-      # - npm run test:ci
-
-      - echo Checking packaging
-      # the serverless-layers plugin must be removed since it does not work with local packaging without access to S3
-      - cp serverless.yml serverless.yml.backup
-      - sed -i -e '/serverless-layers/d' serverless.yml
-      - npm run package -- -s offline
-      # revert removal of plugin
-      - mv serverless.yml.backup serverless.yml
 
 artifacts:
   files:
     - '**/*'
   enable-symlinks: yes
+cache:
+  paths:
+    - '/root/venv/**/*'
+    - '/root/.cache/pip/**/*'
+    - '/root/.cache/pypoetry/virtualenvs/**/*'
