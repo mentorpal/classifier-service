@@ -21,9 +21,20 @@ Install order:
 - tqdm numpy scikit-learn scipy nltk sentencepiece
 - Install sentence transformers without dependencies
 
-## Deployment instructions
+# Deployment instructions
 
-There's no cicd pipeline yet, it must be deployed manually (using appropriate credentials)
+## Setting up a cicd pipeline
+
+Go to the ./infrastructure folder, create secret.tfvars file and then run:
+```
+aws s3api create-bucket --bucket mentorpal-classifier-service-tf-state-us-east-1 --region us-east-1
+terraform init
+terraform plan -lock=false -var-file=secret.tfvars --out=cicd
+terraform apply -lock=false "cicd"
+```
+
+## Manual deploy
+To deploy manually appropriate credentials are required.
 
 > **Requirements**: Docker. In order to build images locally and push them to ECR, you need to have Docker installed on your local machine. Please refer to [official documentation](https://docs.docker.com/get-docker/).
 > **Requirements**: npm. Run once `npm ci` to get all the tools.
@@ -139,12 +150,12 @@ To debug in VS Code, use this config:
 
 # TODO
 
-- [ ] cicd pipeline
 - [ ] unit tests from beanstalk classifier
 - [ ] monitoring & alerting on slow responses
 - [ ] add logging to module.classifier to track execution
 - [ ] integration tests
 - [ ] train: validate request in api gateway
+- [x] cicd pipeline
 - [x] refactor followup to use the sberts service
 - [x] pull out berts into a service to improve cold starts (Functions http_answer and followup have timeout of 120 seconds, however, they are attached to API Gateway so it's automatically limited to 30 seconds.)
 - [x] dns name for the api gateway plus base path mapping
