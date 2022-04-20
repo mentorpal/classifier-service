@@ -11,8 +11,9 @@ phases:
       nodejs: 16
 
   pre_build:
-  # TODO
-    # commands:
+    commands:
+      - n 16 # workaround https://github.com/aws/aws-codebuild-docker-images/issues/490  
+    # TODO
     #   - export SENTRY_RELEASE=${SENTRY_PROJECT}-$(cat .VERSION)
   build:
     commands:
