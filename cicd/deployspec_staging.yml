@@ -18,11 +18,8 @@ phases:
     #   - export SENTRY_RELEASE=${SENTRY_PROJECT}-$(cat .VERSION)
   build:
     commands:
-      - echo $PWD
-      - ls -l
-      - ls -R
       - echo Deploying stack
-      - sls deploy -- -s ${STAGE} --region us-east-1
+      - npm run deploy -- -s ${STAGE} --region us-east-1
 
       # TODO
       # - echo sentry release: ${SENTRY_RELEASE}

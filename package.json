@@ -9,9 +9,10 @@
     "serverless-layers": "^2.5.1"
   },
   "scripts": {
-    "deploy:dev": "sls deploy -s dev",
-    "deploy:qa": "sls deploy -s qa",
-    "deploy:prod": "sls deploy -s prod"
+    "deploy": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy",
+    "deploy:dev": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s dev",
+    "deploy:qa": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s qa",
+    "deploy:prod": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s prod"
   },
   "repository": {
     "type": "git",
