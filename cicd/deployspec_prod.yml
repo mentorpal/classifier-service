@@ -19,7 +19,7 @@ phases:
   build:
     commands:
       - echo Deploying stack
-      - sls deploy -- -s ${STAGE} --region us-west-2
+      - npm run deploy -- -s ${STAGE} --region us-west-2
 
       # TODO
       # - echo sentry release: ${SENTRY_RELEASE}
