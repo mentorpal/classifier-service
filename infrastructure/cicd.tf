@@ -1,6 +1,5 @@
 module "pipeline" {
-  # source                = "git@github.com:mentorpal/terraform-modules//modules/trunk_cicd_pipeline?ref=tags/v3.2.3"
-  source                  = "git@github.com:mentorpal/terraform-modules//modules/trunk_cicd_pipeline?ref=cicd"
+  source                = "git@github.com:mentorpal/terraform-modules//modules/trunk_cicd_pipeline?ref=tags/v1.0.0"
   codestar_connection_arn = var.codestar_connection_arn
   project_name            = "mentor-classifier-service"
   github_repo_name        = "classifier-service"
@@ -12,9 +11,8 @@ module "pipeline" {
   build_buildspec          = "cicd/buildspec.yml"
   deploy_staging_buildspec = "cicd/deployspec_staging.yml"
   deploy_prod_buildspec    = "cicd/deployspec_prod.yml"
-
-  allow_git_folder_access_in_pipeline_build = true
-  export_pipeline_info                      = true
+  deploys_privileged_mode  = true
+  export_pipeline_info     = true
 
   tags = {
     Source  = "terraform"
