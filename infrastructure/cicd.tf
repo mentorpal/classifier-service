@@ -1,5 +1,5 @@
 module "pipeline" {
-  source                = "git@github.com:mentorpal/terraform-modules//modules/trunk_cicd_pipeline?ref=tags/v1.0.0"
+  source                  = "git@github.com:mentorpal/terraform-modules//modules/trunk_cicd_pipeline?ref=tags/v1.0.0"
   codestar_connection_arn = var.codestar_connection_arn
   project_name            = "mentor-classifier-service"
   github_repo_name        = "classifier-service"
@@ -15,7 +15,7 @@ module "pipeline" {
   export_pipeline_info     = true
 
   tags = {
-    Source  = "terraform"
+    Source = "terraform"
   }
 
   providers = {
