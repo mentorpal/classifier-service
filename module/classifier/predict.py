@@ -8,7 +8,7 @@ import logging
 import random
 import joblib
 import numpy
-from typing import Union, Tuple, List
+from typing import Union, Tuple
 from module.classifier import (
     mentor_model_path,
     ARCH_LR_TRANSFORMER,
@@ -19,7 +19,7 @@ from module.api import create_user_question, OFF_TOPIC_THRESHOLD_DEFAULT, sbert_
 from module.mentor import Mentor
 from module.utils import file_last_updated_at, sanitize_string
 
-AnswerIdTextAndMedia = Tuple[str, str, list]
+AnswerIdTextAndMedia = Tuple[str, str, Media, Media, Media]
 
 
 class TransformersQuestionClassifierPrediction:
@@ -48,7 +48,9 @@ class TransformersQuestionClassifierPrediction:
                 q = self.mentor.questions_by_text[sanitized_question]
                 answer_id = q["answer_id"]
                 answer = q["answer"]
-                answer_media = q["media"]
+                answer_web_media = q["webMedia"]
+                answer_mobile_media = q["mobileMedia"]
+                answer_vtt_media = q["vttMedia"]
                 feedback_id = create_user_question(
                     self.mentor.id,
                     question,
@@ -59,11 +61,11 @@ class TransformersQuestionClassifierPrediction:
                     1.0,
                 )
                 return QuestionClassiferPredictionResult(
-                    answer_id, answer, answer_media, 1.0, feedback_id
+                    answer_id, answer, answer_web_media, answer_mobile_media, answer_vtt_media, 1.0, feedback_id
                 )
         encoding_json = sbert_encode(question)
         embedded_question = numpy.array(encoding_json["encoding"])
-        answer_id, answer, answer_media, highest_confidence = self.__get_prediction(
+        answer_id, answer, answer_web_media, answer_mobile_media, answer_vtt_media, highest_confidence = self.__get_prediction(
             embedded_question
         )
         feedback_id = create_user_question(
@@ -76,9 +78,9 @@ class TransformersQuestionClassifierPrediction:
             highest_confidence,
         )
         if highest_confidence < OFF_TOPIC_THRESHOLD_DEFAULT:
-            answer_id, answer, answer_media = self.__get_offtopic()
+            answer_id, answer, answer_web_media, answer_mobile_media, answer_vtt_media = self.__get_offtopic()
         return QuestionClassiferPredictionResult(
-            answer_id, answer, answer_media, highest_confidence, feedback_id
+            answer_id, answer, answer_web_media, answer_mobile_media, answer_vtt_media, highest_confidence, feedback_id
         )
 
     def get_last_trained_at(self) -> float:
@@ -90,24 +92,22 @@ class TransformersQuestionClassifierPrediction:
 
     def __get_prediction(
         self, embedded_question
-    ) -> Tuple[str, str, List[Media], float]:
+    ) -> Tuple[str, str, Media, Media, Media, float]:
         prediction = self.model.predict([embedded_question])
         decision = self.model.decision_function([embedded_question])
         highest_confidence = max(decision[0])
         answer_text = self.mentor.answer_id_by_answer[prediction[0]]
         answer_key = sanitize_string(answer_text)
-        answer_media = (
-            self.mentor.questions_by_answer[answer_key].get("media", [])
-            if answer_key in self.mentor.questions_by_answer
-            else []
-        )
-        return prediction[0], answer_text, answer_media, float(highest_confidence)
+        answer_web_media = self.mentor.questions_by_answer[answer_key].get("webMedia")
+        answer_mobile_media = self.mentor.questions_by_answer[answer_key].get("mobileMedia")
+        answer_vtt_media = self.mentor.questions_by_answer[answer_key].get("vttMedia")
+        return prediction[0], answer_text, answer_web_media, answer_mobile_media, answer_vtt_media, float(highest_confidence)
 
     def __get_offtopic(self) -> AnswerIdTextAndMedia:
         try:
-            id, text, media = random.choice(
+            id, text, web_media, mobile_media, vtt_media = random.choice(
                 self.mentor.utterances_by_type["_OFF_TOPIC_"]
             )
-            return (id, text, media)
+            return (id, text, web_media, mobile_media, vtt_media)
         except KeyError:
-            return ("_OFF_TOPIC_", "_OFF_TOPIC_", [])
+            return ("_OFF_TOPIC_", "_OFF_TOPIC_", None, None, None)

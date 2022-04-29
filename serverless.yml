@@ -50,7 +50,7 @@ custom:
       LOG_LEVEL: 'trace'
       IS_SENTRY_ENABLED: false
       # v2 is hardcoded, we could use fallback stages instead
-      GRAPHQL_ENDPOINT: 'https://${ssm:/mentorpal/v2/alb_url, ''}/graphql'
+      GRAPHQL_ENDPOINT: 'http://${ssm:/mentorpal/v2/alb_url, ""}/graphql'
       SBERT_ENDPOINT: 'https://sbert-qa.mentorpal.org/v1'
       API_SECRET: ${ssm:/mentorpal/v2/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/v2/shared/jwt_secret, ''}
@@ -58,7 +58,7 @@ custom:
     qa:
       LOG_LEVEL: 'debug'
       IS_SENTRY_ENABLED: true
-      GRAPHQL_ENDPOINT: 'https://${ssm:/mentorpal/v2/alb_url, ''}/graphql'
+      GRAPHQL_ENDPOINT: 'http://${ssm:/mentorpal/v2/alb_url, ""}/graphql'
       SBERT_ENDPOINT: 'https://sbert-qa.mentorpal.org/v1'
       API_SECRET: ${ssm:/mentorpal/v2/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/v2/shared/jwt_secret, ''}
@@ -67,7 +67,7 @@ custom:
     prod:
       LOG_LEVEL: 'info'
       IS_SENTRY_ENABLED: true
-      GRAPHQL_ENDPOINT: 'https://${ssm:/mentorpal/cf/alb_url, ''}/graphql'
+      GRAPHQL_ENDPOINT: 'http://${ssm:/mentorpal/cf/alb_url, ""}/graphql'
       SBERT_ENDPOINT: 'https://sbert.mentorpal.org/v1'
       ALERT_SNS_ARN: ${ssm:/mentorpal/cf/shared/sns_alert_topic_arn, ''}
       API_SECRET: ${ssm:/mentorpal/cf/shared/api_secret, ''}

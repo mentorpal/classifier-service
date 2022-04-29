@@ -94,7 +94,17 @@ query Mentor($id: ID!) {
                 name
                 paraphrases
             }
-            media {
+            webMedia {
+                type
+                tag
+                url
+            }
+            mobileMedia {
+                type
+                tag
+                url
+            }
+            vttMedia {
                 type
                 tag
                 url
@@ -197,7 +207,9 @@ def fetch_training_data(mentor: str):
             "paraphrases": question["paraphrases"],
             "answer": answer["transcript"],
             "answer_id": answer["_id"],
-            "media": answer.get("media", []),
+            "webMedia": answer.get("webMedia"),
+            "mobileMedia": answer.get("mobileMedia"),
+            "vttMedia": answer.get("vttMedia"),
             "topics": [],
         }
         data_dict[question["_id"]] = q
