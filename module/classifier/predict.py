@@ -10,6 +10,7 @@ import joblib
 import numpy
 from typing import Union, Tuple
 from module.classifier import (
+    AnswerMedia,
     mentor_model_path,
     ARCH_LR_TRANSFORMER,
     QuestionClassiferPredictionResult,
@@ -48,9 +49,7 @@ class TransformersQuestionClassifierPrediction:
                 q = self.mentor.questions_by_text[sanitized_question]
                 answer_id = q["answer_id"]
                 answer = q["answer"]
-                answer_web_media = q["webMedia"]
-                answer_mobile_media = q["mobileMedia"]
-                answer_vtt_media = q["vttMedia"]
+                answer_media = q["answer_media"]
                 feedback_id = create_user_question(
                     self.mentor.id,
                     question,
@@ -61,11 +60,11 @@ class TransformersQuestionClassifierPrediction:
                     1.0,
                 )
                 return QuestionClassiferPredictionResult(
-                    answer_id, answer, answer_web_media, answer_mobile_media, answer_vtt_media, 1.0, feedback_id
+                    answer_id, answer, answer_media, 1.0, feedback_id
                 )
         encoding_json = sbert_encode(question)
         embedded_question = numpy.array(encoding_json["encoding"])
-        answer_id, answer, answer_web_media, answer_mobile_media, answer_vtt_media, highest_confidence = self.__get_prediction(
+        answer_id, answer, answer_media, highest_confidence = self.__get_prediction(
             embedded_question
         )
         feedback_id = create_user_question(
@@ -78,9 +77,9 @@ class TransformersQuestionClassifierPrediction:
             highest_confidence,
         )
         if highest_confidence < OFF_TOPIC_THRESHOLD_DEFAULT:
-            answer_id, answer, answer_web_media, answer_mobile_media, answer_vtt_media = self.__get_offtopic()
+            answer_id, answer, answer_media = self.__get_offtopic()
         return QuestionClassiferPredictionResult(
-            answer_id, answer, answer_web_media, answer_mobile_media, answer_vtt_media, highest_confidence, feedback_id
+            answer_id, answer, answer_media, highest_confidence, feedback_id
         )
 
     def get_last_trained_at(self) -> float:
@@ -92,22 +91,20 @@ class TransformersQuestionClassifierPrediction:
 
     def __get_prediction(
         self, embedded_question
-    ) -> Tuple[str, str, Media, Media, Media, float]:
+    ) -> Tuple[str, str, AnswerMedia, float]:
         prediction = self.model.predict([embedded_question])
         decision = self.model.decision_function([embedded_question])
         highest_confidence = max(decision[0])
         answer_text = self.mentor.answer_id_by_answer[prediction[0]]
         answer_key = sanitize_string(answer_text)
-        answer_web_media = self.mentor.questions_by_answer[answer_key].get("webMedia")
-        answer_mobile_media = self.mentor.questions_by_answer[answer_key].get("mobileMedia")
-        answer_vtt_media = self.mentor.questions_by_answer[answer_key].get("vttMedia")
-        return prediction[0], answer_text, answer_web_media, answer_mobile_media, answer_vtt_media, float(highest_confidence)
+        answer_media = self.mentor.questions_by_answer[answer_key].get("answer_media")
+        return prediction[0], answer_text, answer_media, float(highest_confidence)
 
     def __get_offtopic(self) -> AnswerIdTextAndMedia:
         try:
-            id, text, web_media, mobile_media, vtt_media = random.choice(
+            id, text, answer_media = random.choice(
                 self.mentor.utterances_by_type["_OFF_TOPIC_"]
             )
-            return (id, text, web_media, mobile_media, vtt_media)
+            return (id, text, answer_media)
         except KeyError:
-            return ("_OFF_TOPIC_", "_OFF_TOPIC_", None, None, None)
+            return ("_OFF_TOPIC_", "_OFF_TOPIC_", {})

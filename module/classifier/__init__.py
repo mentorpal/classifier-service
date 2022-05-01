@@ -20,11 +20,16 @@ def mentor_model_path(models_path: str, mentor_id: str, arch: str, p: str = "") 
 
 
 @dataclass
+class AnswerMedia:
+    web_media: Media
+    mobile_media: Media
+    vtt_media: Media
+
+
+@dataclass
 class QuestionClassiferPredictionResult:
     answer_id: str
     answer_text: str
-    answer_web_media: Media
-    answer_mobile_media: Media
-    answer_vtt_media: Media
+    answer_media: AnswerMedia
     highest_confidence: float
     feedback_id: str

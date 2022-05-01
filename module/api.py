@@ -207,9 +207,11 @@ def fetch_training_data(mentor: str):
             "paraphrases": question["paraphrases"],
             "answer": answer["transcript"],
             "answer_id": answer["_id"],
-            "webMedia": answer.get("webMedia"),
-            "mobileMedia": answer.get("mobileMedia"),
-            "vttMedia": answer.get("vttMedia"),
+            "answer_media": {
+                "web_media": answer.get("webMedia"),
+                "mobile_media": answer.get("mobileMedia"),
+                "vtt_media": answer.get("vttMedia"),
+            },
             "topics": [],
         }
         data_dict[question["_id"]] = q
