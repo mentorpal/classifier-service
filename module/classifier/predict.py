@@ -8,8 +8,9 @@ import logging
 import random
 import joblib
 import numpy
-from typing import Union, Tuple, List
+from typing import Union, Tuple
 from module.classifier import (
+    AnswerMedia,
     mentor_model_path,
     ARCH_LR_TRANSFORMER,
     QuestionClassiferPredictionResult,
@@ -19,7 +20,7 @@ from module.api import create_user_question, OFF_TOPIC_THRESHOLD_DEFAULT, sbert_
 from module.mentor import Mentor
 from module.utils import file_last_updated_at, sanitize_string
 
-AnswerIdTextAndMedia = Tuple[str, str, list]
+AnswerIdTextAndMedia = Tuple[str, str, Media, Media, Media]
 
 
 class TransformersQuestionClassifierPrediction:
@@ -48,7 +49,7 @@ class TransformersQuestionClassifierPrediction:
                 q = self.mentor.questions_by_text[sanitized_question]
                 answer_id = q["answer_id"]
                 answer = q["answer"]
-                answer_media = q["media"]
+                answer_media = q["answer_media"]
                 feedback_id = create_user_question(
                     self.mentor.id,
                     question,
@@ -90,24 +91,20 @@ class TransformersQuestionClassifierPrediction:
 
     def __get_prediction(
         self, embedded_question
-    ) -> Tuple[str, str, List[Media], float]:
+    ) -> Tuple[str, str, AnswerMedia, float]:
         prediction = self.model.predict([embedded_question])
         decision = self.model.decision_function([embedded_question])
         highest_confidence = max(decision[0])
         answer_text = self.mentor.answer_id_by_answer[prediction[0]]
         answer_key = sanitize_string(answer_text)
-        answer_media = (
-            self.mentor.questions_by_answer[answer_key].get("media", [])
-            if answer_key in self.mentor.questions_by_answer
-            else []
-        )
+        answer_media = self.mentor.questions_by_answer[answer_key].get("answer_media")
         return prediction[0], answer_text, answer_media, float(highest_confidence)
 
     def __get_offtopic(self) -> AnswerIdTextAndMedia:
         try:
-            id, text, media = random.choice(
+            id, text, answer_media = random.choice(
                 self.mentor.utterances_by_type["_OFF_TOPIC_"]
             )
-            return (id, text, media)
+            return (id, text, answer_media)
         except KeyError:
-            return ("_OFF_TOPIC_", "_OFF_TOPIC_", [])
+            return ("_OFF_TOPIC_", "_OFF_TOPIC_", {})

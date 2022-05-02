@@ -51,7 +51,7 @@ def handler(event, context):
                     mentor, "module.classifier.arch.lr_transformer", "model.pkl"
                 ),
             )
-            update_status(request["id"], "DONE")
+            update_status(request["id"], "SUCCESS")
         except Exception as e:
             log.error(e)
             update_status(request["id"], "FAILED")

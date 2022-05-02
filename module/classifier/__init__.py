@@ -5,7 +5,6 @@
 # The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 #
 import os
-from typing import List
 from dataclasses import dataclass
 from module.mentor import Media
 
@@ -21,9 +20,16 @@ def mentor_model_path(models_path: str, mentor_id: str, arch: str, p: str = "") 
 
 
 @dataclass
+class AnswerMedia:
+    web_media: Media
+    mobile_media: Media
+    vtt_media: Media
+
+
+@dataclass
 class QuestionClassiferPredictionResult:
     answer_id: str
     answer_text: str
-    answer_media: List[Media]
+    answer_media: AnswerMedia
     highest_confidence: float
     feedback_id: str

@@ -39,6 +39,7 @@ def handler(event, context):
             data = {
                 "id": item["id"],
                 "status": item["status"],
+                "state": item["status"],
                 "mentor": item["mentor"],
                 # only added after trainjob runs
                 **({"updated": item["updated"]} if "updated" in item else {}),

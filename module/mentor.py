@@ -38,12 +38,17 @@ class Mentor(object):
             question = answer["question"]
             if answer["status"] != "COMPLETE":
                 continue
+            answer_media = {
+                "web_media": answer.get("webMedia"),
+                "mobile_media": answer.get("mobileMedia"),
+                "vtt_media": answer.get("vttMedia"),
+            }
             if question["type"] == "UTTERANCE":
                 if question["name"] not in self.utterances_by_type:
                     self.utterances_by_type[question["name"]] = []
-                self.utterances_by_type[question["name"]].append(
-                    [answer["_id"], answer["transcript"], answer.get("media", [])]
-                )
+                utterance_data = [answer["_id"], answer["transcript"]]
+                utterance_data.append(answer_media)
+                self.utterances_by_type[question["name"]].append(utterance_data)
                 continue
             q = {
                 "id": question["_id"],
@@ -51,7 +56,7 @@ class Mentor(object):
                 "paraphrases": question["paraphrases"],
                 "answer": answer["transcript"],
                 "answer_id": answer["_id"],
-                "media": answer.get("media", []),
+                "answer_media": answer_media,
                 "topics": [],
             }
             self.answer_id_by_answer[answer["_id"]] = answer["transcript"]
