@@ -9,7 +9,6 @@ __pycache__
 .venv
 .vscode
 *.egg-info
-*.bin
 *.log
 *.pyc
 *.zip
