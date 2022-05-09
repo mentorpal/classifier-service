@@ -15,11 +15,16 @@ phases:
       - . /root/venv/bin/activate
       - pip3 install pytest && pip3 install poetry
       - poetry install --no-root
+      - curl -OJL https://github.com/git-lfs/git-lfs/releases/download/v3.1.4/git-lfs-linux-amd64-v3.1.4.tar.gz
+      - tar xzf git-lfs-linux-amd64-v3.1.4.tar.gz
+      - ./install.sh
       - n 16 # workaround https://github.com/aws/aws-codebuild-docker-images/issues/490
       - NODE_ENV=dev npm ci
 
   build:
     commands:
+      - echo Pulling lfs items
+      - git lfs pull
       - echo Checking formatting
       - flake8 .
       # TODO 
