@@ -25,8 +25,8 @@ phases:
 
   build:
     commands:
-      - echo cloning repo
-      - git clone https://github.com/mentorpal/classifier-service.git
+      - pull from git lfs
+      - git lfs pull git@github.com:mentorpal/classifier-service.git
       - echo Checking formatting
       - flake8 .
       # TODO 
