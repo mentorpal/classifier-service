@@ -25,7 +25,7 @@ phases:
 
   build:
     commands:
-      - pull from git lfs
+      - echo pull from git lfs
       - git lfs pull git@github.com:mentorpal/classifier-service.git
       - echo Checking formatting
       - flake8 .
