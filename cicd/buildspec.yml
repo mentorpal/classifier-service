@@ -1,6 +1,7 @@
 version: 0.2
 
 env:
+  git-credential-helper: yes
   variables:
     SENTRY_ORG: 'usc-ict-ls'
     SENTRY_PROJECT: 'mentor-classifier'
