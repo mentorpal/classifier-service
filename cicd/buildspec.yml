@@ -1,7 +1,6 @@
 version: 0.2
 
 env:
-  git-credential-helper: yes
   variables:
     SENTRY_ORG: 'usc-ict-ls'
     SENTRY_PROJECT: 'mentor-classifier'
@@ -11,11 +10,18 @@ phases:
     runtime-versions:
       nodejs: 14
     commands:
+      - cd /tmp
+      - curl -OJL https://github.com/git-lfs/git-lfs/releases/download/v3.1.4/git-lfs-linux-amd64-v3.1.4.tar.gz
+      - tar xzf git-lfs-linux-amd64-v3.1.4.tar.gz
+      - ./install.sh
+      - cd $CODEBUILD_SRC_DIR
+      - git lfs pull
       - pyenv global $PYTHON_38_VERSION
       - python3 -m venv /root/venv
       - . /root/venv/bin/activate
       - pip3 install pytest && pip3 install poetry
       - poetry install --no-root
+      # - rm -rf git-lfs-linux-amd64-v3.1.4* ?
       - n 16 # workaround https://github.com/aws/aws-codebuild-docker-images/issues/490
       - NODE_ENV=dev npm ci
 
