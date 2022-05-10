@@ -15,7 +15,10 @@ phases:
       - tar xzf git-lfs-linux-amd64-v3.1.4.tar.gz
       - ./install.sh
       - cd $CODEBUILD_SRC_DIR
-      - git lfs pull
+      # `git lfs pull`` fails with:
+      #   batch response: Repository or object not found: https://codestar-connections.***classifier-service.git/info/lfs/objects/batch
+      #   Check that it exists and that you have proper access to it
+      - git lfs pull https://github.com/mentorpal/classifier-service.git
       - pyenv global $PYTHON_38_VERSION
       - python3 -m venv /root/venv
       - . /root/venv/bin/activate
