@@ -43,7 +43,7 @@ To create the domain name mapping run this command just once:
 
 ```
 sls create_domain --stage <prod|qa|dev> --region <region>
-``
+```
 
 In order to deploy the service, run the following command:
 
