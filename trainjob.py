@@ -54,7 +54,7 @@ def handler(event, context):
             update_status(request["id"], "SUCCESS")
         except Exception as e:
             log.exception(e)
-            update_status(request["id"], "FAILED")
+            update_status(request["id"], "FAILURE")
 
 
 def update_status(id, status):
