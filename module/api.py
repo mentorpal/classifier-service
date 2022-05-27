@@ -157,7 +157,7 @@ query Mentor{
 
 def __auth_gql(query: GQLQueryBody, headers: Dict[str, str] = {}) -> dict:
     # SSL is not valid for alb so have to turn off validation
-    res = requests.post(GRAPHQL_ENDPOINT, json=query, headers=headers, verify=False)
+    res = requests.post(GRAPHQL_ENDPOINT, json=query, headers=headers)
     res.raise_for_status()
     return res.json()
 
