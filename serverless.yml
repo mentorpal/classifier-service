@@ -52,8 +52,8 @@ custom:
       # v2 is hardcoded, we could use fallback stages instead
       GRAPHQL_ENDPOINT: https://api-dev.mentorpal.org/graphql/graphql
       SBERT_ENDPOINT: 'https://sbert-qa.mentorpal.org/v1'
-      API_SECRET: ${ssm:/mentorpal/v2/shared/api_secret, ''}
-      JWT_SECRET: ${ssm:/mentorpal/v2/shared/jwt_secret, ''}
+      API_SECRET: ${ssm:/mentorpal/newdev/shared/api_secret, ''}
+      JWT_SECRET: ${ssm:/mentorpal/newdev/shared/jwt_secret, ''}
       ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn, ''}
     qa:
       LOG_LEVEL: 'debug'
