@@ -49,12 +49,12 @@ custom:
     dev:
       LOG_LEVEL: 'trace'
       IS_SENTRY_ENABLED: false
-      # v2 is hardcoded, we could use fallback stages instead
       GRAPHQL_ENDPOINT: https://api-dev.mentorpal.org/graphql/graphql
       SBERT_ENDPOINT: 'https://sbert-qa.mentorpal.org/v1'
       API_SECRET: ${ssm:/mentorpal/newdev/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/newdev/shared/jwt_secret, ''}
-      ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn, ''}
+      ALERT_SNS_ARN: 'no alarms in dev'
+      WEBACL_ARN: '${ssm:/mentorpal/newdev/api_firewall_arn}'
     qa:
       LOG_LEVEL: 'debug'
       IS_SENTRY_ENABLED: true
@@ -63,7 +63,7 @@ custom:
       API_SECRET: ${ssm:/mentorpal/v2/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/v2/shared/jwt_secret, ''}
       ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn, ''}
-      provisionedConcurrency: 1
+      # WEBACL_ARN: '${ssm:/mentorpal/v2/api_firewall_arn}'
     prod:
       LOG_LEVEL: 'info'
       IS_SENTRY_ENABLED: true
@@ -72,7 +72,7 @@ custom:
       ALERT_SNS_ARN: ${ssm:/mentorpal/cf/shared/sns_alert_topic_arn, ''}
       API_SECRET: ${ssm:/mentorpal/cf/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/cf/shared/jwt_secret, ''}
-      provisionedConcurrency: 1
+      # WEBACL_ARN: '${ssm:/mentorpal/cf/api_firewall_arn}'
 
   # serverless-layers requires a deployment bucket to be created before deploying this stack
   serverless-layers:
@@ -246,7 +246,6 @@ functions:
         - predict.handler
     memorySize: 2048
     timeout: 30
-    # provisionedConcurrency: ${self:custom.stages.${self:provider.stage}.provisionedConcurrency, null}
     events:
       - http:
           path: /questions
@@ -385,3 +384,10 @@ resources:
         ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: 'ApiGatewayRestApi'
+
+    FirewallAssociation:
+      Type: AWS::WAFv2::WebACLAssociation
+      Properties:
+        ResourceArn:
+          Fn::Sub: 'arn:aws:apigateway:${AWS::Region}::/restapis/${ApiGatewayRestApi}/stages/${self:provider.stage}'
+        WebACLArn: '${self:custom.stages.${self:provider.stage}.WEBACL_ARN}'
