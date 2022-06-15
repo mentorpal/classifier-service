@@ -63,7 +63,7 @@ custom:
       API_SECRET: ${ssm:/mentorpal/v2/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/v2/shared/jwt_secret, ''}
       ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn, ''}
-      # WEBACL_ARN: '${ssm:/mentorpal/v2/api_firewall_arn}'
+      WEBACL_ARN: '${ssm:/mentorpal/v2/api_firewall_arn}'
     prod:
       LOG_LEVEL: 'info'
       IS_SENTRY_ENABLED: true
