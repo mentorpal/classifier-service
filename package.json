@@ -10,9 +10,9 @@
   },
   "scripts": {
     "deploy": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy",
-    "deploy:dev": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s dev",
-    "deploy:qa": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s qa",
-    "deploy:prod": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s prod"
+    "deploy:dev": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s dev --region us-east-1",
+    "deploy:qa": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s qa --region us-east-1",
+    "deploy:prod": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s prod --region us-west-2"
   },
   "repository": {
     "type": "git",
