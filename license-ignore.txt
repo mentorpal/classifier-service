@@ -1,0 +1,13 @@
+# Ignore everything
+*
+
+# But not these files...
+!./*.py
+!./*.yml
+!./Dockerfile
+!./Dockerfile.*
+!module/*.py
+!module/**/*.py
+!infrastructure/*.tf
+!infrastructure/*.tvars
+!cicd/*.yml
