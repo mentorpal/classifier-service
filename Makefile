@@ -8,6 +8,9 @@ LICENSE_HEADER:
 	@echo "you must have a LICENSE_HEADER file" 1>&2
 	exit 1
 
+node_modules/license-check-and-add:
+	npm ci
+
 .PHONY: license
 license: LICENSE_HEADER
 	npm run license:fix
