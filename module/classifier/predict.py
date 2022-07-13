@@ -95,10 +95,12 @@ class TransformersQuestionClassifierPrediction:
         prediction = self.model.predict([embedded_question])
         decision = self.model.decision_function([embedded_question])
         highest_confidence = max(decision[0])
-        answer_text = self.mentor.answer_id_by_answer[prediction[0]]
+        answer = self.mentor.answer_id_by_answer[prediction[0]]
+        answer_text = answer["transcript"]
+        answer_markdown_text = answer["markdownTranscript"]
         answer_key = sanitize_string(answer_text)
         answer_media = self.mentor.questions_by_answer[answer_key].get("answer_media")
-        return prediction[0], answer_text, answer_media, float(highest_confidence)
+        return prediction[0], answer_markdown_text, answer_media, float(highest_confidence)
 
     def __get_offtopic(self) -> AnswerIdTextAndMedia:
         try:

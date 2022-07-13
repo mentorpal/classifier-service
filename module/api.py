@@ -87,6 +87,7 @@ query Mentor($id: ID!) {
             _id
             status
             transcript
+            markdownTranscript
             question {
                 _id
                 question
@@ -206,6 +207,7 @@ def fetch_training_data(mentor: str):
             "question_text": question["question"],
             "paraphrases": question["paraphrases"],
             "answer": answer["transcript"],
+            "markdownAnswer":answer["markdownTranscript"],
             "answer_id": answer["_id"],
             "answer_media": {
                 "web_media": answer.get("webMedia"),
