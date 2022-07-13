@@ -81,7 +81,7 @@ class TransformersQuestionClassifierPrediction:
             highest_confidence,
         )
         if highest_confidence < OFF_TOPIC_THRESHOLD_DEFAULT:
-            answer_id, answer, answer_media = self.__get_offtopic()
+            answer_id, answer, markdownAnswer, answer_media = self.__get_offtopic()
         return QuestionClassiferPredictionResult(
             answer_id,
             answer,
