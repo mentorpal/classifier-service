@@ -91,6 +91,7 @@ def handler(event, context):
         "question": question,
         "answer_id": result.answer_id,
         "answer_text": result.answer_text,
+        "answer_markdown_text": result.answer_markdown_text,
         "answer_media": result.answer_media,
         "confidence": result.highest_confidence,
         "feedback_id": result.feedback_id,
