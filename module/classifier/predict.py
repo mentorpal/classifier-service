@@ -49,6 +49,7 @@ class TransformersQuestionClassifierPrediction:
                 q = self.mentor.questions_by_text[sanitized_question]
                 answer_id = q["answer_id"]
                 answer = q["answer"]
+                markdown_answer = q["answer"]
                 answer_media = q["answer_media"]
                 feedback_id = create_user_question(
                     self.mentor.id,
@@ -60,7 +61,7 @@ class TransformersQuestionClassifierPrediction:
                     1.0,
                 )
                 return QuestionClassiferPredictionResult(
-                    answer_id, answer, answer_media, 1.0, feedback_id
+                    answer_id, answer, markdown_answer, answer_media, 1.0, feedback_id
                 )
         encoding_json = sbert_encode(question)
         embedded_question = numpy.array(encoding_json["encoding"])

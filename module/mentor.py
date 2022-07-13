@@ -59,6 +59,7 @@ class Mentor(object):
                 "question_text": question["question"],
                 "paraphrases": question["paraphrases"],
                 "answer": answer["transcript"],
+                "markdown_answer": answer["markdownTranscript"],
                 "answer_id": answer["_id"],
                 "answer_media": answer_media,
                 "topics": [],
