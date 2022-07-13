@@ -46,7 +46,11 @@ class Mentor(object):
             if question["type"] == "UTTERANCE":
                 if question["name"] not in self.utterances_by_type:
                     self.utterances_by_type[question["name"]] = []
-                utterance_data = [answer["_id"], answer["markdownTranscript"]]
+                utterance_data = [
+                    answer["_id"],
+                    answer["transcript"],
+                    answer["markdownTranscript"],
+                ]
                 utterance_data.append(answer_media)
                 self.utterances_by_type[question["name"]].append(utterance_data)
                 continue
@@ -59,7 +63,10 @@ class Mentor(object):
                 "answer_media": answer_media,
                 "topics": [],
             }
-            self.answer_id_by_answer[answer["_id"]] = {"transcript":answer["transcript"], "markdownTranscript": answer["markdownTranscript"]}
+            self.answer_id_by_answer[answer["_id"]] = {
+                "transcript": answer["transcript"],
+                "markdownTranscript": answer["markdownTranscript"],
+            }
             self.questions_by_id[question["_id"]] = q
         for question in data.get("questions", []):
             q = self.questions_by_id.get(question["question"]["_id"], None)

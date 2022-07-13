@@ -30,6 +30,7 @@ class AnswerMedia:
 class QuestionClassiferPredictionResult:
     answer_id: str
     answer_text: str
+    answer_markdown_text: str
     answer_media: AnswerMedia
     highest_confidence: float
     feedback_id: str
