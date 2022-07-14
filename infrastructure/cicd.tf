@@ -26,10 +26,8 @@ module "pipeline" {
   # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html
   build_compute_type       = "BUILD_GENERAL1_SMALL"
   deploys_compute_type     = "BUILD_GENERAL1_SMALL"
-  build_cache_type         = "LOCAL"
-  deploy_cache_type        = "LOCAL"
-  build_local_cache_modes  = ["LOCAL_DOCKER_LAYER_CACHE", "LOCAL_SOURCE_CACHE"]
-  deploy_local_cache_modes = ["LOCAL_DOCKER_LAYER_CACHE", "LOCAL_SOURCE_CACHE"]
+  build_cache_type         = "NO_CACHE"
+  deploy_cache_type        = "NO_CACHE"
   builds_privileged_mode   = true
   deploys_privileged_mode  = true
 
