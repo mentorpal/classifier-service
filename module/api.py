@@ -69,6 +69,7 @@ def sbert_paraphrase(sentences: list) -> float:
 GQL_QUERY_MENTOR = """
 query Mentor($id: ID!) {
     mentor(id: $id) {
+        mentorType
         subjects {
             name
         }
