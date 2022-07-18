@@ -36,8 +36,22 @@ class Mentor(object):
             self.topics.append(topic["name"])
         for answer in data.get("answers", []):
             question = answer["question"]
-            if answer["status"] != "COMPLETE":
+            if answer["status"] == "INCOMPLETE":
                 continue
+            if answer["status"] == "NONE":
+                mentorType = data.get("mentorType", "VIDEO")
+                if mentorType == "VIDEO":
+                    if (
+                        not (answer["transcript"] or question["name"] == "_IDLE_")
+                        or not answer["webMedia"]
+                        or not answer["mobileMedia"]
+                        or not answer["webMedia"].get("url", "")
+                        or not answer["mobileMedia"].get("url", "")
+                    ):
+                        continue
+                else:
+                    if not answer["transcript"]:
+                        continue
             answer_media = {
                 "web_media": answer.get("webMedia"),
                 "mobile_media": answer.get("mobileMedia"),
