@@ -49,7 +49,7 @@ class TransformersQuestionClassifierPrediction:
                 q = self.mentor.questions_by_text[sanitized_question]
                 answer_id = q["answer_id"]
                 answer = q["answer"]
-                markdown_answer = q["answer"]
+                markdown_answer = q["markdown_answer"]
                 answer_media = q["answer_media"]
                 feedback_id = create_user_question(
                     self.mentor.id,
