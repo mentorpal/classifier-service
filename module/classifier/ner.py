@@ -17,7 +17,12 @@ from spacy.tokens import Doc
 from spacy.symbols import VERB, nsubj
 from module.classifier.spacy_model import find_or_load_spacy
 from module.types import AnswerInfo
-from module.utils import get_shared_root, props_to_bool
+from module.utils import (
+    SbertCosSimReq,
+    get_shared_root,
+    props_to_bool,
+    thread_sbert_cos_reqs,
+)
 from module.logger import get_logger
 from module.api import sbert_cos_sim_weight, sbert_paraphrase
 from .constants import SEMANTIC_DEDUP
@@ -80,6 +85,7 @@ class EntityObject:
     doc: Doc
     answer: Doc
     text: str
+    cos_sim_weight: float = 0
     weight: float = 0
     verb: str = ""
 
@@ -162,6 +168,37 @@ class NamedEntities:
         weight = sbert_cos_sim_weight(self.answers_text, entity.text)
         return weight
 
+    def check_pop_culture(self, ent: EntityObject) -> None:
+        lemma = ent.span.lemma_
+        if lemma in self.pop_culture:
+            ent.weight = ent.weight - (1 - ent.cos_sim_weight)
+
+    # TODO: this function should be called once, when all entites are setup in the class already.
+    def populate_entities_sim_weights(self, all_answered: List[AnswerInfo]) -> None:
+        entity_vals = self.people.copy()
+        entity_vals.update(self.acronyms)
+        entity_vals.update(self.family)
+        entity_vals.update(self.places)
+        entity_vals = self.remove_duplicates(entity_vals, all_answered)
+        request_array = list(
+            (
+                map(
+                    lambda entity_key: SbertCosSimReq(
+                        self.answers_text, entity_vals[entity_key].text
+                    ),
+                    entity_vals.keys(),
+                )
+            )
+        )
+        result_dict = thread_sbert_cos_reqs(request_array, 12)
+        log.debug("sbert cos sim weights:")
+        log.debug(result_dict)
+
+        for entity_key in entity_vals.keys():
+            ent = entity_vals[entity_key]
+            ent_text = ent.text
+            ent.cos_sim_weight = result_dict[ent_text]
+
     def check_relevance(
         self,
         entity_vals: Dict[str, EntityObject],
@@ -187,9 +224,7 @@ class NamedEntities:
                         break
                 if ent.verb == "":
                     ent.verb = verbs[0].text
-                ent.weight = ent.weight + sbert_cos_sim_weight(
-                    self.answers_text, ent.verb
-                )
+                ent.weight = ent.weight + ent.cos_sim_weight
         return entity_vals
 
     def add_followups(
@@ -223,12 +258,6 @@ class NamedEntities:
         deduped = self.remove_duplicates(entity_vals, all_answered)
         relevant = self.check_relevance(deduped)
         return relevant
-
-    def check_pop_culture(self, ent: EntityObject) -> None:
-        lemma = ent.span.lemma_
-        sim = self.ent_sim(ent)
-        if lemma in self.pop_culture:
-            ent.weight = ent.weight - (1 - sim)
 
     def remove_duplicates(
         self, entity_vals: Dict[str, EntityObject], all_answered: List[AnswerInfo]
@@ -264,6 +293,7 @@ class NamedEntities:
         self, all_answered: List[AnswerInfo]
     ) -> List[FollowupQuestion]:
         followups: Dict[str, FollowupQuestion] = {}
+        self.populate_entities_sim_weights(all_answered)
         self.people = self.clean_ents(self.people, all_answered)
         self.places = self.clean_ents(self.places, all_answered)
         self.acronyms = self.clean_ents(self.acronyms, all_answered)

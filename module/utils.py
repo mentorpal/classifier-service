@@ -10,8 +10,16 @@ from module.logger import get_logger
 from os import _Environ, environ
 from typing import Any, Dict, Union, List
 from pathlib import Path
+import queue
+from threading import Thread
+import requests
+from dataclasses import dataclass
+import logging
 
 log = get_logger()
+SBERT_ENDPOINT = environ.get("SBERT_ENDPOINT")
+GRAPHQL_ENDPOINT = environ.get("GRAPHQL_ENDPOINT")
+API_SECRET = environ.get("API_SECRET")
 
 
 def load_sentry():
@@ -129,3 +137,71 @@ def props_to_bool(
         return dft
     v = props[name]
     return str(v).lower() in ["1", "t", "true"]
+
+
+@dataclass
+class SbertCosSimReq:
+    answers_text: str
+    entity_text: str
+
+
+def thread_sbert_cos_reqs(req: List[SbertCosSimReq], no_workers):
+    class Worker(Thread):
+        def __init__(self, request_queue):
+            Thread.__init__(self)
+            self.queue = request_queue
+            self.results = []
+
+        def run(self):
+            while True:
+                content = self.queue.get()
+                if content == "":
+                    break
+                headers = {"Authorization": f"Bearer {API_SECRET}"}
+                res = requests.post(
+                    f"{SBERT_ENDPOINT}/encode/cos_sim_weight",
+                    json={"a": content.answers_text, "b": content.entity_text},
+                    headers=headers,
+                )
+                res.raise_for_status()
+                logging.debug(res.json())
+                self.results.append(
+                    {
+                        "entity_text": content.entity_text,
+                        "cos_sim_weight": res.json()["cos_sim_weight"],
+                    }
+                )
+                self.queue.task_done()
+
+    # Create queue and add req params
+    q = queue.Queue()
+    for r in req:
+        q.put(r)
+
+    # Workers keep working till they receive an empty string
+    for _ in range(no_workers):
+        q.put("")
+
+    # Create workers and add to the queue
+    workers = []
+    for _ in range(no_workers):
+        worker = Worker(q)
+        worker.start()
+        workers.append(worker)
+    # Join workers to wait till they finished
+    for worker in workers:
+        worker.join()
+
+    # Combine results from all workers
+    r = []
+    for worker in workers:
+        r.extend(worker.results)
+
+    # convert list into dict
+    dict = {
+        key: value
+        for (key, value) in list(
+            map(lambda result: (result["entity_text"], result["cos_sim_weight"]), r)
+        )
+    }
+    return dict
