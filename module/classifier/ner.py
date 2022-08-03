@@ -173,7 +173,6 @@ class NamedEntities:
         if lemma in self.pop_culture:
             ent.weight = ent.weight - (1 - ent.cos_sim_weight)
 
-    # TODO: this function should be called once, when all entites are setup in the class already.
     def populate_entities_sim_weights(self, all_answered: List[AnswerInfo]) -> None:
         entity_vals = self.people.copy()
         entity_vals.update(self.acronyms)
