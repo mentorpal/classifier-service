@@ -44,7 +44,7 @@ def sbert_encode(question: str):
         f"{SBERT_ENDPOINT}/encode", params={"query": question}, headers=headers
     )
     end = timer()
-    logging.info('sbert encode execution time: %s', timedelta(seconds=end-start))
+    logging.info("sbert encode execution time: %s", timedelta(seconds=end - start))
     res.raise_for_status()
     return res.json()
 
@@ -58,7 +58,7 @@ def sbert_cos_sim_weight(a: str, b: str) -> float:
         headers=headers,
     )
     end = timer()
-    logging.info('sbert cos weight execution time: %s', timedelta(seconds=end-start))
+    logging.info("sbert cos weight execution time: %s", timedelta(seconds=end - start))
     res.raise_for_status()
     logging.debug(res.json())
     return res.json()["cos_sim_weight"]
@@ -71,7 +71,7 @@ def sbert_paraphrase(sentences: list) -> float:
         f"{SBERT_ENDPOINT}/paraphrase", json={"sentences": sentences}, headers=headers
     )
     end = timer()
-    logging.info('sbert paraphrase execution time: %s', timedelta(seconds=end-start))
+    logging.info("sbert paraphrase execution time: %s", timedelta(seconds=end - start))
     res.raise_for_status()
     logging.debug(res.json())
     return res.json()["pairs"]
