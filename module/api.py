@@ -9,6 +9,8 @@ import os
 import csv
 from io import StringIO
 import requests
+from timeit import default_timer as timer
+from datetime import timedelta
 from typing import Dict, List, TypedDict, Tuple
 from .types import AnswerInfo
 import logging
@@ -37,20 +39,26 @@ def get_off_topic_threshold() -> float:
 
 def sbert_encode(question: str):
     headers = {"Authorization": f"Bearer {API_SECRET}"}
+    start = timer()
     res = requests.get(
         f"{SBERT_ENDPOINT}/encode", params={"query": question}, headers=headers
     )
+    end = timer()
+    logging.info('sbert encode execution time: %s', timedelta(seconds=end-start))
     res.raise_for_status()
     return res.json()
 
 
 def sbert_cos_sim_weight(a: str, b: str) -> float:
     headers = {"Authorization": f"Bearer {API_SECRET}"}
+    start = timer()
     res = requests.post(
         f"{SBERT_ENDPOINT}/encode/cos_sim_weight",
         json={"a": a, "b": b},
         headers=headers,
     )
+    end = timer()
+    logging.info('sbert cos weight execution time: %s', timedelta(seconds=end-start))
     res.raise_for_status()
     logging.debug(res.json())
     return res.json()["cos_sim_weight"]
@@ -58,9 +66,12 @@ def sbert_cos_sim_weight(a: str, b: str) -> float:
 
 def sbert_paraphrase(sentences: list) -> float:
     headers = {"Authorization": f"Bearer {API_SECRET}"}
+    start = timer()
     res = requests.post(
         f"{SBERT_ENDPOINT}/paraphrase", json={"sentences": sentences}, headers=headers
     )
+    end = timer()
+    logging.info('sbert paraphrase execution time: %s', timedelta(seconds=end-start))
     res.raise_for_status()
     logging.debug(res.json())
     return res.json()["pairs"]
