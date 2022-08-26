@@ -6,7 +6,7 @@
     "serverless": "^3.22.0",
     "serverless-deployment-bucket": "^1.6.0",
     "serverless-domain-manager": "^6.1.0",
-    "serverless-layers": "^2.5.4"
+    "serverless-layers": "2.5.2"
   },
   "scripts": {
     "deploy": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy",
