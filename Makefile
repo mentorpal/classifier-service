@@ -1,3 +1,5 @@
+VENV=.venv
+
 LICENSE_CONFIG?="license-config.json"
 
 LICENSE:
@@ -18,3 +20,11 @@ license: LICENSE_HEADER
 .PHONY: license-deploy
 license-deploy: node_modules/license-check-and-add LICENSE LICENSE_HEADER
 	LICENSE_CONFIG=${LICENSE_CONFIG} npm run license:deploy
+
+PHONY: test
+test: $(VENV)
+	rm -rf tests/fixtures/data_out/*/*
+	# requires a valid http url:
+	GRAPHQL_ENDPOINT=http://graphql poetry run coverage run \
+		--omit="$(PWD)/tests $(VENV)" \
+		-m py.test -vv $(args)
