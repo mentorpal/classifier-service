@@ -17,4 +17,4 @@ def data_root() -> str:
 
 @pytest.fixture(scope="module", autouse=True)
 def shared_root() -> str:
-    return path.abspath(path.join("..", "shared", "installed"))
+    return path.abspath("shared")
