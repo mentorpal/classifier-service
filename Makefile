@@ -25,6 +25,7 @@ PHONY: test
 test: $(VENV)
 	rm -rf tests/fixtures/data_out/*/*
 	# requires a valid http url:
-	GRAPHQL_ENDPOINT=http://graphql poetry run coverage run \
+	SBERT_ENDPOINT=http://sbert GRAPHQL_ENDPOINT=http://graphql \
+	poetry run coverage run \
 		--omit="$(PWD)/tests $(VENV)" \
 		-m py.test -vv $(args)
