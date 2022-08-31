@@ -26,9 +26,8 @@ def test_trains_and_outputs_models(data_root: str, shared_root: str, mentor_id: 
     with open(fixture_path("graphql/{}.json".format(mentor_id))) as f:
         data = json.load(f)
     responses.add(responses.POST, re.compile(".*"), json=data, status=200)
-    result = (
-        TransformersQuestionClassifierTraining(mentor_id, shared_root, data_root)
-        .train()
-    )
+    result = TransformersQuestionClassifierTraining(
+        mentor_id, shared_root, data_root
+    ).train()
     assert result.model_path == path.join(data_root, mentor_id, ARCH_LR_TRANSFORMER)
     assert path.exists(path.join(result.model_path, "model.pkl"))

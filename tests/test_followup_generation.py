@@ -33,7 +33,12 @@ def test_covers_all_entities(
     expected_followup: str,
     shared_root: str,
 ):
-    responses.add(responses.POST, "http://sbert/encode/cos_sim_weight", json={"cos_sim_weight": 0.2}, status=200)
+    responses.add(
+        responses.POST,
+        "http://sbert/encode/cos_sim_weight",
+        json={"cos_sim_weight": 0.2},
+        status=200,
+    )
     answer_info = AnswerInfo(question_text=question, answer_text=answer)
     answer_info_list = [answer_info]
     ents = NamedEntities(answer_info_list, "Clint Anderson", shared_root)
@@ -77,7 +82,12 @@ def test_deduplication(
     expected_followups: List[str],
     shared_root: str,
 ):
-    responses.add(responses.POST, "http://sbert/encode/cos_sim_weight", json={"cos_sim_weight": 0.2}, status=200)
+    responses.add(
+        responses.POST,
+        "http://sbert/encode/cos_sim_weight",
+        json={"cos_sim_weight": 0.2},
+        status=200,
+    )
     answer_info_list = [
         AnswerInfo(questions[x], answers[x]) for x in range(len(questions))
     ]
