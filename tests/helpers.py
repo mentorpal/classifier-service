@@ -18,6 +18,7 @@ from module.types import (
 )
 from module.classifier.predict import TransformersQuestionClassifierPrediction
 from typing import List
+from .fixtures import sbert_encodings
 
 
 def load_mentor_csv(path: str) -> Mentor:
@@ -100,11 +101,22 @@ def run_model_against_testset(
     evaluator: TransformersQuestionClassifierPrediction,
     test_set: _MentorTestSet,
     shared_root: str,
+    responses,
 ) -> _MentorTestSetResult:
     result = _MentorTestSetResult()
 
     for test_set_entry in test_set.tests:
         current_result_entry = _MentorTestResultEntry(test_set_entry)
+        responses.add(
+            responses.GET,
+            "http://sbert/encode",
+            json={
+                "query": test_set_entry.question,
+                "encoding": sbert_encodings[test_set_entry.question],
+            },
+            status=200,
+        )
+
         test_result = evaluator.evaluate(test_set_entry.question, shared_root)
 
         if test_result.answer_text != test_set_entry.expected_answer:
