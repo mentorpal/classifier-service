@@ -248,7 +248,7 @@ def fetch_training_data(mentor: str):
         )
 
     data_csv = StringIO()
-    csv_writer = csv.writer(data_csv)
+    csv_writer = csv.writer(data_csv, lineterminator="\n")
     csv_writer.writerow(["id", "question", "paraphrases", "answer", "topic"])
     csv_writer.writerows(data_list)
 
