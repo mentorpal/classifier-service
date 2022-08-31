@@ -106,7 +106,6 @@ def run_model_against_testset(
     result = _MentorTestSetResult()
 
     for test_set_entry in test_set.tests:
-        current_result_entry = _MentorTestResultEntry(test_set_entry)
         responses.add(
             responses.GET,
             "http://sbert/encode",
@@ -116,6 +115,9 @@ def run_model_against_testset(
             },
             status=200,
         )
+
+    for test_set_entry in test_set.tests:
+        current_result_entry = _MentorTestResultEntry(test_set_entry)
 
         test_result = evaluator.evaluate(test_set_entry.question, shared_root)
 

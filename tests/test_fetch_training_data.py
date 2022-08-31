@@ -31,9 +31,11 @@ def test_fetch_data(
     with open(fixture_path("graphql/{}.json".format(input_mentor))) as f:
         data = json.load(f)
         responses.add(responses.POST, "http://graphql", json=data, status=200)
-    with open(fixture_path(os.path.join("fetched_training_data", f"{input_mentor}.csv"))) as f:
+    with open(
+        fixture_path(os.path.join("fetched_training_data", f"{input_mentor}.csv"))
+    ) as f:
         expected_data = f.read()
 
     actual_data = fetch_training_data(input_mentor)
-    
+
     assert actual_data == expected_data
