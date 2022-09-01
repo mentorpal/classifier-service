@@ -36,8 +36,8 @@ phases:
     commands:
       - echo Checking formatting
       - flake8 .
-      # TODO 
-      # - echo Running tests
+      - echo Running tests
+      - make test
 
 artifacts:
   files:

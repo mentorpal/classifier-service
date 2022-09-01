@@ -82,6 +82,7 @@ class Answer:
     status: str
     transcript: str
     question: Question
+    markdownTranscript: str = ""
 
 
 @dataclass
@@ -124,6 +125,7 @@ class Mentor:
             _id=f"A{str(len(self.answers) + 1)}",
             status="COMPLETE",
             transcript=mentor_question.answer,
+            markdownTranscript=mentor_question.answer,
             question=question,
         )
         self.answers.append(answer)

@@ -104,7 +104,11 @@ class TransformersQuestionClassifierPrediction:
     ) -> Tuple[str, str, str, AnswerMedia, float]:
         prediction = self.model.predict([embedded_question])
         decision = self.model.decision_function([embedded_question])
-        highest_confidence = max(decision[0])
+        if type(decision[0]) == numpy.ndarray:
+            highest_confidence = max(decision[0])
+        else:
+            # edge-case - just a single number:
+            highest_confidence = decision[0]
         answer = self.mentor.answer_id_by_answer[prediction[0]]
         answer_text = answer["transcript"]
         answer_markdown_text = answer["markdownTranscript"]
