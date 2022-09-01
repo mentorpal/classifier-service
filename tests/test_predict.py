@@ -7,7 +7,7 @@
 # The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 #
 from os import path, environ
-from typing import Dict
+from typing import Dict, List
 
 import json
 import pytest
@@ -19,6 +19,7 @@ from module.classifier.arch.lr_transformer import TransformersQuestionClassifier
 from module.classifier.predict import TransformersQuestionClassifierPrediction
 from .helpers import fixture_path
 from .fixtures import sbert_encodings
+
 
 @pytest.fixture(autouse=True)
 def python_path_env(monkeypatch, shared_root):
@@ -57,46 +58,94 @@ def _ensure_trained(mentor_id: str, shared_root: str, output_dir: str) -> None:
         (
             "clint",
             "What is your name?",
-            "A1",
-            "Clint Anderson",
+            "62709347a2fa682085cdbd1c",
+            "Clinton Anderson.",
             {
-                "web_media": {"type": "video", "tag": "web", "url": "q1_web.mp4"},
+                "web_media": {
+                    "type": "video",
+                    "tag": "web",
+                    "url": "https://videourl.org/614993b2a8bc838230c159ed/web.mp4",
+                },
                 "mobile_media": {
                     "type": "video",
                     "tag": "mobile",
-                    "url": "q1_mobile.mp4",
+                    "url": "https://videourl.org/614993b2a8bc838230c159ed/mobile.mp4",
                 },
-                "vtt_media": None,
+                "vtt_media": {
+                    "type": "subtitles",
+                    "tag": "en",
+                    "url": "https://videourl.org/614993b2a8bc838230c159ed/en.vtt",
+                },
             },
         ),
         (
             "clint",
-            "How old are you?",
-            "A2",
-            "37 years old",
-            {"mobile_media": None, "vtt_media": None, "web_media": None},
+            "How old are you now?",
+            "62709347a2fa682085cdbd43",
+            "I'm 41 years old.",
+            {
+                "web_media": {
+                    "type": "video",
+                    "tag": "web",
+                    "url": "https://videourl.org/61499bb0a8bc8333bac1629e/web.mp4",
+                },
+                "mobile_media": {
+                    "type": "video",
+                    "tag": "mobile",
+                    "url": "https://videourl.org/61499bb0a8bc8333bac1629e/mobile.mp4",
+                },
+                "vtt_media": {
+                    "type": "subtitles",
+                    "tag": "en",
+                    "url": "https://videourl.org/61499bb0a8bc8333bac1629e/en.vtt",
+                },
+            },
         ),
         (
             "clint",
             "Who are you?",
-            "A1",
-            "Clint Anderson",
+            "62709347a2fa682085cdbd1c",
+            "Clinton Anderson.",
             {
-                "web_media": {"type": "video", "tag": "web", "url": "q1_web.mp4"},
+                "web_media": {
+                    "type": "video",
+                    "tag": "web",
+                    "url": "https://videourl.org/614993b2a8bc838230c159ed/web.mp4",
+                },
                 "mobile_media": {
                     "type": "video",
                     "tag": "mobile",
-                    "url": "q1_mobile.mp4",
+                    "url": "https://videourl.org/614993b2a8bc838230c159ed/mobile.mp4",
                 },
-                "vtt_media": None,
+                "vtt_media": {
+                    "type": "subtitles",
+                    "tag": "en",
+                    "url": "https://videourl.org/614993b2a8bc838230c159ed/en.vtt",
+                },
             },
         ),
         (
             "clint",
             "What's your age?",
-            "A2",
-            "37 years old",
-            {"mobile_media": None, "vtt_media": None, "web_media": None},
+            "62709347a2fa682085cdbd43",
+            "I'm 41 years old.",
+            {
+                "web_media": {
+                    "type": "video",
+                    "tag": "web",
+                    "url": "https://videourl.org/61499bb0a8bc8333bac1629e/web.mp4",
+                },
+                "mobile_media": {
+                    "type": "video",
+                    "tag": "mobile",
+                    "url": "https://videourl.org/61499bb0a8bc8333bac1629e/mobile.mp4",
+                },
+                "vtt_media": {
+                    "type": "subtitles",
+                    "tag": "en",
+                    "url": "https://videourl.org/61499bb0a8bc8333bac1629e/en.vtt",
+                },
+            },
         ),
     ],
 )
@@ -128,70 +177,84 @@ def test_gets_answer_for_exact_match_and_paraphrases(
     assert result.feedback_id is not None
 
 
-# @responses.activate
-# @pytest.mark.parametrize(
-#     "mentor_id,question,expected_answer_id,expected_answer,expected_media",
-#     [
-#         (
-#             "clint",
-#             "What's your name?",
-#             "A1",
-#             "Clint Anderson",
-#             {
-#                 "web_media": {"type": "video", "tag": "web", "url": "q1_web.mp4"},
-#                 "mobile_media": {
-#                     "type": "video",
-#                     "tag": "mobile",
-#                     "url": "q1_mobile.mp4",
-#                 },
-#                 "vtt_media": None,
-#             },
-#         )
-#         ,(
-#             "clint",
-#             "Tell me your name",
-#             "A1",
-#             "Clint Anderson",
-#             {
-#                 "web_media": {"type": "video", "tag": "web", "url": "q1_web.mp4"},
-#                 "mobile_media": {
-#                     "type": "video",
-#                     "tag": "mobile",
-#                     "url": "q1_mobile.mp4",
-#                 },
-#                 "vtt_media": None,
-#             },
-#         ),
-#     ],
-# )
-# def test_predicts_answer(
-#     data_root: str,
-#     shared_root: str,
-#     mentor_id: str,
-#     question: str,
-#     expected_answer_id: str,
-#     expected_answer: str,
-#     expected_media: Dict[str, Media],
-# ):
-#     with open(fixture_path(f"graphql/{mentor_id}.json")) as f:
-#         data = json.load(f)
-#     responses.add(responses.POST, "http://graphql", json=data, status=200) # fetch mentor
-#     responses.add(
-#         responses.GET,
-#         "http://sbert/encode",
-#         json={"query": question, "encoding": sbert_encodings[question]},
-#         status=200,
-#     )
-#     responses.add(responses.POST, "http://graphql", json={}, status=200) # create_user_question
-#     _ensure_trained(mentor_id, shared_root, data_root)
-#     classifier = TransformersQuestionClassifierPrediction(mentor_id, data_root)
-#     result = classifier.evaluate(question)
-#     # todo fix this, answer under threshold level (-0.9)
-#     assert result.answer_id == expected_answer_id
-#     assert result.answer_text == expected_answer
-#     assert result.answer_media == expected_media
-#     assert result.highest_confidence != 1
-#     assert result.feedback_id is not None
+@responses.activate
+@pytest.mark.parametrize(
+    "mentor_id,question,expected_answer_id,expected_answer,expected_media",
+    [
+        (
+            "clint",
+            "What's your name?",
+            "62709347a2fa682085cdbd1c",
+            "Clinton Anderson.",
+            {
+                "web_media": {
+                    "type": "video",
+                    "tag": "web",
+                    "url": "https://videourl.org/614993b2a8bc838230c159ed/web.mp4",
+                },
+                "mobile_media": {
+                    "type": "video",
+                    "tag": "mobile",
+                    "url": "https://videourl.org/614993b2a8bc838230c159ed/mobile.mp4",
+                },
+                "vtt_media": {
+                    "type": "subtitles",
+                    "tag": "en",
+                    "url": "https://videourl.org/614993b2a8bc838230c159ed/en.vtt",
+                },
+            },
+        ),
+        (
+            "clint",
+            "Tell me your name",
+            "62709347a2fa682085cdbd1c",
+            "Clinton Anderson.",
+            {
+                "web_media": {
+                    "type": "video",
+                    "tag": "web",
+                    "url": "https://videourl.org/614993b2a8bc838230c159ed/web.mp4",
+                },
+                "mobile_media": {
+                    "type": "video",
+                    "tag": "mobile",
+                    "url": "https://videourl.org/614993b2a8bc838230c159ed/mobile.mp4",
+                },
+                "vtt_media": {
+                    "type": "subtitles",
+                    "tag": "en",
+                    "url": "https://videourl.org/614993b2a8bc838230c159ed/en.vtt",
+                },
+            },
+        ),
+    ],
+)
+def test_predicts_answer(
+    data_root: str,
+    shared_root: str,
+    mentor_id: str,
+    question: str,
+    expected_answer_id: str,
+    expected_answer: str,
+    expected_media: List[Media],
+):
+    with open(fixture_path("graphql/{}.json".format(mentor_id))) as f:
+        data = json.load(f)
+    responses.add(responses.POST, "http://graphql/", json=data, status=200)
+    responses.add(
+        responses.GET,
+        "http://sbert/encode",
+        json={"query": question, "encoding": sbert_encodings[question]},
+        status=200,
+    )
+    _ensure_trained(mentor_id, shared_root, data_root)
+    classifier = TransformersQuestionClassifierPrediction(mentor_id, data_root)
+    result = classifier.evaluate(question)
+    assert result.answer_id == expected_answer_id
+    assert result.answer_text == expected_answer
+    assert result.answer_media == expected_media
+    assert result.highest_confidence != 1
+    assert result.feedback_id is not None
 
 
 # def _test_gets_off_topic(
