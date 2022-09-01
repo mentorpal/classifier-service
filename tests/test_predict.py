@@ -1,3 +1,5 @@
+# flake8: noqa
+# todo until all tests are implemented
 #
 # This software is Copyright ©️ 2020 The University of Southern California. All Rights Reserved.
 # Permission to use, copy, modify, and distribute this software and its documentation for educational, research and non-profit purposes, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and subject to the full license file found in the root of this software deliverable. Permission to make commercial use of this software may be obtained by contacting:  USC Stevens Center for Innovation University of Southern California 1150 S. Olive Street, Suite 2300, Los Angeles, CA 90115, USA Email: accounting@stevens.usc.edu
@@ -17,6 +19,11 @@ from module.classifier.arch.lr_transformer import TransformersQuestionClassifier
 from module.classifier.predict import TransformersQuestionClassifierPrediction
 from .helpers import fixture_path
 from .fixtures import sbert_encodings
+
+@pytest.fixture(autouse=True)
+def python_path_env(monkeypatch, shared_root):
+    monkeypatch.setenv("GRAPHQL_ENDPOINT", "http://graphql")
+    monkeypatch.setenv("SBERT_ENDPOINT", "http://sbert")
 
 
 @pytest.fixture(scope="module")
@@ -130,20 +137,30 @@ def test_gets_answer_for_exact_match_and_paraphrases(
 #             "What's your name?",
 #             "A1",
 #             "Clint Anderson",
-#             [
-#                 {"type": "video", "tag": "web", "url": "q1_web.mp4"},
-#                 {"type": "video", "tag": "mobile", "url": "q1_mobile.mp4"},
-#             ],
-#         ),
-#         (
+#             {
+#                 "web_media": {"type": "video", "tag": "web", "url": "q1_web.mp4"},
+#                 "mobile_media": {
+#                     "type": "video",
+#                     "tag": "mobile",
+#                     "url": "q1_mobile.mp4",
+#                 },
+#                 "vtt_media": None,
+#             },
+#         )
+#         ,(
 #             "clint",
 #             "Tell me your name",
 #             "A1",
 #             "Clint Anderson",
-#             [
-#                 {"type": "video", "tag": "web", "url": "q1_web.mp4"},
-#                 {"type": "video", "tag": "mobile", "url": "q1_mobile.mp4"},
-#             ],
+#             {
+#                 "web_media": {"type": "video", "tag": "web", "url": "q1_web.mp4"},
+#                 "mobile_media": {
+#                     "type": "video",
+#                     "tag": "mobile",
+#                     "url": "q1_mobile.mp4",
+#                 },
+#                 "vtt_media": None,
+#             },
 #         ),
 #     ],
 # )
@@ -154,14 +171,22 @@ def test_gets_answer_for_exact_match_and_paraphrases(
 #     question: str,
 #     expected_answer_id: str,
 #     expected_answer: str,
-#     expected_media: List[Media],
+#     expected_media: Dict[str, Media],
 # ):
-#     with open(fixture_path("graphql/{}.json".format(mentor_id))) as f:
+#     with open(fixture_path(f"graphql/{mentor_id}.json")) as f:
 #         data = json.load(f)
-#     responses.add(responses.POST, "http://graphql/graphql", json=data, status=200)
+#     responses.add(responses.POST, "http://graphql", json=data, status=200) # fetch mentor
+#     responses.add(
+#         responses.GET,
+#         "http://sbert/encode",
+#         json={"query": question, "encoding": sbert_encodings[question]},
+#         status=200,
+#     )
+#     responses.add(responses.POST, "http://graphql", json={}, status=200) # create_user_question
 #     _ensure_trained(mentor_id, shared_root, data_root)
-#     classifier = ClassifierFactory().new_prediction(mentor_id, shared_root, data_root)
-#     result = classifier.evaluate(question, shared_root)
+#     classifier = TransformersQuestionClassifierPrediction(mentor_id, data_root)
+#     result = classifier.evaluate(question)
+#     # todo fix this, answer under threshold level (-0.9)
 #     assert result.answer_id == expected_answer_id
 #     assert result.answer_text == expected_answer
 #     assert result.answer_media == expected_media
