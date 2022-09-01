@@ -44,7 +44,6 @@ def test_covers_all_entities(
     ents = NamedEntities(answer_info_list, "Clint Anderson", shared_root)
     questions = ents.generate_questions(answer_info_list)
     actual_question = questions[0].question
-    print(actual_question, expected_followup)
     assert actual_question == expected_followup
 
 

@@ -37,5 +37,4 @@ def test_fetch_data(
         expected_data = f.read()
 
     actual_data = fetch_training_data(input_mentor)
-
     assert actual_data == expected_data
