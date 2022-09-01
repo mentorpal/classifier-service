@@ -16,8 +16,8 @@ from .types import AnswerInfo
 import logging
 
 OFF_TOPIC_THRESHOLD_DEFAULT = -0.631
-SBERT_ENDPOINT = os.environ.get("SBERT_ENDPOINT")
-GRAPHQL_ENDPOINT = os.environ.get("GRAPHQL_ENDPOINT")
+# SBERT_ENDPOINT = os.environ.get("SBERT_ENDPOINT")
+# GRAPHQL_ENDPOINT = os.environ.get("GRAPHQL_ENDPOINT")
 API_SECRET = os.environ.get("API_SECRET")
 
 
@@ -41,7 +41,7 @@ def sbert_encode(question: str):
     headers = {"Authorization": f"Bearer {API_SECRET}"}
     start = timer()
     res = requests.get(
-        f"{SBERT_ENDPOINT}/encode", params={"query": question}, headers=headers
+        f"{os.environ.get('SBERT_ENDPOINT')}/encode", params={"query": question}, headers=headers
     )
     end = timer()
     logging.info("sbert encode execution time: %s", timedelta(seconds=end - start))
@@ -53,7 +53,7 @@ def sbert_cos_sim_weight(a: str, b: str) -> float:
     headers = {"Authorization": f"Bearer {API_SECRET}"}
     start = timer()
     res = requests.post(
-        f"{SBERT_ENDPOINT}/encode/cos_sim_weight",
+        f"{os.environ.get('SBERT_ENDPOINT')}/encode/cos_sim_weight",
         json={"a": a, "b": b},
         headers=headers,
     )
@@ -68,7 +68,7 @@ def sbert_paraphrase(sentences: list) -> float:
     headers = {"Authorization": f"Bearer {API_SECRET}"}
     start = timer()
     res = requests.post(
-        f"{SBERT_ENDPOINT}/paraphrase", json={"sentences": sentences}, headers=headers
+        f"{os.environ.get('SBERT_ENDPOINT')}/paraphrase", json={"sentences": sentences}, headers=headers
     )
     end = timer()
     logging.info("sbert paraphrase execution time: %s", timedelta(seconds=end - start))
@@ -170,7 +170,7 @@ query Mentor{
 
 def __auth_gql(query: GQLQueryBody, headers: Dict[str, str] = {}) -> dict:
     # SSL is not valid for alb so have to turn off validation
-    res = requests.post(GRAPHQL_ENDPOINT, json=query, headers=headers)
+    res = requests.post(os.environ.get("GRAPHQL_ENDPOINT"), json=query, headers=headers)
     res.raise_for_status()
     return res.json()
 
