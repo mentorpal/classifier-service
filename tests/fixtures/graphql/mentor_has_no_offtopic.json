@@ -71,6 +71,7 @@
           "_id": "A1",
           "status": "COMPLETE",
           "transcript": "Clint Anderson",
+          "markdownTranscript": "Clint Anderson",
           "question": {
             "_id": "Q1",
             "question": "What is your name?",
@@ -87,6 +88,7 @@
           "_id": "A2",
           "status": "COMPLETE",
           "transcript": "37 years old",
+          "markdownTranscript": "37 years old",
           "question": {
             "_id": "Q2",
             "question": "How old are you?",
@@ -99,6 +101,7 @@
           "_id": "A3",
           "status": "INCOMPLETE",
           "transcript": null,
+          "markdownTranscript": null,
           "question": {
             "_id": "Q3",
             "question": "Will you be my friend?",
@@ -111,6 +114,7 @@
           "_id": "A4",
           "status": "COMPLETE",
           "transcript": null,
+          "markdownTranscript": null,
           "question": {
             "_id": "Q4",
             "question": "Look at the camera.",
@@ -129,6 +133,7 @@
           "_id": "A5",
           "status": "COMPLETE",
           "transcript": "Hi I'm Clint",
+          "markdownTranscript": "Hi I'm Clint",
           "question": {
             "_id": "Q5",
             "question": "Introduce yourself.",

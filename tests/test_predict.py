@@ -257,19 +257,7 @@ def test_predicts_answer(
     assert result.feedback_id is not None
 
 
-@responses.activate
-@pytest.mark.parametrize(
-    "mentor_id,question,expected_answer_id,expected_answer",
-    [
-        (
-            "clint",
-            "According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.",
-            "6270eb5aa2fa682085fd126d",
-            "That's a great question, unfortunately, I never recorded an answer for that.",
-        )
-    ],
-)
-def test_gets_off_topic(
+def _test_gets_off_topic(
     monkeypatch,
     data_root: str,
     shared_root: str,
@@ -296,36 +284,65 @@ def test_gets_off_topic(
     assert result.answer_text == expected_answer
 
 
-# @responses.activate
-# @pytest.mark.parametrize(
-#     "mentor_id,question,expected_answer_id,expected_answer,expected_media",
-#     [
-#         (
-#             "mentor_has_no_offtopic",
-#             "any user question",
-#             "_OFF_TOPIC_",
-#             "_OFF_TOPIC_",
-#             [],
-#         )
-#     ],
-# )
-# def test_gets_off_topic_for_user_with_no_offtopic_response(
-#     monkeypatch,
-#     data_root: str,
-#     shared_root: str,
-#     mentor_id: str,
-#     question: str,
-#     expected_answer_id: str,
-#     expected_answer: str,
-#     expected_media: List[Media],
-# ):
-#     _test_gets_off_topic(
-#         monkeypatch,
-#         data_root,
-#         shared_root,
-#         mentor_id,
-#         question,
-#         expected_answer_id,
-#         expected_answer,
-#         expected_media,
-#     )
+@responses.activate
+@pytest.mark.parametrize(
+    "mentor_id,question,expected_answer_id,expected_answer",
+    [
+        (
+            "clint",
+            "According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.",
+            "6270eb5aa2fa682085fd126d",
+            "That's a great question, unfortunately, I never recorded an answer for that.",
+        )
+    ],
+)
+def test_gets_off_topic(
+    monkeypatch,
+    data_root: str,
+    shared_root: str,
+    mentor_id: str,
+    question: str,
+    expected_answer_id: str,
+    expected_answer: str,
+):
+    _test_gets_off_topic(
+        monkeypatch,
+        data_root,
+        shared_root,
+        mentor_id,
+        question,
+        expected_answer_id,
+        expected_answer,
+    )
+
+
+@responses.activate
+@pytest.mark.parametrize(
+    "mentor_id,question,expected_answer_id,expected_answer",
+    [
+        (
+            "mentor_has_no_offtopic",
+            "According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.",
+            "_OFF_TOPIC_",
+            "_OFF_TOPIC_",
+        )
+    ],
+)
+def test_gets_off_topic_for_user_with_no_offtopic_response(
+    monkeypatch,
+    data_root: str,
+    shared_root: str,
+    mentor_id: str,
+    question: str,
+    expected_answer_id: str,
+    expected_answer: str,
+):
+    _test_gets_off_topic(
+        monkeypatch,
+        data_root,
+        shared_root,
+        mentor_id,
+        question,
+        expected_answer_id,
+        expected_answer,
+    )
