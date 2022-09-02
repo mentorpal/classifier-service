@@ -16,7 +16,7 @@ from module.classifier import (
     QuestionClassiferPredictionResult,
     Media,
 )
-from module.api import create_user_question, OFF_TOPIC_THRESHOLD_DEFAULT, sbert_encode
+from module.api import create_user_question, get_off_topic_threshold, sbert_encode
 from module.mentor import Mentor
 from module.utils import file_last_updated_at, sanitize_string
 
@@ -77,11 +77,11 @@ class TransformersQuestionClassifierPrediction:
             question,
             answer_id,
             "OFF_TOPIC"
-            if highest_confidence < OFF_TOPIC_THRESHOLD_DEFAULT
+            if highest_confidence < get_off_topic_threshold()
             else "CLASSIFIER",
             highest_confidence,
         )
-        if highest_confidence < OFF_TOPIC_THRESHOLD_DEFAULT:
+        if highest_confidence < get_off_topic_threshold():
             answer_id, answer, markdownAnswer, answer_media = self.__get_offtopic()
         return QuestionClassiferPredictionResult(
             answer_id,

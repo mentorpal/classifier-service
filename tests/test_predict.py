@@ -257,65 +257,43 @@ def test_predicts_answer(
     assert result.feedback_id is not None
 
 
-# def _test_gets_off_topic(
-#     monkeypatch,
-#     data_root: str,
-#     shared_root: str,
-#     mentor_id: str,
-#     question: str,
-#     expected_answer_id: str,
-#     expected_answer: str,
-#     expected_media: List[Media],
-# ):
-#     monkeypatch.setenv("OFF_TOPIC_THRESHOLD", "1.0")  # everything is offtopic
-#     with open(fixture_path("graphql/{}.json".format(mentor_id))) as f:
-#         data = json.load(f)
-#     responses.add(responses.POST, "http://graphql/graphql", json=data, status=200)
-#     _ensure_trained(mentor_id, shared_root, data_root)
-#     classifier = ClassifierFactory().new_prediction(
-#         mentor=mentor_id, shared_root=shared_root, data_path=data_root
-#     )
-#     result = classifier.evaluate(question, shared_root)
-#     assert result.highest_confidence < OFF_TOPIC_THRESHOLD_DEFAULT
-#     assert result.answer_id == expected_answer_id
-#     assert result.answer_text == expected_answer
-#     assert result.answer_media == expected_media
-#     assert result.feedback_id is not None
-#
-#
-# @responses.activate
-# @pytest.mark.parametrize(
-#     "mentor_id,question,expected_answer_id,expected_answer,expected_media",
-#     [
-#         (
-#             "clint",
-#             "According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.",
-#             "A6",
-#             "Ask me something else",
-#             ["/clint/offtopic.mp4"],
-#         )
-#     ],
-# )
-# def test_gets_off_topic(
-#     monkeypatch,
-#     data_root: str,
-#     shared_root: str,
-#     mentor_id: str,
-#     question: str,
-#     expected_answer_id: str,
-#     expected_answer: str,
-#     expected_media: List[Media],
-# ):
-#     _test_gets_off_topic(
-#         monkeypatch,
-#         data_root,
-#         shared_root,
-#         mentor_id,
-#         question,
-#         expected_answer_id,
-#         expected_answer,
-#         expected_media,
-#     )
+@responses.activate
+@pytest.mark.parametrize(
+    "mentor_id,question,expected_answer_id,expected_answer",
+    [
+        (
+            "clint",
+            "According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.",
+            "6270eb5aa2fa682085fd126d",
+            "That's a great question, unfortunately, I never recorded an answer for that.",
+        )
+    ],
+)
+def test_gets_off_topic(
+    monkeypatch,
+    data_root: str,
+    shared_root: str,
+    mentor_id: str,
+    question: str,
+    expected_answer_id: str,
+    expected_answer: str,
+):
+    monkeypatch.setenv("OFF_TOPIC_THRESHOLD", "1.0")  # everything is offtopic
+    with open(fixture_path("graphql/{}.json".format(mentor_id))) as f:
+        data = json.load(f)
+    responses.add(responses.POST, "http://graphql/", json=data, status=200)
+    responses.add(
+        responses.GET,
+        "http://sbert/encode",
+        json={"query": question, "encoding": sbert_encodings[question]},
+        status=200,
+    )
+    _ensure_trained(mentor_id, shared_root, data_root)
+    classifier = TransformersQuestionClassifierPrediction(mentor_id, data_root)
+    result = classifier.evaluate(question)
+
+    assert result.answer_id == expected_answer_id
+    assert result.answer_text == expected_answer
 
 
 # @responses.activate
