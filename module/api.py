@@ -41,7 +41,9 @@ def sbert_encode(question: str):
     headers = {"Authorization": f"Bearer {API_SECRET}"}
     start = timer()
     res = requests.get(
-        f"{os.environ.get('SBERT_ENDPOINT')}/encode", params={"query": question}, headers=headers
+        f"{os.environ.get('SBERT_ENDPOINT')}/encode",
+        params={"query": question},
+        headers=headers,
     )
     end = timer()
     logging.info("sbert encode execution time: %s", timedelta(seconds=end - start))
@@ -68,7 +70,9 @@ def sbert_paraphrase(sentences: list) -> float:
     headers = {"Authorization": f"Bearer {API_SECRET}"}
     start = timer()
     res = requests.post(
-        f"{os.environ.get('SBERT_ENDPOINT')}/paraphrase", json={"sentences": sentences}, headers=headers
+        f"{os.environ.get('SBERT_ENDPOINT')}/paraphrase",
+        json={"sentences": sentences},
+        headers=headers,
     )
     end = timer()
     logging.info("sbert paraphrase execution time: %s", timedelta(seconds=end - start))
