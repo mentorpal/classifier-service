@@ -26,7 +26,7 @@ phases:
       - pyenv global $PYTHON_38_VERSION
       - python3 -m venv /root/venv
       - . /root/venv/bin/activate
-      - pip3 install pytest && pip3 install poetry
+      - pip3 install poetry
       - poetry install --no-root
       # - rm -rf git-lfs-linux-amd64-v3.1.4* ?
       - n 16 # workaround https://github.com/aws/aws-codebuild-docker-images/issues/490
