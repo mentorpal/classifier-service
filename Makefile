@@ -1,5 +1,3 @@
-VENV=.venv
-
 LICENSE_CONFIG?="license-config.json"
 
 LICENSE:
@@ -21,8 +19,8 @@ license: LICENSE_HEADER
 license-deploy: node_modules/license-check-and-add LICENSE LICENSE_HEADER
 	LICENSE_CONFIG=${LICENSE_CONFIG} npm run license:deploy
 
-PHONY: test
-test: $(VENV)
+.PHONY: test
+test:
 	rm -rf tests/fixtures/data_out/*/*
 	# requires a valid http url:
 	SBERT_ENDPOINT=http://sbert GRAPHQL_ENDPOINT=http://graphql \
