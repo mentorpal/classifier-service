@@ -15,6 +15,7 @@ class Media:
     type: str
     tag: str
     url: str
+    transparentVideoUrl: str = ""
 
 
 class Mentor(object):

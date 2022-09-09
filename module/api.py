@@ -115,11 +115,13 @@ query Mentor($id: ID!) {
                 type
                 tag
                 url
+                transparentVideoUrl
             }
             mobileMedia {
                 type
                 tag
                 url
+                transparentVideoUrl
             }
             vttMedia {
                 type
