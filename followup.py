@@ -24,9 +24,11 @@ def get_auth_headers(event) -> Dict[str, str]:
 
 def handler(event, context):
     log.debug(json.dumps(event))
-
+    category = event["pathParameters"]["category"]
+    mentor = event["pathParameters"]["mentor"]
     data = generate_followups(
-        event["pathParameters"]["category"],
+        category,
+        mentor,
         headers=get_auth_headers(event),
     )
     questions = [

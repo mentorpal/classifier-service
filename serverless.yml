@@ -264,7 +264,7 @@ functions:
     timeout: 30
     events:
       - http:
-          path: /me/followups/category/{category}
+          path: /followups/category/{category}/{mentor}
           method: post
           cors: true
           authorizer: 
@@ -276,6 +276,7 @@ functions:
             parameters:
               paths:
                 category: true
+                mentor: true
 
   http_training_data:
     handler: trainingdata.handler

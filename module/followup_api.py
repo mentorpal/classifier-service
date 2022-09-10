@@ -12,13 +12,13 @@ from .api import fetch_category, fetch_mentor_answers_and_name
 
 def generate_followups(
     category: str,
+    mentor: str,
     headers: Dict[str, str] = {},
 ) -> List[FollowupQuestion]:
-    data = fetch_category(category, headers=headers)
-    me = data.get("me")
-    if me is None:
+    fetched_category_data = fetch_category(category, mentor, headers=headers)
+    category_answer = fetched_category_data.get("categoryAnswers")
+    if category_answer is None:
         raise Exception("failed to fetch category answers")
-    category_answer = me.get("categoryAnswers", [])
     category_answers = [
         AnswerInfo(
             answer_text=answer_data.get("answerText") or "",
@@ -26,6 +26,6 @@ def generate_followups(
         )
         for answer_data in category_answer
     ]
-    all_answered, name = fetch_mentor_answers_and_name(headers=headers)
+    all_answered, name = fetch_mentor_answers_and_name(mentor, headers=headers)
     followups = NamedEntities(category_answers, name).generate_questions(all_answered)
     return followups

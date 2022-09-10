@@ -148,20 +148,17 @@ mutation UserQuestionCreate($userQuestion: UserQuestionCreateInput!) {
 }
 """
 GQL_CATEGORY_ANSWERS = """
-query CategoryAnswers($category: String!) {
-  me {
-        categoryAnswers(category: $category) {
-            answerText
-            questionText
-        }
+query CategoryAnswers($category: String!, $mentor: ID!) {
+    categoryAnswers(category: $category, mentor: $mentor) {
+        answerText
+        questionText
     }
 }
 """
 
 GQL_QUERY_MENTOR_ANSWERS_AND_NAME = """
-query Mentor{
-    me {
-        mentor {
+query Mentor($id: ID!){
+        mentor(id: $id) {
             name
             answers {
                 question {
@@ -170,7 +167,6 @@ query Mentor{
                 transcript
             }
         }
-    }
 } """
 
 
@@ -185,12 +181,15 @@ def query_mentor(mentor: str) -> GQLQueryBody:
     return {"query": GQL_QUERY_MENTOR, "variables": {"id": mentor}}
 
 
-def query_mentor_answers_and_name() -> GQLQueryBody:
-    return {"query": GQL_QUERY_MENTOR_ANSWERS_AND_NAME, "variables": {}}
+def query_mentor_answers_and_name(mentor: str) -> GQLQueryBody:
+    return {"query": GQL_QUERY_MENTOR_ANSWERS_AND_NAME, "variables": {"id": mentor}}
 
 
-def query_category_answers(category: str) -> GQLQueryBody:
-    return {"query": GQL_CATEGORY_ANSWERS, "variables": {"category": category}}
+def query_category_answers(category: str, mentor: str) -> GQLQueryBody:
+    return {
+        "query": GQL_CATEGORY_ANSWERS,
+        "variables": {"category": category, "mentor": mentor},
+    }
 
 
 def mutation_update_training(mentor: str) -> GQLQueryBody:
@@ -270,9 +269,9 @@ def fetch_mentor_data(mentor: str) -> dict:
 
 
 def fetch_mentor_answers_and_name(
-    headers: Dict[str, str] = {}
+    mentor: str, headers: Dict[str, str] = {}
 ) -> Tuple[List[AnswerInfo], str]:
-    tdjson = __auth_gql(query_mentor_answers_and_name(), headers=headers)
+    tdjson = __auth_gql(query_mentor_answers_and_name(mentor), headers=headers)
     if "errors" in tdjson:
         raise Exception(json.dumps(tdjson.get("errors")))
     data = tdjson["data"]["me"]["mentor"]
@@ -284,8 +283,8 @@ def fetch_mentor_answers_and_name(
     return all_answered, name
 
 
-def fetch_category(category: str, headers: Dict[str, str] = {}) -> dict:
-    tdjson = __auth_gql(query_category_answers(category), headers=headers)
+def fetch_category(category: str, mentor: str, headers: Dict[str, str] = {}) -> dict:
+    tdjson = __auth_gql(query_category_answers(category, mentor), headers=headers)
     return tdjson.get("data") or {}
 
 
