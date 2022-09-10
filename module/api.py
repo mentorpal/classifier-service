@@ -274,7 +274,7 @@ def fetch_mentor_answers_and_name(
     tdjson = __auth_gql(query_mentor_answers_and_name(mentor), headers=headers)
     if "errors" in tdjson:
         raise Exception(json.dumps(tdjson.get("errors")))
-    data = tdjson["data"]["me"]["mentor"]
+    data = tdjson["data"]["mentor"]
     all_answered = [
         AnswerInfo(answer["question"]["question"], answer["transcript"])
         for answer in data.get("answers", [])
