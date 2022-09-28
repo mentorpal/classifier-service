@@ -254,6 +254,7 @@ functions:
               querystrings:
                 mentor: true
                 query: true
+                ping: false #optional
   
   http_followup:
     image:

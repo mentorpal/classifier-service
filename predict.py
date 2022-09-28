@@ -49,6 +49,11 @@ def handler(event, context):
         raise Exception("bad request")
     mentor = event["queryStringParameters"]["mentor"]
     question = event["queryStringParameters"]["query"]
+    ping = (
+        event["queryStringParameters"]["ping"]
+        if "ping" in event["queryStringParameters"]
+        else False
+    )
     log.info(f"mentor: {mentor}, question: {question}")
     relative_path = os.path.join(
         mentor, "module.classifier.arch.lr_transformer", "model.pkl"
@@ -84,6 +89,12 @@ def handler(event, context):
             body = {"message": f"No models found for mentor {mentor}."}
             return make_response(404, body, event)
         log.debug("model file download completed")
+
+    if ping:
+        # Just load the mentor and nothing else
+        classifier_dao.find_classifier(mentor)
+        body = {"message": f"Successful ping for mentor: {mentor}."}
+        return make_response(200, body, event)
 
     result = classifier_dao.find_classifier(mentor).evaluate(question)
 
