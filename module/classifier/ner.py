@@ -100,7 +100,6 @@ class NamedEntities:
         answers: List[AnswerInfo],
         mentor_name: str,
         shared_root: str = "",
-        headers: Dict[str, str] = {},
     ):
         self.people: Dict[str, EntityObject] = {}
         self.places: Dict[str, EntityObject] = {}
@@ -109,7 +108,6 @@ class NamedEntities:
         self.model: Language
         self.pop_culture: Set[str] = set()
         self.answers_text: str
-        self.headers = headers
         self.load(answers, mentor_name, shared_root or get_shared_root())
 
     def load(
@@ -166,8 +164,8 @@ class NamedEntities:
             for row in csv_reader:
                 self.pop_culture.add(row[0])
 
-    def ent_sim(self, entity: EntityObject, headers: Dict[str, str] = {}):
-        weight = sbert_cos_sim_weight(self.answers_text, entity.text, headers)
+    def ent_sim(self, entity: EntityObject):
+        weight = sbert_cos_sim_weight(self.answers_text, entity.text)
         return weight
 
     def check_pop_culture(self, ent: EntityObject) -> None:
@@ -175,9 +173,7 @@ class NamedEntities:
         if lemma in self.pop_culture:
             ent.weight = ent.weight - (1 - ent.cos_sim_weight)
 
-    def populate_entities_sim_weights(
-        self, all_answered: List[AnswerInfo], headers: Dict[str, str] = {}
-    ) -> None:
+    def populate_entities_sim_weights(self, all_answered: List[AnswerInfo]) -> None:
         entity_vals = self.people.copy()
         entity_vals.update(self.acronyms)
         entity_vals.update(self.family)
@@ -282,7 +278,7 @@ class NamedEntities:
         followups_text = [followups[followup].question for followup in followups.keys()]
         answered_text = [question.question_text for question in answered]
         questions = answered_text + followups_text
-        paraphrases = sbert_paraphrase(questions, self.headers)
+        paraphrases = sbert_paraphrase(questions)
         for paraphrase in paraphrases:
             score, i, j = paraphrase
             if score > similarity_threshold:
@@ -293,10 +289,10 @@ class NamedEntities:
         return followups
 
     def generate_questions(
-        self, all_answered: List[AnswerInfo], headers: Dict[str, str] = {}
+        self, all_answered: List[AnswerInfo]
     ) -> List[FollowupQuestion]:
         followups: Dict[str, FollowupQuestion] = {}
-        self.populate_entities_sim_weights(all_answered, headers)
+        self.populate_entities_sim_weights(all_answered)
         self.people = self.clean_ents(self.people, all_answered)
         self.places = self.clean_ents(self.places, all_answered)
         self.acronyms = self.clean_ents(self.acronyms, all_answered)

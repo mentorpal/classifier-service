@@ -13,12 +13,13 @@ from pathlib import Path
 import queue
 from threading import Thread
 import requests
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import logging
 
 log = get_logger()
 SBERT_ENDPOINT = environ.get("SBERT_ENDPOINT")
 GRAPHQL_ENDPOINT = environ.get("GRAPHQL_ENDPOINT")
+API_SECRET = environ.get("API_SECRET")
 
 
 def load_sentry():
@@ -142,7 +143,6 @@ def props_to_bool(
 class SbertCosSimReq:
     answers_text: str
     entity_text: str
-    headers: Dict[str, str] = field(default_factory=dict)
 
 
 def thread_sbert_cos_reqs(req: List[SbertCosSimReq], no_workers):
@@ -157,7 +157,7 @@ def thread_sbert_cos_reqs(req: List[SbertCosSimReq], no_workers):
                 content = self.queue.get()
                 if content == "":
                     break
-                headers = content.headers
+                headers = {"Authorization": f"Bearer {API_SECRET}"}
                 res = requests.post(
                     f"{SBERT_ENDPOINT}/encode/cos_sim_weight",
                     json={"a": content.answers_text, "b": content.entity_text},

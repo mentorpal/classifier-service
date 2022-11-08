@@ -8,7 +8,7 @@ import logging
 import random
 import joblib
 import numpy
-from typing import Union, Tuple, Dict
+from typing import Union, Tuple
 from module.classifier import (
     AnswerMedia,
     mentor_model_path,
@@ -24,9 +24,7 @@ AnswerIdTextAndMedia = Tuple[str, str, str, Media, Media, Media]
 
 
 class TransformersQuestionClassifierPrediction:
-    def __init__(
-        self, mentor: Union[str, Mentor], data_path: str, headers: Dict[str, str] = {}
-    ):
+    def __init__(self, mentor: Union[str, Mentor], data_path: str):
         if isinstance(mentor, str):
             logging.info("loading mentor id {}...".format(mentor))
             mentor = Mentor(mentor)
@@ -35,7 +33,6 @@ class TransformersQuestionClassifierPrediction:
         ), "invalid type for mentor (expected mentor.Mentor or string id for a mentor, encountered {}".format(
             type(mentor)
         )
-        self.headers = headers
         self.mentor = mentor
         self.model_file = mentor_model_path(
             data_path, mentor.id, ARCH_LR_TRANSFORMER, "model.pkl"
@@ -66,7 +63,7 @@ class TransformersQuestionClassifierPrediction:
                 return QuestionClassiferPredictionResult(
                     answer_id, answer, markdown_answer, answer_media, 1.0, feedback_id
                 )
-        encoding_json = sbert_encode(question, self.headers)
+        encoding_json = sbert_encode(question)
         embedded_question = numpy.array(encoding_json["encoding"])
         (
             answer_id,

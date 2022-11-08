@@ -17,7 +17,6 @@ from module.utils import (
     append_secure_headers,
     require_env,
 )
-from typing import Dict
 
 load_sentry()
 log = get_logger("predict")
@@ -29,14 +28,6 @@ s3 = boto3.client("s3")
 MODELS_DIR = "/tmp/models"
 
 classifier_dao = Dao(SHARED, MODELS_DIR)
-
-
-def get_auth_headers(event) -> Dict[str, str]:
-    return (
-        {"Authorization": event["headers"]["Authorization"]}
-        if "Authorization" in event["headers"]
-        else {}
-    )
 
 
 def make_response(status, body, event):
