@@ -39,6 +39,14 @@ def get_auth_headers(event) -> Dict[str, str]:
     )
 
 
+def make_response(status, body, event):
+    headers = {}
+    append_cors_headers(headers, event)
+    append_secure_headers(headers)
+    response = {"statusCode": status, "body": json.dumps(body), "headers": headers}
+    return response
+
+
 def handler(event, context):
     log.debug(json.dumps(event))
     if "queryStringParameters" not in event:
