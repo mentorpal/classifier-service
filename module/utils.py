@@ -13,7 +13,7 @@ from pathlib import Path
 import queue
 from threading import Thread
 import requests
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import logging
 
 log = get_logger()
@@ -142,7 +142,7 @@ def props_to_bool(
 class SbertCosSimReq:
     answers_text: str
     entity_text: str
-    headers: Dict[str, str] = {}
+    headers: Dict[str, str] = field(default_factory=dict)
 
 
 def thread_sbert_cos_reqs(req: List[SbertCosSimReq], no_workers):
