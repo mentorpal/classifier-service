@@ -7,7 +7,6 @@
 from os import environ
 import pylru
 from .predict import TransformersQuestionClassifierPrediction
-from typing import Dict
 
 
 class Entry:
