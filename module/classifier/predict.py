@@ -25,7 +25,7 @@ AnswerIdTextAndMedia = Tuple[str, str, str, Media, Media, Media]
 
 class TransformersQuestionClassifierPrediction:
     def __init__(
-        self, mentor: Union[str, Mentor], data_path: str, headers: Dict[str, str]
+        self, mentor: Union[str, Mentor], data_path: str, headers: Dict[str, str] = {}
     ):
         if isinstance(mentor, str):
             logging.info("loading mentor id {}...".format(mentor))
