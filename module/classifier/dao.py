@@ -23,7 +23,7 @@ class Dao:
         self.cache = pylru.lrucache(int(environ.get("CACHE_MAX_SIZE", "1000")))
 
     def find_classifier(
-        self, mentor_id: str, headers: Dict[str, str]
+        self, mentor_id: str, headers: Dict[str, str] = {}
     ) -> TransformersQuestionClassifierPrediction:
         if mentor_id in self.cache:
             e = self.cache[mentor_id]
