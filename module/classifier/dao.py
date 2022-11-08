@@ -7,6 +7,7 @@
 from os import environ
 import pylru
 from .predict import TransformersQuestionClassifierPrediction
+from typing import Dict
 
 
 class Entry:
@@ -22,12 +23,12 @@ class Dao:
         self.cache = pylru.lrucache(int(environ.get("CACHE_MAX_SIZE", "1000")))
 
     def find_classifier(
-        self, mentor_id: str
+        self, mentor_id: str, headers: Dict[str, str]
     ) -> TransformersQuestionClassifierPrediction:
         if mentor_id in self.cache:
             e = self.cache[mentor_id]
             if e and e.last_trained_at >= e.classifier.get_last_trained_at():
                 return e.classifier
-        c = TransformersQuestionClassifierPrediction(mentor_id, self.data_root)
+        c = TransformersQuestionClassifierPrediction(mentor_id, self.data_root, headers)
         self.cache[mentor_id] = Entry(c)
         return c

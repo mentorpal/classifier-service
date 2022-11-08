@@ -19,7 +19,6 @@ import logging
 log = get_logger()
 SBERT_ENDPOINT = environ.get("SBERT_ENDPOINT")
 GRAPHQL_ENDPOINT = environ.get("GRAPHQL_ENDPOINT")
-API_SECRET = environ.get("API_SECRET")
 
 
 def load_sentry():
@@ -143,6 +142,7 @@ def props_to_bool(
 class SbertCosSimReq:
     answers_text: str
     entity_text: str
+    headers: Dict[str, str] = {}
 
 
 def thread_sbert_cos_reqs(req: List[SbertCosSimReq], no_workers):
@@ -157,7 +157,7 @@ def thread_sbert_cos_reqs(req: List[SbertCosSimReq], no_workers):
                 content = self.queue.get()
                 if content == "":
                     break
-                headers = {"Authorization": f"Bearer {API_SECRET}"}
+                headers = content.headers
                 res = requests.post(
                     f"{SBERT_ENDPOINT}/encode/cos_sim_weight",
                     json={"a": content.answers_text, "b": content.entity_text},

@@ -135,7 +135,6 @@ To debug in VS Code, use this config:
       "justMyCode": false,
       "env": {
         "GRAPHQL_ENDPOINT": "https://v2.mentorpal.org/graphql",
-        "API_SECRET": "<redacted>",
         "AWS_REGION": "us-east-1",
         "SHARED_ROOT": "shared",
         "JOBS_TABLE_NAME": "classifier-jobs-dev",

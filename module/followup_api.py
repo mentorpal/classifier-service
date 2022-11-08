@@ -27,5 +27,7 @@ def generate_followups(
         for answer_data in category_answer
     ]
     all_answered, name = fetch_mentor_answers_and_name(mentor, headers=headers)
-    followups = NamedEntities(category_answers, name).generate_questions(all_answered)
+    followups = NamedEntities(category_answers, name, "", headers).generate_questions(
+        all_answered
+    )
     return followups

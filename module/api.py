@@ -16,9 +16,6 @@ from .types import AnswerInfo
 import logging
 
 OFF_TOPIC_THRESHOLD_DEFAULT = -0.631
-# SBERT_ENDPOINT = os.environ.get("SBERT_ENDPOINT")
-# GRAPHQL_ENDPOINT = os.environ.get("GRAPHQL_ENDPOINT")
-API_SECRET = os.environ.get("API_SECRET")
 
 
 class GQLQueryBody(TypedDict):
@@ -37,8 +34,7 @@ def get_off_topic_threshold() -> float:
         return OFF_TOPIC_THRESHOLD_DEFAULT
 
 
-def sbert_encode(question: str):
-    headers = {"Authorization": f"Bearer {API_SECRET}"}
+def sbert_encode(question: str, headers: Dict[str, str] = {}):
     start = timer()
     res = requests.get(
         f"{os.environ.get('SBERT_ENDPOINT')}/encode",
@@ -51,8 +47,7 @@ def sbert_encode(question: str):
     return res.json()
 
 
-def sbert_cos_sim_weight(a: str, b: str) -> float:
-    headers = {"Authorization": f"Bearer {API_SECRET}"}
+def sbert_cos_sim_weight(a: str, b: str, headers: Dict[str, str] = {}) -> float:
     start = timer()
     res = requests.post(
         f"{os.environ.get('SBERT_ENDPOINT')}/encode/cos_sim_weight",
@@ -66,8 +61,7 @@ def sbert_cos_sim_weight(a: str, b: str) -> float:
     return res.json()["cos_sim_weight"]
 
 
-def sbert_paraphrase(sentences: list) -> float:
-    headers = {"Authorization": f"Bearer {API_SECRET}"}
+def sbert_paraphrase(sentences: list, headers: Dict[str, str] = {}) -> float:
     start = timer()
     res = requests.post(
         f"{os.environ.get('SBERT_ENDPOINT')}/paraphrase",
