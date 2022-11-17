@@ -30,31 +30,44 @@ MODELS_DIR = "/tmp/models"
 
 def handler(event, context):
     log.debug(json.dumps(event))
+
     for record in event["Records"]:
         request = json.loads(str(record["body"]))
         mentor = request["mentor"]
+        ping = request["ping"] if "ping" in request else False
         update_status(request["id"], "IN_PROGRESS")
-        try:
-            classifier = TransformersQuestionClassifierTraining(
-                mentor=mentor, shared_root=shared, output_dir=MODELS_DIR
-            )
-            classifier.train()
-            s3.upload_file(
-                os.path.join(
-                    MODELS_DIR,
-                    mentor,
-                    "module.classifier.arch.lr_transformer",
-                    "model.pkl",
-                ),
-                MODELS_BUCKET,
-                os.path.join(
-                    mentor, "module.classifier.arch.lr_transformer", "model.pkl"
-                ),
-            )
-            update_status(request["id"], "SUCCESS")
-        except Exception as e:
-            log.exception(e)
-            update_status(request["id"], "FAILURE")
+
+        if ping:
+            try:
+                classifier = TransformersQuestionClassifierTraining(
+                    mentor=mentor, shared_root=shared, output_dir=MODELS_DIR
+                )
+                update_status(request["id"], "SUCCESS")
+            except Exception as e:
+                log.exception(e)
+                update_status(request["id"], "FAILURE")
+        else:
+            try:
+                classifier = TransformersQuestionClassifierTraining(
+                    mentor=mentor, shared_root=shared, output_dir=MODELS_DIR
+                )
+                classifier.train()
+                s3.upload_file(
+                    os.path.join(
+                        MODELS_DIR,
+                        mentor,
+                        "module.classifier.arch.lr_transformer",
+                        "model.pkl",
+                    ),
+                    MODELS_BUCKET,
+                    os.path.join(
+                        mentor, "module.classifier.arch.lr_transformer", "model.pkl"
+                    ),
+                )
+                update_status(request["id"], "SUCCESS")
+            except Exception as e:
+                log.exception(e)
+                update_status(request["id"], "FAILURE")
 
 
 def update_status(id, status):

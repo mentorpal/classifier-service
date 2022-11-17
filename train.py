@@ -42,6 +42,7 @@ def handler(event, context):
     if "mentor" not in train_request:
         raise Exception("bad request")
     mentor = train_request["mentor"]
+    ping = train_request["ping"] if "ping" in train_request else False
     token = json.loads(event["requestContext"]["authorizer"]["token"])
 
     if not is_authorized(mentor, token):
@@ -57,6 +58,7 @@ def handler(event, context):
     train_job = {
         "id": job_id,
         "mentor": mentor,
+        "ping": ping,
         "status": "QUEUED",
         "created": datetime.datetime.now().isoformat(),
         # https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/time-to-live-ttl-before-you-start.html#time-to-live-ttl-before-you-start-formatting
