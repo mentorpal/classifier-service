@@ -169,6 +169,47 @@ query Mentor($id: ID!){
         }
 } """
 
+GQL_QUERY_GRADED_USER_QUESTIONS = """
+query GradedUserQuestions($filter: Object!){
+  userQuestions(filter:$filter, limit: 9999){
+    edges{
+      node{
+        question
+        graderAnswer{
+            _id
+            status
+            transcript
+            markdownTranscript
+            webMedia {
+                type
+                tag
+                url
+                transparentVideoUrl
+            }
+            mobileMedia {
+                type
+                tag
+                url
+                transparentVideoUrl
+            }
+            vttMedia {
+                type
+                tag
+                url
+            }
+            question{
+            _id
+            question
+            type
+            name
+            paraphrases
+            }
+        }
+      }
+    }
+  }
+} """
+
 
 def __auth_gql(query: GQLQueryBody, headers: Dict[str, str] = {}) -> dict:
     # SSL is not valid for alb so have to turn off validation
@@ -183,6 +224,15 @@ def query_mentor(mentor: str) -> GQLQueryBody:
 
 def query_mentor_answers_and_name(mentor: str) -> GQLQueryBody:
     return {"query": GQL_QUERY_MENTOR_ANSWERS_AND_NAME, "variables": {"id": mentor}}
+
+
+def query_mentor_graded_user_questions(mentor: str) -> GQLQueryBody:
+    return {
+        "query": GQL_QUERY_GRADED_USER_QUESTIONS,
+        "variables": {
+            "filter": {"$and": [{"graderAnswer": {"$ne": None}}, {"mentor": mentor}]}
+        },
+    }
 
 
 def query_category_answers(category: str, mentor: str) -> GQLQueryBody:
@@ -281,6 +331,24 @@ def fetch_mentor_answers_and_name(
     ]
     name = data["name"]
     return all_answered, name
+
+
+def fetch_mentor_graded_user_questions(mentor: str, headers: Dict[str, str] = {}):
+    tdjson = __auth_gql(query_mentor_graded_user_questions(mentor), headers=headers)
+    if "errors" in tdjson:
+        raise Exception(json.dumps(tdjson.get("errors")))
+    edges = tdjson["data"]["userQuestions"]
+    nodes = list(map(lambda edge: edge["node"], edges))
+    valid_nodes = list(
+        filter(
+            lambda node: "question" in node
+            and node["question"] is not None
+            and "graderAnswer" in node
+            and node["graderAnswer"] is not None,
+            nodes,
+        )
+    )
+    return valid_nodes
 
 
 def fetch_category(category: str, mentor: str, headers: Dict[str, str] = {}) -> dict:

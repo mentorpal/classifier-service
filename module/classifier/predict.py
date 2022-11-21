@@ -19,6 +19,9 @@ from module.classifier import (
 from module.api import create_user_question, get_off_topic_threshold, sbert_encode
 from module.mentor import Mentor
 from module.utils import file_last_updated_at, sanitize_string
+from module.logger import get_logger
+
+log = get_logger("predict")
 
 AnswerIdTextAndMedia = Tuple[str, str, str, Media, Media, Media]
 
@@ -45,8 +48,18 @@ class TransformersQuestionClassifierPrediction:
 
         sanitized_question = sanitize_string(question)
         if not canned_question_match_disabled:
-            if sanitized_question in self.mentor.questions_by_text:
-                q = self.mentor.questions_by_text[sanitized_question]
+            if (
+                sanitized_question in self.mentor.manual_question_mappings
+                or sanitized_question in self.mentor.questions_by_text
+            ):
+                q = (
+                    self.mentor.manual_question_mappings[sanitized_question]
+                    if sanitized_question in self.mentor.manual_question_mappings
+                    else self.mentor.questions_by_text[sanitized_question]
+                )
+                log.debug("question mapping found")
+                log.debug(q)
+                log.debug(sanitized_question in self.mentor.manual_question_mappings)
                 answer_id = q["answer_id"]
                 answer = q["answer"]
                 markdown_answer = q["markdown_answer"]
