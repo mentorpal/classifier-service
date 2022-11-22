@@ -8,9 +8,6 @@ from dataclasses import dataclass
 
 from module.api import fetch_mentor_data, fetch_mentor_graded_user_questions
 from module.utils import sanitize_string
-from module.logger import get_logger
-
-log = get_logger("mentor")
 
 
 @dataclass
@@ -101,6 +98,7 @@ class Mentor(object):
                 self.questions_by_answer[sanitize_string(q["answer"])] = q
         user_question_nodes = fetch_mentor_graded_user_questions(self.id)
         for user_question in user_question_nodes:
+            question_asked = user_question["question"]
             target_answer_doc = user_question["graderAnswer"]
             target_question_doc = target_answer_doc["question"]
             answer_media = {
@@ -118,5 +116,4 @@ class Mentor(object):
                 "answer_media": answer_media,
                 "topics": [],
             }
-            self.manual_question_mappings[sanitize_string(q["question_text"])] = q
-        log.debug(self.manual_question_mappings)
+            self.manual_question_mappings[sanitize_string(question_asked)] = q

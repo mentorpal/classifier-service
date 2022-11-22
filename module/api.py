@@ -333,22 +333,28 @@ def fetch_mentor_answers_and_name(
     return all_answered, name
 
 
-def fetch_mentor_graded_user_questions(mentor: str, headers: Dict[str, str] = {}):
-    tdjson = __auth_gql(query_mentor_graded_user_questions(mentor), headers=headers)
-    if "errors" in tdjson:
-        raise Exception(json.dumps(tdjson.get("errors")))
-    edges = tdjson["data"]["userQuestions"]["edges"]
-    nodes = list(map(lambda edge: edge["node"], edges))
-    valid_nodes = list(
-        filter(
-            lambda node: "question" in node
-            and node["question"] is not None
-            and "graderAnswer" in node
-            and node["graderAnswer"] is not None,
-            nodes,
+def fetch_mentor_graded_user_questions(
+    mentor: str, headers: Dict[str, str] = {}
+) -> list:
+    try:
+        tdjson = __auth_gql(query_mentor_graded_user_questions(mentor), headers=headers)
+        if "errors" in tdjson:
+            raise Exception(json.dumps(tdjson.get("errors")))
+        edges = tdjson["data"]["userQuestions"]["edges"]
+        nodes = list(map(lambda edge: edge["node"], edges))
+        valid_nodes = list(
+            filter(
+                lambda node: "question" in node
+                and node["question"] is not None
+                and "graderAnswer" in node
+                and node["graderAnswer"] is not None,
+                nodes,
+            )
         )
-    )
-    return valid_nodes
+        return valid_nodes
+    except Exception as e:
+        logging.error(e)
+        return []
 
 
 def fetch_category(category: str, mentor: str, headers: Dict[str, str] = {}) -> dict:
