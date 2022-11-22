@@ -337,7 +337,7 @@ def fetch_mentor_graded_user_questions(mentor: str, headers: Dict[str, str] = {}
     tdjson = __auth_gql(query_mentor_graded_user_questions(mentor), headers=headers)
     if "errors" in tdjson:
         raise Exception(json.dumps(tdjson.get("errors")))
-    edges = tdjson["data"]["userQuestions"]
+    edges = tdjson["data"]["userQuestions"]["edges"]
     nodes = list(map(lambda edge: edge["node"], edges))
     valid_nodes = list(
         filter(
