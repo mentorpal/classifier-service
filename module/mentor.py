@@ -6,7 +6,7 @@
 #
 from dataclasses import dataclass
 
-from module.api import fetch_mentor_data
+from module.api import fetch_mentor_data, fetch_mentor_graded_user_questions
 from module.utils import sanitize_string
 
 
@@ -27,6 +27,9 @@ class Mentor(object):
         self.questions_by_text = {}
         self.questions_by_answer = {}
         self.answer_id_by_answer = {}
+        self.manual_question_mappings = (
+            {}
+        )  # a Dict[str, Question], with the key being user question text, and the Question being the question document it was manually mapped to
         self.load()
 
     def load(self):
@@ -93,3 +96,24 @@ class Mentor(object):
                 for paraphrase in q["paraphrases"]:
                     self.questions_by_text[sanitize_string(paraphrase)] = q
                 self.questions_by_answer[sanitize_string(q["answer"])] = q
+        user_question_nodes = fetch_mentor_graded_user_questions(self.id)
+        for user_question in user_question_nodes:
+            question_asked = user_question["question"]
+            target_answer_doc = user_question["graderAnswer"]
+            target_question_doc = target_answer_doc["question"]
+            answer_media = {
+                "web_media": target_answer_doc.get("webMedia", None),
+                "mobile_media": target_answer_doc.get("mobileMedia", None),
+                "vtt_media": target_answer_doc.get("vttMedia", None),
+            }
+            q = {
+                "id": target_question_doc["_id"],
+                "question_text": target_question_doc["question"],
+                "paraphrases": target_question_doc["paraphrases"],
+                "answer": target_answer_doc["transcript"],
+                "markdown_answer": target_answer_doc["markdownTranscript"],
+                "answer_id": target_answer_doc["_id"],
+                "answer_media": answer_media,
+                "topics": [],
+            }
+            self.manual_question_mappings[sanitize_string(question_asked)] = q
