@@ -254,6 +254,7 @@ functions:
               querystrings:
                 mentor: true
                 query: true
+                chatsessionid: true
                 ping: false #optional
   
   http_followup:
