@@ -40,7 +40,10 @@ class TransformersQuestionClassifierPrediction:
         self.model = self.__load_model()
 
     def evaluate(
-        self, question: str, canned_question_match_disabled: bool = False
+        self,
+        question: str,
+        chat_session_id: str,
+        canned_question_match_disabled: bool = False,
     ) -> QuestionClassiferPredictionResult:
 
         sanitized_question = sanitize_string(question)
@@ -62,6 +65,7 @@ class TransformersQuestionClassifierPrediction:
                     self.mentor.id,
                     question,
                     answer_id,
+                    chat_session_id,
                     "PARAPHRASE"
                     if sanitized_question != sanitize_string(q["question_text"])
                     else "EXACT",
@@ -83,6 +87,7 @@ class TransformersQuestionClassifierPrediction:
             self.mentor.id,
             question,
             answer_id,
+            chat_session_id,
             "OFF_TOPIC"
             if highest_confidence < get_off_topic_threshold()
             else "CLASSIFIER",

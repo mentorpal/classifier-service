@@ -45,10 +45,12 @@ def handler(event, context):
     if (
         "mentor" not in event["queryStringParameters"]
         or "query" not in event["queryStringParameters"]
+        or "chatsessionid" not in event["queryStringParameters"]
     ):
         raise Exception("bad request")
     mentor = event["queryStringParameters"]["mentor"]
     question = event["queryStringParameters"]["query"]
+    chat_session_id = event["queryStringParameters"]["chatsessionid"]
     ping = (
         event["queryStringParameters"]["ping"]
         if "ping" in event["queryStringParameters"]
@@ -96,7 +98,7 @@ def handler(event, context):
         body = {"message": f"Successful ping for mentor: {mentor}."}
         return make_response(200, body, event)
 
-    result = classifier_dao.find_classifier(mentor).evaluate(question)
+    result = classifier_dao.find_classifier(mentor).evaluate(question, chat_session_id)
 
     body = {
         "question": question,

@@ -169,7 +169,7 @@ def test_gets_answer_for_exact_match_and_paraphrases(
     )
     _ensure_trained(mentor_id, shared_root, data_root)
     classifier = TransformersQuestionClassifierPrediction(mentor_id, data_root)
-    result = classifier.evaluate(question)
+    result = classifier.evaluate(question, "123")
     assert result.answer_id == expected_answer_id
     assert result.answer_text == expected_answer
     assert result.answer_media == expected_media
@@ -249,7 +249,7 @@ def test_predicts_answer(
     )
     _ensure_trained(mentor_id, shared_root, data_root)
     classifier = TransformersQuestionClassifierPrediction(mentor_id, data_root)
-    result = classifier.evaluate(question)
+    result = classifier.evaluate(question, "123")
     assert result.answer_id == expected_answer_id
     assert result.answer_text == expected_answer
     assert result.answer_media == expected_media
@@ -278,7 +278,7 @@ def _test_gets_off_topic(
     )
     _ensure_trained(mentor_id, shared_root, data_root)
     classifier = TransformersQuestionClassifierPrediction(mentor_id, data_root)
-    result = classifier.evaluate(question)
+    result = classifier.evaluate(question, "123")
 
     assert result.answer_id == expected_answer_id
     assert result.answer_text == expected_answer
