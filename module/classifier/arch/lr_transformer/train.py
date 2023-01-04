@@ -21,7 +21,7 @@ from module.mentor import Mentor
 from .embeddings import TransformerEmbeddings
 from module.api import update_training
 from module.utils import sanitize_string
-from typing import Union, Tuple, List
+from typing import Union, Tuple, List, Dict
 from dataclasses import dataclass
 
 
@@ -38,10 +38,11 @@ class TransformersQuestionClassifierTraining:
         mentor: Union[str, Mentor],
         shared_root: str = "shared",
         output_dir: str = "out",
+        auth_headers: Dict[str, str] = {},
     ):
         if isinstance(mentor, str):
             print("loading mentor id {}...".format(mentor))
-            mentor = Mentor(mentor)
+            mentor = Mentor(mentor, auth_headers)
         assert isinstance(
             mentor, Mentor
         ), "invalid type for mentor (expected mentor.Mentor or string id for a mentor, encountered {}".format(

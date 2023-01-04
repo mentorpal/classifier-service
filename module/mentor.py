@@ -8,6 +8,7 @@ from dataclasses import dataclass
 
 from module.api import fetch_mentor_data, fetch_mentor_graded_user_questions
 from module.utils import sanitize_string
+from typing import Dict
 
 
 @dataclass
@@ -19,7 +20,7 @@ class Media:
 
 
 class Mentor(object):
-    def __init__(self, id):
+    def __init__(self, id, auth_headers: Dict[str, str] = {}):
         self.id = id
         self.topics = []
         self.utterances_by_type = {}
@@ -30,10 +31,10 @@ class Mentor(object):
         self.manual_question_mappings = (
             {}
         )  # a Dict[str, Question], with the key being user question text, and the Question being the question document it was manually mapped to
-        self.load()
+        self.load(auth_headers)
 
-    def load(self):
-        data = fetch_mentor_data(self.id)
+    def load(self, auth_headers):
+        data = fetch_mentor_data(self.id, auth_headers)
         for subject in data.get("subjects", []):
             self.topics.append(subject["name"])
         for topic in data.get("topics", []):

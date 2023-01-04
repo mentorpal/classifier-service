@@ -8,6 +8,7 @@ import json
 import os
 import boto3
 import datetime
+from typing import Dict
 from module.classifier.arch.lr_transformer import TransformersQuestionClassifierTraining
 from module.utils import require_env, load_sentry
 from module.logger import get_logger
@@ -28,6 +29,14 @@ job_table = dynamodb.Table(JOBS_TABLE_NAME)
 MODELS_DIR = "/tmp/models"
 
 
+def get_auth_headers(event) -> Dict[str, str]:
+    return (
+        {"Authorization": event["headers"]["Authorization"]}
+        if "Authorization" in event["headers"]
+        else {}
+    )
+
+
 def handler(event, context):
     log.debug(json.dumps(event))
 
@@ -35,12 +44,16 @@ def handler(event, context):
         request = json.loads(str(record["body"]))
         mentor = request["mentor"]
         ping = request["ping"] if "ping" in request else False
+        auth_headers = get_auth_headers(event)
         update_status(request["id"], "IN_PROGRESS")
 
         if ping:
             try:
                 classifier = TransformersQuestionClassifierTraining(
-                    mentor=mentor, shared_root=shared, output_dir=MODELS_DIR
+                    mentor=mentor,
+                    shared_root=shared,
+                    output_dir=MODELS_DIR,
+                    auth_headers=auth_headers,
                 )
                 update_status(request["id"], "SUCCESS")
             except Exception as e:
@@ -49,7 +62,10 @@ def handler(event, context):
         else:
             try:
                 classifier = TransformersQuestionClassifierTraining(
-                    mentor=mentor, shared_root=shared, output_dir=MODELS_DIR
+                    mentor=mentor,
+                    shared_root=shared,
+                    output_dir=MODELS_DIR,
+                    auth_headers=auth_headers,
                 )
                 classifier.train()
                 s3.upload_file(

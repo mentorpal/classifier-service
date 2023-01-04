@@ -316,8 +316,8 @@ def fetch_training_data(mentor: str):
     return data_csv.getvalue()
 
 
-def fetch_mentor_data(mentor: str) -> dict:
-    tdjson = __auth_gql(query_mentor(mentor))
+def fetch_mentor_data(mentor: str, headers: Dict[str, str] = {}) -> dict:
+    tdjson = __auth_gql(query_mentor(mentor), headers)
     if "errors" in tdjson:
         raise Exception(json.dumps(tdjson.get("errors")))
     data = tdjson["data"]["mentor"]

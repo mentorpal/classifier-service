@@ -43,6 +43,7 @@ def load_sentry():
 def is_authorized(mentor, token):
     return (
         token["role"] == "CONTENT_MANAGER"
+        or token["role"] == "SUPER_CONTENT_MANAGER"
         or token["role"] == "ADMIN"
         or token["role"] == "SUPER_CONTENT_MANAGER"
         or token["role"] == "SUPER_ADMIN"
