@@ -8,7 +8,6 @@ import json
 import os
 import boto3
 import datetime
-from typing import Dict
 from module.classifier.arch.lr_transformer import TransformersQuestionClassifierTraining
 from module.utils import require_env, load_sentry
 from module.logger import get_logger
@@ -29,14 +28,6 @@ job_table = dynamodb.Table(JOBS_TABLE_NAME)
 MODELS_DIR = "/tmp/models"
 
 
-def get_auth_headers(event) -> Dict[str, str]:
-    return (
-        {"Authorization": event["headers"]["Authorization"]}
-        if "Authorization" in event["headers"]
-        else {}
-    )
-
-
 def handler(event, context):
     log.debug(json.dumps(event))
 
@@ -44,7 +35,7 @@ def handler(event, context):
         request = json.loads(str(record["body"]))
         mentor = request["mentor"]
         ping = request["ping"] if "ping" in request else False
-        auth_headers = get_auth_headers(event)
+        auth_headers = json.loads(request["auth_headers"])
         update_status(request["id"], "IN_PROGRESS")
 
         if ping:

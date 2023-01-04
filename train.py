@@ -12,6 +12,7 @@ from module.utils import create_json_response, require_env, is_authorized, load_
 import datetime
 import base64
 from module.logger import get_logger
+from typing import Dict
 
 
 load_sentry()
@@ -29,6 +30,14 @@ dynamodb = boto3.resource("dynamodb", region_name=aws_region)
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
 
 
+def get_auth_headers(event) -> Dict[str, str]:
+    return (
+        {"Authorization": event["headers"]["Authorization"]}
+        if "Authorization" in event["headers"]
+        else {}
+    )
+
+
 def handler(event, context):
     log.debug(json.dumps(event))
     if "body" not in event:
@@ -44,6 +53,7 @@ def handler(event, context):
     mentor = train_request["mentor"]
     ping = train_request["ping"] if "ping" in train_request else False
     token = json.loads(event["requestContext"]["authorizer"]["token"])
+    auth_headers = get_auth_headers(event)
 
     if not is_authorized(mentor, token):
         data = {
@@ -60,6 +70,7 @@ def handler(event, context):
         "mentor": mentor,
         "ping": ping,
         "status": "QUEUED",
+        "auth_headers": json.dumps(auth_headers),
         "created": datetime.datetime.now().isoformat(),
         # https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/time-to-live-ttl-before-you-start.html#time-to-live-ttl-before-you-start-formatting
         "ttl": int(datetime.datetime.now().timestamp()) + ttl_sec,
