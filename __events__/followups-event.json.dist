@@ -26,10 +26,10 @@
         "accountId": "111111000655",
         "protocol": "HTTP/1.1",
         "stage": "dev",
-        "domainPrefix": "api-dev",
+        "domainPrefix": "api",
         "requestTimeEpoch": 1645716279900,
         "requestId": "950b8584-f40f-4eae-9c3c-5dca519c404a",
-        "domainName": "api-dev.mentorpal.org",
+        "domainName": "api.devmentorpal.org",
         "apiId": "nuj9elv2we"
     },
     "body": null,

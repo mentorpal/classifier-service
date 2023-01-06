@@ -99,11 +99,11 @@ curl -H "Authorization: Bearer ey***" https://iyg3a3y2g3.execute-api.us-east-1.a
 Or against the custom domain name:
 
 ```bash
-curl -H "Authorization: Bearer ey***" https://api-qa.mentorpal.org/classifier/train --data-raw '{"mentor":"6109d2a86e6fa01e5bf3219f"}'
-curl -H "Authorization: Bearer ey***" https://api-qa.mentorpal.org/classifier/train/status/5e09da8f-d8cc-4d19-80d8-d94b28741a58
-curl https://api-qa.mentorpal.org/classifier/questions?mentor=6109d2a86e6fa01e5bf3219f&query=what+do+you+think+about+serverless
-curl -H "Authorization: Bearer ey***" https://api-qa.mentorpal.org/classifier/trainingdata/6109d2a86e6fa01e5bf3219f
-curl -X POST -H "Authorization: Bearer ey***" https://api-qa.mentorpal.org/classifier/me/followups/category/a335c6df-da3e-4972-b0c3-c822f8144470
+curl -H "Authorization: Bearer ey***" https://api.qamentorpal.org/classifier/train --data-raw '{"mentor":"6109d2a86e6fa01e5bf3219f"}'
+curl -H "Authorization: Bearer ey***" https://api.qamentorpal.org/classifier/train/status/5e09da8f-d8cc-4d19-80d8-d94b28741a58
+curl https://api.qamentorpal.org/classifier/questions?mentor=6109d2a86e6fa01e5bf3219f&query=what+do+you+think+about+serverless
+curl -H "Authorization: Bearer ey***" https://api.qamentorpal.org/classifier/trainingdata/6109d2a86e6fa01e5bf3219f
+curl -X POST -H "Authorization: Bearer ey***" https://api.qamentorpal.org/classifier/me/followups/category/a335c6df-da3e-4972-b0c3-c822f8144470
 ```
 
 
