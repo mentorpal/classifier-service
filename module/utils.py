@@ -166,6 +166,7 @@ def thread_sbert_cos_reqs(req: List[SbertCosSimReq], no_workers):
                     "Authorization": f"Bearer {API_SECRET}",
                     f"{SECRET_HEADER_NAME}": f"{SECRET_HEADER_VALUE}",
                 }
+                log.debug(headers)
                 res = requests.post(
                     f"{SBERT_ENDPOINT}/encode/cos_sim_weight",
                     json={"a": content.answers_text, "b": content.entity_text},
