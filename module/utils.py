@@ -20,6 +20,8 @@ log = get_logger()
 SBERT_ENDPOINT = environ.get("SBERT_ENDPOINT")
 GRAPHQL_ENDPOINT = environ.get("GRAPHQL_ENDPOINT")
 API_SECRET = environ.get("API_SECRET")
+SECRET_HEADER_NAME = environ.get("SECRET_HEADER_NAME")
+SECRET_HEADER_VALUE = environ.get("SECRET_HEADER_VALUE")
 
 
 def load_sentry():
@@ -160,7 +162,10 @@ def thread_sbert_cos_reqs(req: List[SbertCosSimReq], no_workers):
                 content = self.queue.get()
                 if content == "":
                     break
-                headers = {"Authorization": f"Bearer {API_SECRET}"}
+                headers = {
+                    "Authorization": f"Bearer {API_SECRET}",
+                    f"{SECRET_HEADER_NAME}": f"{SECRET_HEADER_VALUE}",
+                }
                 res = requests.post(
                     f"{SBERT_ENDPOINT}/encode/cos_sim_weight",
                     json={"a": content.answers_text, "b": content.entity_text},

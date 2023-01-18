@@ -50,6 +50,8 @@ custom:
       IS_SENTRY_ENABLED: false
       GRAPHQL_ENDPOINT: https://api.devmentorpal.org/graphql/graphql
       SBERT_ENDPOINT: 'https://sbert-qa.mentorpal.org/v1'
+      SECRET_HEADER_VALUE: ${ssm:/mentorpal/newdev/shared/secret_header_value, ''},
+      SECRET_HEADER_NAME: ${ssm:/mentorpal/newdev/shared/secret_header_name, ''},
       API_SECRET: ${ssm:/mentorpal/newdev/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/newdev/shared/jwt_secret, ''}
       ALERT_SNS_ARN: 'no alarms in dev'
@@ -59,6 +61,8 @@ custom:
       IS_SENTRY_ENABLED: true
       GRAPHQL_ENDPOINT: https://api.qamentorpal.org/graphql/graphql
       SBERT_ENDPOINT: 'https://sbert-qa.mentorpal.org/v1'
+      SECRET_HEADER_VALUE: ${ssm:/mentorpal/v2/shared/secret_header_value, ''},
+      SECRET_HEADER_NAME: ${ssm:/mentorpal/v2/shared/secret_header_name, ''},
       API_SECRET: ${ssm:/mentorpal/v2/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/v2/shared/jwt_secret, ''}
       ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn, ''}
@@ -68,6 +72,8 @@ custom:
       IS_SENTRY_ENABLED: true
       GRAPHQL_ENDPOINT: https://api.mentorpal.org/graphql/graphql
       SBERT_ENDPOINT: 'https://sbert.mentorpal.org/v1'
+      SECRET_HEADER_VALUE: ${ssm:/mentorpal/cf/shared/secret_header_value, ''},
+      SECRET_HEADER_NAME: ${ssm:/mentorpal/cf/shared/secret_header_name, ''},
       ALERT_SNS_ARN: ${ssm:/mentorpal/cf/shared/sns_alert_topic_arn, ''}
       API_SECRET: ${ssm:/mentorpal/cf/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/cf/shared/jwt_secret, ''}
@@ -143,6 +149,8 @@ provider:
     SBERT_ENDPOINT: ${self:custom.stages.${self:provider.stage}.SBERT_ENDPOINT}
     API_SECRET: ${self:custom.stages.${self:provider.stage}.API_SECRET}
     JWT_SECRET: ${self:custom.stages.${self:provider.stage}.JWT_SECRET}
+    SECRET_HEADER_VALUE: ${self:custom.stages.${self:provider.stage}.SECRET_HEADER_VALUE}
+    SECRET_HEADER_NAME: ${self:custom.stages.${self:provider.stage}.SECRET_HEADER_NAME}
     IS_SENTRY_ENABLED: ${self:custom.stages.${self:provider.stage}.IS_SENTRY_ENABLED}
     SENTRY_DSN_MENTOR_CLASSIFIER: '${ssm:/mentorpal/classifier/sentry_dsn}'
     SHARED_ROOT: '/app/shared' # as defined in Dockerfile
