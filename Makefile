@@ -26,4 +26,4 @@ test:
 	SBERT_ENDPOINT=http://sbert GRAPHQL_ENDPOINT=http://graphql \
 	poetry run coverage run \
 		--omit="$(PWD)/tests $(VENV)" \
-		-m py.test -vv $(args)
+		-m test -vv $(args)
