@@ -26,4 +26,5 @@ test:
 	SBERT_ENDPOINT=http://sbert GRAPHQL_ENDPOINT=http://graphql \
 	poetry run coverage run \
 		--omit="$(PWD)/tests $(VENV)" \
-		-m test -vv $(args)
+		-m pytest -vv $(args)
+# TODO: figure out what package update would have caused this issue, google more. 
