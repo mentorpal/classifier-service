@@ -6,5 +6,5 @@ sentry-sdk==1.14.0
 joblib==1.2.0
 pylru==1.2.1
 # required to load model, about 200MB
-scikit-learn==1.2.1
+scikit-learn==0.24.2
 # numpy==1.22.3 # dependency of scikit-learn
