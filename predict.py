@@ -6,6 +6,7 @@
 #
 import json
 import os
+from typing import Dict
 import boto3
 import botocore
 from module.logger import get_logger
@@ -30,6 +31,14 @@ MODELS_DIR = "/tmp/models"
 classifier_dao = Dao(SHARED, MODELS_DIR)
 
 
+def get_auth_headers(event) -> Dict[str, str]:
+    return (
+        {"Authorization": event["headers"]["Authorization"]}
+        if "Authorization" in event["headers"]
+        else {}
+    )
+
+
 def make_response(status, body, event):
     headers = {}
     append_cors_headers(headers, event)
@@ -51,6 +60,7 @@ def handler(event, context):
     mentor = event["queryStringParameters"]["mentor"]
     question = event["queryStringParameters"]["query"]
     chat_session_id = event["queryStringParameters"]["chatsessionid"]
+    auth_headers = get_auth_headers(event)
     ping = (
         event["queryStringParameters"]["ping"]
         if "ping" in event["queryStringParameters"]
@@ -94,11 +104,13 @@ def handler(event, context):
 
     if ping:
         # Just load the mentor and nothing else
-        classifier_dao.find_classifier(mentor)
+        classifier_dao.find_classifier(mentor, auth_headers)
         body = {"message": f"Successful ping for mentor: {mentor}."}
         return make_response(200, body, event)
 
-    result = classifier_dao.find_classifier(mentor).evaluate(question, chat_session_id)
+    result = classifier_dao.find_classifier(mentor, auth_headers).evaluate(
+        question, chat_session_id
+    )
 
     body = {
         "question": question,

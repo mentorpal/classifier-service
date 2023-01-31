@@ -8,7 +8,7 @@ import logging
 import random
 import joblib
 import numpy
-from typing import Union, Tuple
+from typing import Dict, Union, Tuple
 from module.classifier import (
     AnswerMedia,
     mentor_model_path,
@@ -24,10 +24,15 @@ AnswerIdTextAndMedia = Tuple[str, str, str, Media, Media, Media]
 
 
 class TransformersQuestionClassifierPrediction:
-    def __init__(self, mentor: Union[str, Mentor], data_path: str):
+    def __init__(
+        self,
+        mentor: Union[str, Mentor],
+        data_path: str,
+        auth_headers: Dict[str, str] = {},
+    ):
         if isinstance(mentor, str):
             logging.info("loading mentor id {}...".format(mentor))
-            mentor = Mentor(mentor)
+            mentor = Mentor(mentor, auth_headers)
         assert isinstance(
             mentor, Mentor
         ), "invalid type for mentor (expected mentor.Mentor or string id for a mentor, encountered {}".format(
