@@ -23,11 +23,14 @@ from module.api import update_training
 from module.utils import sanitize_string
 from typing import Union, Tuple, List, Dict
 from dataclasses import dataclass
+from module.logger import get_logger
+
+log = get_logger("train")
 
 
 @dataclass
 class QuestionClassifierTrainingResult:
-    scores: List[float]
+    scores: Union[List[float], None]
     accuracy: float
     model_path: str
 
@@ -59,7 +62,11 @@ class TransformersQuestionClassifierTraining:
         training_accuracy = self.calculate_accuracy(
             classifier.predict(x_train), y_train
         )
-        scores = cross_val_score(classifier, x_train, y_train, cv=2)
+        try:
+            scores = cross_val_score(classifier, x_train, y_train, cv=2)
+        except ValueError as e:
+            log.exception(e)
+            scores = None
         # cv_accuracy = self.calculate_accuracy(
         #     cross_val_predict(self.classifier, x_train, y_train, cv=2), y_train
         # )
