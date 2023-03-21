@@ -98,9 +98,11 @@ class Mentor(object):
                 self.questions_by_answer[sanitize_string(q["answer"])] = q
         # Add paraphrases that are not already accounted for
         for question in data.get("questions", []):
-            for paraphrase in q["paraphrases"]:
-                if paraphrase not in self.questions_by_text:
-                    self.questions_by_text[sanitize_string(paraphrase)] = q
+            q = self.questions_by_id.get(question["question"]["_id"], None)
+            if q is not None:
+                for paraphrase in q["paraphrases"]:
+                    if paraphrase not in self.questions_by_text:
+                        self.questions_by_text[sanitize_string(paraphrase)] = q
         user_question_nodes = fetch_mentor_graded_user_questions(self.id)
         for user_question in user_question_nodes:
             question_asked = user_question["question"]
