@@ -97,7 +97,7 @@ class Mentor(object):
                 self.questions_by_text[sanitize_string(q["question_text"])] = q
                 self.questions_by_answer[sanitize_string(q["answer"])] = q
         # Add paraphrases that are not already accounted for
-        for question in data.get("questions", []):         
+        for question in data.get("questions", []):
             for paraphrase in q["paraphrases"]:
                 if paraphrase not in self.questions_by_text:
                     self.questions_by_text[sanitize_string(paraphrase)] = q
