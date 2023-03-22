@@ -97,8 +97,9 @@ class Mentor(object):
                 self.questions_by_text[sanitize_string(q["question_text"])] = q
                 self.questions_by_answer[sanitize_string(q["answer"])] = q
                 for paraphrase in q["paraphrases"]:
-                    if paraphrase not in self.questions_by_text:
-                        self.questions_by_text[sanitize_string(paraphrase)] = q
+                    sanitized_paraphrase = sanitize_string(paraphrase)
+                    if sanitized_paraphrase not in self.questions_by_text:
+                        self.questions_by_text[sanitized_paraphrase] = q
         user_question_nodes = fetch_mentor_graded_user_questions(self.id)
         for user_question in user_question_nodes:
             question_asked = user_question["question"]
