@@ -96,10 +96,6 @@ class Mentor(object):
                     self.questions_by_id[q["id"]]["topics"].append(topic["name"])
                 self.questions_by_text[sanitize_string(q["question_text"])] = q
                 self.questions_by_answer[sanitize_string(q["answer"])] = q
-        # Add paraphrases that are not already accounted for
-        for question in data.get("questions", []):
-            q = self.questions_by_id.get(question["question"]["_id"], None)
-            if q is not None:
                 for paraphrase in q["paraphrases"]:
                     if paraphrase not in self.questions_by_text:
                         self.questions_by_text[sanitize_string(paraphrase)] = q
