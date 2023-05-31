@@ -55,7 +55,7 @@ custom:
       API_SECRET: ${ssm:/mentorpal/newdev/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/newdev/shared/jwt_secret, ''}
       ALERT_SNS_ARN: 'no alarms in dev'
-      WEBACL_ARN: ${ssm:/mentorpal/newdev/api_firewall_arn, ''}
+      WEBACL_ARN: ${ssm:/devmentorpal/api_firewall_arn, ''}
     qa:
       LOG_LEVEL: 'debug'
       IS_SENTRY_ENABLED: true
@@ -66,7 +66,7 @@ custom:
       API_SECRET: ${ssm:/mentorpal/v2/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/v2/shared/jwt_secret, ''}
       ALERT_SNS_ARN: ${ssm:/mentorpal/v2/shared/sns_alert_topic_arn, ''}
-      WEBACL_ARN: ${ssm:/mentorpal/v2/api_firewall_arn, ''}
+      WEBACL_ARN: ${ssm:/qamentorpal/api_firewall_arn, ''}
     prod:
       LOG_LEVEL: 'info'
       IS_SENTRY_ENABLED: true
@@ -77,7 +77,7 @@ custom:
       ALERT_SNS_ARN: ${ssm:/mentorpal/cf/shared/sns_alert_topic_arn, ''}
       API_SECRET: ${ssm:/mentorpal/cf/shared/api_secret, ''}
       JWT_SECRET: ${ssm:/mentorpal/cf/shared/jwt_secret, ''}
-      WEBACL_ARN: ${ssm:/mentorpal/cf/api_firewall_arn, ''}
+      WEBACL_ARN: ${ssm:/mentorpal/api_firewall_arn, ''}
 
   # serverless-layers requires a deployment bucket to be created before deploying this stack
   serverless-layers:
