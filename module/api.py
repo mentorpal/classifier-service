@@ -223,8 +223,11 @@ query GradedUserQuestions($filter: Object!){
 
 
 def __auth_gql(query: GQLQueryBody, headers: Dict[str, str] = {}) -> dict:
+    final_headers = {**headers, f"{SECRET_HEADER_NAME}": f"{SECRET_HEADER_VALUE}"}
     # SSL is not valid for alb so have to turn off validation
-    res = requests.post(os.environ.get("GRAPHQL_ENDPOINT"), json=query, headers=headers)
+    res = requests.post(
+        os.environ.get("GRAPHQL_ENDPOINT"), json=query, headers=final_headers
+    )
     res.raise_for_status()
     return res.json()
 
