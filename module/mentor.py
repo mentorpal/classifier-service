@@ -69,8 +69,9 @@ class Mentor(object):
                     answer["_id"],
                     answer["transcript"],
                     answer["markdownTranscript"],
+                    answer_media,
+                    answer["externalVideoIds"],
                 ]
-                utterance_data.append(answer_media)
                 self.utterances_by_type[question["name"]].append(utterance_data)
                 continue
             q = {
@@ -81,6 +82,7 @@ class Mentor(object):
                 "markdown_answer": answer["markdownTranscript"],
                 "answer_id": answer["_id"],
                 "answer_media": answer_media,
+                "external_video_ids": answer["externalVideoIds"],
                 "topics": [],
             }
             self.answer_id_by_answer[answer["_id"]] = {
@@ -110,6 +112,7 @@ class Mentor(object):
                 "mobile_media": target_answer_doc.get("mobileMedia", None),
                 "vtt_media": target_answer_doc.get("vttMedia", None),
             }
+            external_video_ids = target_answer_doc["externalVideoIds"]
             q = {
                 "id": target_question_doc["_id"],
                 "question_text": target_question_doc["question"],
@@ -119,5 +122,6 @@ class Mentor(object):
                 "answer_id": target_answer_doc["_id"],
                 "answer_media": answer_media,
                 "topics": [],
+                "external_video_ids": external_video_ids,
             }
             self.manual_question_mappings[sanitize_string(question_asked)] = q

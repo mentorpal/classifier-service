@@ -11,6 +11,7 @@ import numpy
 from typing import Dict, Union, Tuple
 from module.classifier import (
     AnswerMedia,
+    ExternalVideoIds,
     mentor_model_path,
     ARCH_LR_TRANSFORMER,
     QuestionClassiferPredictionResult,
@@ -66,6 +67,7 @@ class TransformersQuestionClassifierPrediction:
                 answer = q["answer"]
                 markdown_answer = q["markdown_answer"]
                 answer_media = q["answer_media"]
+                external_video_ids = q["external_video_ids"]
                 feedback_id = create_user_question(
                     self.mentor.id,
                     question,
@@ -77,7 +79,13 @@ class TransformersQuestionClassifierPrediction:
                     1.0,
                 )
                 return QuestionClassiferPredictionResult(
-                    answer_id, answer, markdown_answer, answer_media, 1.0, feedback_id
+                    answer_id,
+                    answer,
+                    markdown_answer,
+                    answer_media,
+                    1.0,
+                    feedback_id,
+                    external_video_ids,
                 )
         encoding_json = sbert_encode(question)
         embedded_question = numpy.array(encoding_json["encoding"])
@@ -87,6 +95,7 @@ class TransformersQuestionClassifierPrediction:
             markdownAnswer,
             answer_media,
             highest_confidence,
+            external_video_ids,
         ) = self.__get_prediction(embedded_question)
         feedback_id = create_user_question(
             self.mentor.id,
@@ -99,7 +108,13 @@ class TransformersQuestionClassifierPrediction:
             highest_confidence,
         )
         if highest_confidence < get_off_topic_threshold():
-            answer_id, answer, markdownAnswer, answer_media = self.__get_offtopic()
+            (
+                answer_id,
+                answer,
+                markdownAnswer,
+                answer_media,
+                external_video_ids,
+            ) = self.__get_offtopic()
         return QuestionClassiferPredictionResult(
             answer_id,
             answer,
@@ -107,6 +122,7 @@ class TransformersQuestionClassifierPrediction:
             answer_media,
             highest_confidence,
             feedback_id,
+            external_video_ids,
         )
 
     def get_last_trained_at(self) -> float:
@@ -118,7 +134,7 @@ class TransformersQuestionClassifierPrediction:
 
     def __get_prediction(
         self, embedded_question
-    ) -> Tuple[str, str, str, AnswerMedia, float]:
+    ) -> Tuple[str, str, str, AnswerMedia, float, ExternalVideoIds]:
         prediction = self.model.predict([embedded_question])
         decision = self.model.decision_function([embedded_question])
         if type(decision[0]) == numpy.ndarray:
@@ -131,19 +147,23 @@ class TransformersQuestionClassifierPrediction:
         answer_markdown_text = answer["markdownTranscript"]
         answer_key = sanitize_string(answer_text)
         answer_media = self.mentor.questions_by_answer[answer_key].get("answer_media")
+        external_video_ids = self.mentor.questions_by_answer[answer_key].get(
+            "external_video_ids"
+        )
         return (
             prediction[0],
             answer_text,
             answer_markdown_text,
             answer_media,
             float(highest_confidence),
+            external_video_ids,
         )
 
     def __get_offtopic(self) -> AnswerIdTextAndMedia:
         try:
-            id, text, markdownText, answer_media = random.choice(
+            id, text, markdownText, answer_media, external_video_ids = random.choice(
                 self.mentor.utterances_by_type["_OFF_TOPIC_"]
             )
-            return (id, text, markdownText, answer_media)
+            return (id, text, markdownText, answer_media, external_video_ids)
         except KeyError:
             return ("_OFF_TOPIC_", "_OFF_TOPIC_", "_OFF_TOPIC_", {})

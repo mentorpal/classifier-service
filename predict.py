@@ -118,12 +118,12 @@ def handler(event, context):
         "answer_text": result.answer_text,
         "answer_markdown_text": result.answer_markdown_text,
         "answer_media": result.answer_media,
+        "external_video_ids": result.external_video_ids,
         "confidence": result.highest_confidence,
         "feedback_id": result.feedback_id,
         "classifier": "",
     }
     response = make_response(200, body, event)
-    log.debug(json.dumps(response))
     return response
 
 

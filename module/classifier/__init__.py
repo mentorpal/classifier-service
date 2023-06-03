@@ -27,6 +27,11 @@ class AnswerMedia:
 
 
 @dataclass
+class ExternalVideoIds:
+    wistiaId: str
+
+
+@dataclass
 class QuestionClassiferPredictionResult:
     answer_id: str
     answer_text: str
@@ -34,3 +39,4 @@ class QuestionClassiferPredictionResult:
     answer_media: AnswerMedia
     highest_confidence: float
     feedback_id: str
+    external_video_ids: ExternalVideoIds

@@ -139,6 +139,9 @@ query Mentor($id: ID!) {
                 tag
                 url
             }
+            externalVideoIds{
+                wistiaId
+            }
         }
     }
 }
@@ -301,6 +304,7 @@ def fetch_training_data(mentor: str):
                 "mobile_media": answer.get("mobileMedia"),
                 "vtt_media": answer.get("vttMedia"),
             },
+            "external_video_ids": answer["externalVideoIds"],
             "topics": [],
         }
         data_dict[question["_id"]] = q
