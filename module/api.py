@@ -194,6 +194,9 @@ query GradedUserQuestions($filter: Object!){
             status
             transcript
             markdownTranscript
+            externalVideoIds{
+                wistiaId
+            }
             webMedia {
                 type
                 tag
