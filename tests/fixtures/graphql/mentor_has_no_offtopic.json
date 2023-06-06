@@ -72,6 +72,9 @@
           "status": "COMPLETE",
           "transcript": "Clint Anderson",
           "markdownTranscript": "Clint Anderson",
+          "externalVideoIds": {
+                "wistiaId":""
+           },
           "question": {
             "_id": "Q1",
             "question": "What is your name?",
@@ -89,6 +92,9 @@
           "status": "COMPLETE",
           "transcript": "37 years old",
           "markdownTranscript": "37 years old",
+          "externalVideoIds": {
+                "wistiaId":""
+           },
           "question": {
             "_id": "Q2",
             "question": "How old are you?",
@@ -102,6 +108,9 @@
           "status": "INCOMPLETE",
           "transcript": null,
           "markdownTranscript": null,
+          "externalVideoIds": {
+                "wistiaId":""
+           },
           "question": {
             "_id": "Q3",
             "question": "Will you be my friend?",
@@ -115,6 +124,9 @@
           "status": "COMPLETE",
           "transcript": null,
           "markdownTranscript": null,
+          "externalVideoIds": {
+                "wistiaId":""
+           },
           "question": {
             "_id": "Q4",
             "question": "Look at the camera.",
@@ -134,6 +146,9 @@
           "status": "COMPLETE",
           "transcript": "Hi I'm Clint",
           "markdownTranscript": "Hi I'm Clint",
+          "externalVideoIds": {
+                "wistiaId":""
+           },
           "question": {
             "_id": "Q5",
             "question": "Introduce yourself.",

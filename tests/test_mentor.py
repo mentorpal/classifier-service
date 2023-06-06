@@ -20,9 +20,14 @@ import re
 def test_loads_mentor_from_api(mentor_id, expected_data_file):
     with open(fixture_path("graphql/{}.json".format(mentor_id))) as f:
         data = json.load(f)
+    with open(fixture_path("graphql/clint_graded_user_questions.json")) as f:
+        graded_user_questions_data = json.load(f)
     with open(fixture_path("graphql/{}.json".format(expected_data_file))) as f:
         expected_data = json.load(f)
     responses.add(responses.POST, re.compile(".*"), json=data, status=200)
+    responses.add(
+        responses.POST, re.compile(".*"), json=graded_user_questions_data, status=200
+    )
     m = Mentor(mentor_id)
     assert m.id == mentor_id
     assert m.topics == expected_data["topics"]

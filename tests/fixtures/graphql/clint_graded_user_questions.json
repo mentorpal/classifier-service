@@ -1,0 +1,135 @@
+{
+    "data": {
+      "userQuestions": {
+        "edges": [
+          {
+            "node": {
+              "question": "How do you avoid stress",
+              "graderAnswer": {
+                "_id": "62709352a2fa682085cdc3c2",
+                "status": "COMPLETE",
+                "transcript": "the way that I find the deal best with the stress is toe let out your grievances. Um, you get all your people together, you have a chat about what just went on, whether it's something in the future, and you're not sure that they could do it correctly, whether something in the past that they maybe have gotten wrong or even just yourself, you know, like maybe you don't perform always perfectly. Maybe they have some grievance since grievances towards you. So you want to actually talk to them and say, Hey, you know what? Like wrong the same team here. Let's figure out how weaken move forward from now on successfully. So just chatting and talking about is the best way to relieve stress.",
+                "markdownTranscript": "the way that I find the deal best with the stress is toe let out your grievances. Um, you get all your people together, you have a chat about what just went on, whether it's something in the future, and you're not sure that they could do it correctly, whether something in the past that they maybe have gotten wrong or even just yourself, you know, like maybe you don't perform always perfectly. Maybe they have some grievance since grievances towards you. So you want to actually talk to them and say, Hey, you know what? Like wrong the same team here. Let's figure out how weaken move forward from now on successfully. So just chatting and talking about is the best way to relieve stress.",
+                "webMedia": {
+                  "type": "video",
+                  "tag": "web",
+                  "url": "https://videourl.org/6149aa93a8bc83f740c17bc6/web.mp4",
+                  "transparentVideoUrl": ""
+                },
+                "externalVideoIds":{
+                 "wistiaId":""
+},
+                "mobileMedia": {
+                  "type": "video",
+                  "tag": "mobile",
+                  "url": "https://videourl.org/6149aa93a8bc83f740c17bc6/mobile.mp4",
+                  "transparentVideoUrl": ""
+                },
+                "vttMedia": {
+                  "type": "subtitles",
+                  "tag": "en",
+                  "url": "https://videourl.org/6149aa93a8bc83f740c17bc6/en.vtt"
+                },
+                "question": {
+                  "_id": "6149aa93a8bc83f740c17bc6",
+                  "question": "How do you deal with stress on the job?",
+                  "type": "QUESTION",
+                  "name": "",
+                  "paraphrases": [
+                    "How do you avoid stress"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "node": {
+              "question": "what does that mean",
+              "graderAnswer": {
+                "_id": "6270eb03a2fa682085fcf0ac",
+                "status": "COMPLETE",
+                "transcript": "I don't think so.",
+                "markdownTranscript": "I don't think so.",
+                "webMedia": {
+                  "type": "video",
+                  "tag": "web",
+                  "url": "https://videourl.org/625f689cc779b3d2048bfc58/web.mp4",
+                  "transparentVideoUrl": ""
+                },
+                "externalVideoIds":{
+                 "wistiaId":""
+},
+                "mobileMedia": {
+                  "type": "video",
+                  "tag": "mobile",
+                  "url": "https://videourl.org/625f689cc779b3d2048bfc58/mobile.mp4",
+                  "transparentVideoUrl": ""
+                },
+                "vttMedia": {
+                  "type": "subtitles",
+                  "tag": "en",
+                  "url": "https://videourl.org/625f689cc779b3d2048bfc58/en.vtt"
+                },
+                "question": {
+                  "_id": "625f689cc779b3d2048bfc58",
+                  "question": "Please provide a phrase that you might say when you are not sure about the answer to a question. (Phrase 1)",
+                  "type": "UTTERANCE",
+                  "name": "_FEEDBACK_",
+                  "paraphrases": [
+                    "what does that mean"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "node": {
+              "question": "What do you like about your job?",
+              "graderAnswer": {
+                "_id": "62709349a2fa682085cdbe7d",
+                "status": "COMPLETE",
+                "transcript": "When I first joined the Navy, they were trying to promote the Nuclear Propulsion School and they threw a lot of things on my desk. We'll we'll give you lots of money for school, which they did, and I've I've sucked it all up after you get out of Navy, then you can have $100,000 your job. And being a kid that was currently working at McDonald's, that sounded great. You know, like, uh, now I can have that $100,000 your job. No problem. Um, they said, Oh, you know, you become a veteran and you go to the Post Graduate School and they provide a lot of different things. But to tell you the truth, all of those kind of sift into the back to the background. Um, I'm still the name of this at this time, and I didn't become a nuclear, um, operator. At the end, however, I did get the challenge that they were talking about. That's the thing that really drove me tojoin the nuclear propulsion school. And that's the thing that I think I got the most out of. I was challenged more than I ever had been in my life, and that's something that you can't put a price on And that that's a job that I don't think that most of the other jobs that I saw the Navy wouldn't provide as much as, um, after getting out of the active duty service, I was a chief. And, of course, I love, you know, providing opportunities for people and helping them promote their career, You know, like all chiefs will say that. But what I personally like for myself about being, um, still in the Navy reserves is to travel. I did a lot of port calls when I was in active duty. And I'm telling you, I went to 13 different countries. Uh, Dubai, Bahrain. Kuwait, um, Japan, You know, dozens of places, but being in the reserve, you actually go to these places. They give you a car, they give you a hotel. Uh, they give you a decent work, they give you money in your pocket and on the weekends you can explore. So I've seen New York and the capital and, um, New Hampshire, places that I didn't think that I would go for a long time. I've seen Washington and you know, swimming the beaches of Hawaii, and they say that I'm working. That's that's incredible because I think that it's kind of like a or work vacation.",
+                "markdownTranscript": "When I first joined the Navy, they were trying to promote the Nuclear Propulsion School and they threw a lot of things on my desk. We'll we'll give you lots of money for school, which they did, and I've I've sucked it all up after you get out of Navy, then you can have $100,000 your job. And being a kid that was currently working at McDonald's, that sounded great. You know, like, uh, now I can have that $100,000 your job. No problem. Um, they said, Oh, you know, you become a veteran and you go to the Post Graduate School and they provide a lot of different things. But to tell you the truth, all of those kind of sift into the back to the background. Um, I'm still the name of this at this time, and I didn't become a nuclear, um, operator. At the end, however, I did get the challenge that they were talking about. That's the thing that really drove me tojoin the nuclear propulsion school. And that's the thing that I think I got the most out of. I was challenged more than I ever had been in my life, and that's something that you can't put a price on And that that's a job that I don't think that most of the other jobs that I saw the Navy wouldn't provide as much as, um, after getting out of the active duty service, I was a chief. And, of course, I love, you know, providing opportunities for people and helping them promote their career, You know, like all chiefs will say that. But what I personally like for myself about being, um, still in the Navy reserves is to travel. I did a lot of port calls when I was in active duty. And I'm telling you, I went to 13 different countries. Uh, Dubai, Bahrain. Kuwait, um, Japan, You know, dozens of places, but being in the reserve, you actually go to these places. They give you a car, they give you a hotel. Uh, they give you a decent work, they give you money in your pocket and on the weekends you can explore. So I've seen New York and the capital and, um, New Hampshire, places that I didn't think that I would go for a long time. I've seen Washington and you know, swimming the beaches of Hawaii, and they say that I'm working. That's that's incredible because I think that it's kind of like a or work vacation.",
+                "webMedia": {
+                  "type": "video",
+                  "tag": "web",
+                  "url": "https://videourl.org/6149a00aa8bc83551ec169df/web.mp4",
+                  "transparentVideoUrl": ""
+                },
+                "externalVideoIds":{
+                 "wistiaId":""
+},
+                "mobileMedia": {
+                  "type": "video",
+                  "tag": "mobile",
+                  "url": "https://videourl.org/6149a00aa8bc83551ec169df/mobile.mp4",
+                  "transparentVideoUrl": ""
+                },
+                "vttMedia": {
+                  "type": "subtitles",
+                  "tag": "en",
+                  "url": "https://videourl.org/6149a00aa8bc83551ec169df/en.vtt"
+                },
+                "question": {
+                  "_id": "6149a00aa8bc83551ec169df",
+                  "question": "Why do you love your job?",
+                  "type": "QUESTION",
+                  "name": "",
+                  "paraphrases": [
+                    "What do you love about the Navy?",
+                    "Why do you like what you do?",
+                    "do you like what you do?",
+                    "Why do you enjoy what you do?",
+                    "What is good about what you do?",
+                    "what do you like about the Navy?",
+                    "What makes you love your job?",
+                    "What do you like about your job?"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }

@@ -269,7 +269,12 @@ def _test_gets_off_topic(
     monkeypatch.setenv("OFF_TOPIC_THRESHOLD", "1.0")  # everything is offtopic
     with open(fixture_path("graphql/{}.json".format(mentor_id))) as f:
         data = json.load(f)
+    with open(fixture_path("graphql/clint_graded_user_questions.json")) as g:
+        graded_user_question_data = json.load(g)
     responses.add(responses.POST, "http://graphql/", json=data, status=200)
+    responses.add(
+        responses.POST, "http://graphql/", json=graded_user_question_data, status=200
+    )
     responses.add(
         responses.GET,
         "http://sbert/encode",

@@ -76,6 +76,10 @@ class Question:
     paraphrases: List[str] = field(default_factory=list)
 
 
+class ExternalVideoIds:
+    wistiaId: str
+
+
 @dataclass
 class Answer:
     _id: str
@@ -83,6 +87,7 @@ class Answer:
     transcript: str
     question: Question
     markdownTranscript: str = ""
+    externalVideoIds: ExternalVideoIds = field(default_factory=lambda: {"wistiaId": ""})
 
 
 @dataclass

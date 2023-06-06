@@ -166,4 +166,4 @@ class TransformersQuestionClassifierPrediction:
             )
             return (id, text, markdownText, answer_media, external_video_ids)
         except KeyError:
-            return ("_OFF_TOPIC_", "_OFF_TOPIC_", "_OFF_TOPIC_", {})
+            return ("_OFF_TOPIC_", "_OFF_TOPIC_", "_OFF_TOPIC_", {}, {"wistiaId": ""})
