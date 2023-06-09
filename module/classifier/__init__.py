@@ -40,3 +40,4 @@ class QuestionClassiferPredictionResult:
     highest_confidence: float
     feedback_id: str
     external_video_ids: ExternalVideoIds
+    answer_missing: bool

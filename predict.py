@@ -122,6 +122,7 @@ def handler(event, context):
         "confidence": result.highest_confidence,
         "feedback_id": result.feedback_id,
         "classifier": "",
+        "answer_missing": result.answer_missing,
     }
     response = make_response(200, body, event)
     return response
