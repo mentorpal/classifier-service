@@ -86,6 +86,7 @@ class TransformersQuestionClassifierPrediction:
                     1.0,
                     feedback_id,
                     external_video_ids,
+                    answer_missing=False,
                 )
         encoding_json = sbert_encode(question)
         embedded_question = numpy.array(encoding_json["encoding"])
@@ -96,6 +97,7 @@ class TransformersQuestionClassifierPrediction:
             answer_media,
             highest_confidence,
             external_video_ids,
+            answer_missing,
         ) = self.__get_prediction(embedded_question)
         feedback_id = create_user_question(
             self.mentor.id,
@@ -123,6 +125,7 @@ class TransformersQuestionClassifierPrediction:
             highest_confidence,
             feedback_id,
             external_video_ids,
+            answer_missing,
         )
 
     def get_last_trained_at(self) -> float:
@@ -142,21 +145,39 @@ class TransformersQuestionClassifierPrediction:
         else:
             # edge-case - just a single number:
             highest_confidence = decision[0]
-        answer = self.mentor.answer_id_by_answer[prediction[0]]
-        answer_text = answer["transcript"]
-        answer_markdown_text = answer["markdownTranscript"]
-        answer_key = sanitize_string(answer_text)
-        answer_media = self.mentor.questions_by_answer[answer_key].get("answer_media")
-        external_video_ids = self.mentor.questions_by_answer[answer_key].get(
-            "external_video_ids"
-        )
+        answer_id = prediction[0]
+        answer_missing = False
+        if answer_id in self.mentor.answer_id_by_answer:
+            answer = self.mentor.answer_id_by_answer[prediction[0]]
+            answer_text = answer["transcript"]
+            answer_markdown_text = answer["markdownTranscript"]
+            answer_key = sanitize_string(answer_text)
+            answer_media = self.mentor.questions_by_answer[answer_key].get(
+                "answer_media"
+            )
+            external_video_ids = self.mentor.questions_by_answer[answer_key].get(
+                "external_video_ids"
+            )
+        else:
+            # answer does not exist, revert to off topic.
+            answer_missing = True
+            highest_confidence = -1
+            (
+                answer_id,
+                answer_text,
+                answer_markdown_text,
+                answer_media,
+                external_video_ids,
+            ) = self.__get_offtopic()
+
         return (
-            prediction[0],
+            answer_id,
             answer_text,
             answer_markdown_text,
             answer_media,
             float(highest_confidence),
             external_video_ids,
+            answer_missing,
         )
 
     def __get_offtopic(self) -> AnswerIdTextAndMedia:
