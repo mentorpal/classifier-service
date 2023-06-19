@@ -26,7 +26,7 @@ def test_find_classifier_caches(data_root: str, shared_root: str, mentor_id: str
     c2 = dao.find_classifier(mentor_id)
     assert c1 == c2
 
-
+@pytest.mark.only
 @responses.activate
 @pytest.mark.parametrize("mentor_id", [("clint")])
 def test_find_classifier_returns_updated_classifier_if_model_has_changed(

@@ -13,6 +13,7 @@ import datetime
 import base64
 from module.logger import get_logger
 from typing import Dict
+from module.api import add_or_update_train_task
 
 
 load_sentry()
@@ -56,15 +57,17 @@ def handler(event, context):
     auth_headers = get_auth_headers(event)
 
     if not is_authorized(mentor, token):
-        data = {
-            "error": "not authorized",
-            "message": "not authorized",
-        }
+        data = {"error": "not authorized", "message": "not authorized"}
         return create_json_response(401, data, event)
 
-    # reject if there's already a train job for this mentor?
+    # TODO: reject if there's already a train job for this mentor?
 
-    job_id = str(uuid.uuid4())
+    test_headers = {**auth_headers, "unit-test-header": "abc"}
+
+    job_id = add_or_update_train_task(
+        str(uuid.uuid4()), mentor, "QUEUED", headers=auth_headers
+    )
+
     train_job = {
         "id": job_id,
         "mentor": mentor,

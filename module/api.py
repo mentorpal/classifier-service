@@ -161,6 +161,7 @@ mutation UserQuestionCreate($userQuestion: UserQuestionCreateInput!) {
     }
 }
 """
+
 GQL_CATEGORY_ANSWERS = """
 query CategoryAnswers($category: String!, $mentor: ID!) {
     categoryAnswers(category: $category, mentor: $mentor) {
@@ -168,6 +169,18 @@ query CategoryAnswers($category: String!, $mentor: ID!) {
         questionText
     }
 }
+"""
+
+GQL_ADD_OR_UPDATE_TRAIN_TASK = """
+mutation TrainTaskAdd($taskDocId: ID!, $mentorId: ID!, $status: String!) {
+          me{
+            mentorTrainTaskAddOrUpdate(taskDocId: $taskDocId, mentorId: $mentorId, status: $status) {
+              _id
+              mentor
+              status
+            }
+          }
+      }
 """
 
 GQL_QUERY_MENTOR_ANSWERS_AND_NAME = """
@@ -341,6 +354,7 @@ def fetch_mentor_data(mentor: str, headers: Dict[str, str] = {}) -> dict:
     tdjson = __auth_gql(query_mentor(mentor), headers)
     if "errors" in tdjson:
         raise Exception(json.dumps(tdjson.get("errors")))
+    # print(tdjson, flush=True)
     data = tdjson["data"]["mentor"]
     return data
 
@@ -393,6 +407,27 @@ def update_training(mentor: str):
     tdjson = __auth_gql(mutation_update_training(mentor))
     if "errors" in tdjson:
         raise Exception(json.dumps(tdjson.get("errors")))
+
+
+def mutation_add_or_update_train_task(
+    task_id: str, mentor: str, status: str
+) -> GQLQueryBody:
+    return {
+        "query": GQL_ADD_OR_UPDATE_TRAIN_TASK,
+        "variables": {"taskDocId": task_id, "mentorId": mentor, "status": status},
+    }
+
+
+def add_or_update_train_task(
+    task_id: str, mentor: str, status: str, headers: Dict[str, str] = {}
+):
+    tdjson = __auth_gql(
+        mutation_add_or_update_train_task(task_id, mentor, status), headers=headers
+    )
+    if "errors" in tdjson:
+        raise Exception(json.dumps(tdjson.get("errors")))
+    data = tdjson.get("data")
+    return data["me"]["mentorTrainTaskAddOrUpdate"]["_id"]
 
 
 def create_user_question(
