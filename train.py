@@ -62,8 +62,6 @@ def handler(event, context):
 
     # TODO: reject if there's already a train job for this mentor?
 
-    test_headers = {**auth_headers, "unit-test-header": "abc"}
-
     job_id = add_or_update_train_task(
         str(uuid.uuid4()), mentor, "QUEUED", headers=auth_headers
     )
