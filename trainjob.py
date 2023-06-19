@@ -8,6 +8,7 @@ import json
 import os
 import boto3
 import datetime
+from module.api import add_or_update_train_task
 from module.classifier.arch.lr_transformer import TransformersQuestionClassifierTraining
 from module.utils import require_env, load_sentry
 from module.logger import get_logger
@@ -36,7 +37,7 @@ def handler(event, context):
         mentor = request["mentor"]
         ping = request["ping"] if "ping" in request else False
         auth_headers = json.loads(request["auth_headers"])
-        update_status(request["id"], "IN_PROGRESS")
+        update_status(request["id"], "IN_PROGRESS", mentor)
 
         if ping:
             try:
@@ -46,10 +47,10 @@ def handler(event, context):
                     output_dir=MODELS_DIR,
                     auth_headers=auth_headers,
                 )
-                update_status(request["id"], "SUCCESS")
+                update_status(request["id"], "SUCCESS", mentor)
             except Exception as e:
                 log.exception(e)
-                update_status(request["id"], "FAILURE")
+                update_status(request["id"], "FAILURE", mentor)
         else:
             try:
                 classifier = TransformersQuestionClassifierTraining(
@@ -71,21 +72,21 @@ def handler(event, context):
                         mentor, "module.classifier.arch.lr_transformer", "model.pkl"
                     ),
                 )
-                update_status(request["id"], "SUCCESS")
+                update_status(request["id"], "SUCCESS", mentor)
             except Exception as e:
                 log.exception(e)
-                update_status(request["id"], "FAILURE")
+                update_status(request["id"], "FAILURE", mentor)
 
 
-def update_status(id, status):
+def update_status(id, status, mentor):
+    add_or_update_train_task(id, mentor, status)
+    # TODO: eventually migrate away from using dynamodb and only use mongo
     job_table.update_item(
         Key={"id": id},
         # status is reserved, workaround according to:
         # https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeNames.html
         UpdateExpression="set #status = :s, updated = :u",
-        ExpressionAttributeNames={
-            "#status": "status",
-        },
+        ExpressionAttributeNames={"#status": "status"},
         ExpressionAttributeValues={
             ":s": status,
             ":u": datetime.datetime.now().isoformat(),
