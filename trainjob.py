@@ -37,7 +37,7 @@ def handler(event, context):
         mentor = request["mentor"]
         ping = request["ping"] if "ping" in request else False
         auth_headers = json.loads(request["auth_headers"])
-        update_status(request["id"], "IN_PROGRESS", mentor)
+        update_status(request["id"], "IN_PROGRESS", mentor, auth_headers=auth_headers)
 
         if ping:
             try:
@@ -47,10 +47,10 @@ def handler(event, context):
                     output_dir=MODELS_DIR,
                     auth_headers=auth_headers,
                 )
-                update_status(request["id"], "SUCCESS", mentor)
+                update_status(request["id"], "SUCCESS", mentor, auth_headers=auth_headers)
             except Exception as e:
                 log.exception(e)
-                update_status(request["id"], "FAILURE", mentor)
+                update_status(request["id"], "FAILURE", mentor, auth_headers=auth_headers)
         else:
             try:
                 classifier = TransformersQuestionClassifierTraining(
@@ -72,14 +72,14 @@ def handler(event, context):
                         mentor, "module.classifier.arch.lr_transformer", "model.pkl"
                     ),
                 )
-                update_status(request["id"], "SUCCESS", mentor)
+                update_status(request["id"], "SUCCESS", mentor, auth_headers=auth_headers)
             except Exception as e:
                 log.exception(e)
-                update_status(request["id"], "FAILURE", mentor)
+                update_status(request["id"], "FAILURE", mentor, auth_headers=auth_headers)
 
 
-def update_status(id, status, mentor):
-    add_or_update_train_task(id, mentor, status)
+def update_status(id, status, mentor, auth_headers):
+    add_or_update_train_task(id, mentor, status, headers=auth_headers)
     # TODO: eventually migrate away from using dynamodb and only use mongo
     job_table.update_item(
         Key={"id": id},
