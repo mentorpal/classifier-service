@@ -62,8 +62,12 @@ def handler(event, context):
 
     # TODO: reject if there's already a train job for this mentor?
 
-    job_id = add_or_update_train_task(
-        str(uuid.uuid4()), mentor, "QUEUED", headers=auth_headers
+    job_id = (
+        add_or_update_train_task(
+            str(uuid.uuid4()), mentor, "QUEUED", headers=auth_headers
+        )
+        if ping is False
+        else str(uuid.uuid4())
     )
 
     train_job = {
@@ -80,13 +84,14 @@ def handler(event, context):
     sqs_msg = sqs.send_message(QueueUrl=queue_url, MessageBody=json.dumps(train_job))
     log.info(sqs_msg)
 
-    job_table.put_item(Item=train_job)
+    if ping is False:
+        job_table.put_item(Item=train_job)
 
     data = {
         "id": job_id,
         "mentor": mentor,
         "status": "QUEUED",
-        "statusUrl": f"/train/status/{job_id}",
+        "statusUrl": f"/train/status/{job_id}" if ping is False else "no_status_on_ping",
     }
     return create_json_response(200, data, event)
 
