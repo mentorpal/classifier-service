@@ -41,7 +41,7 @@ class Mentor(object):
             self.topics.append(topic["name"])
         for answer in data.get("answers", []):
             question = answer["question"]
-            if answer["status"] == "INCOMPLETE":
+            if answer["status"] in ["INCOMPLETE", "SKIP"]:
                 continue
             if answer["status"] == "NONE":
                 mentorType = data.get("mentorType", "VIDEO")
