@@ -29,7 +29,7 @@ phases:
       - pip3 install poetry
       - poetry install --no-root
       # - rm -rf git-lfs-linux-amd64-v3.1.4* ?
-      - n 16 # workaround https://github.com/aws/aws-codebuild-docker-images/issues/490
+      - n 18 # workaround https://github.com/aws/aws-codebuild-docker-images/issues/490
       - NODE_ENV=dev npm ci
 
   build:

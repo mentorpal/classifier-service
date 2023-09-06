@@ -91,7 +91,9 @@ def handler(event, context):
         "id": job_id,
         "mentor": mentor,
         "status": "QUEUED",
-        "statusUrl": f"/train/status/{job_id}" if ping is False else "no_status_on_ping",
+        "statusUrl": f"/train/status/{job_id}"
+        if ping is False
+        else "no_status_on_ping",
     }
     return create_json_response(200, data, event)
 

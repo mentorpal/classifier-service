@@ -51,7 +51,6 @@ class TransformersQuestionClassifierPrediction:
         chat_session_id: str,
         canned_question_match_disabled: bool = False,
     ) -> QuestionClassiferPredictionResult:
-
         sanitized_question = sanitize_string(question)
         if not canned_question_match_disabled:
             if (
