@@ -39,7 +39,10 @@ class Mentor(object):
             self.topics.append(subject["name"])
         for topic in data.get("topics", []):
             self.topics.append(topic["name"])
-        for answer in data.get("answers", []):
+        answers = data.get("answers", [])
+        already_complete_answers = data.get("orphanedCompleteAnswers", [])
+        all_answers = [*answers, *already_complete_answers]
+        for answer in all_answers:
             question = answer["question"]
             if answer["status"] in ["INCOMPLETE", "SKIP"]:
                 continue
@@ -91,7 +94,19 @@ class Mentor(object):
             }
             self.questions_by_id[question["_id"]] = q
         # First add primary question texts
-        for question in data.get("questions", []):
+        questions = data.get("questions", [])
+        questions_from_already_complete_answers = list(
+            map(
+                lambda x: {
+                    "question": {
+                        "_id": x["question"]["_id"],
+                    },
+                    "topics": [],
+                },
+                already_complete_answers,
+            )
+        )
+        for question in [*questions, *questions_from_already_complete_answers]:
             q = self.questions_by_id.get(question["question"]["_id"], None)
             if q is not None:
                 for topic in question["topics"]:

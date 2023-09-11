@@ -360,6 +360,7 @@ def fetch_training_data(mentor: str):
             "topics": [],
         }
         data_dict[question["_id"]] = q
+
     for question in data.get("questions", []):
         dict_question = data_dict.get(question["question"]["_id"], None)
         if dict_question is not None:
