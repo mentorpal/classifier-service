@@ -143,6 +143,39 @@ query Mentor($id: ID!) {
                 wistiaId
             }
         }
+        orphanedCompleteAnswers {
+            _id
+            status
+            transcript
+            markdownTranscript
+            question {
+                _id
+                question
+                type
+                name
+                paraphrases
+            }
+            webMedia {
+                type
+                tag
+                url
+                transparentVideoUrl
+            }
+            mobileMedia {
+                type
+                tag
+                url
+                transparentVideoUrl
+            }
+            vttMedia {
+                type
+                tag
+                url
+            }
+            externalVideoIds{
+                wistiaId
+            }
+        }
     }
 }
 """
@@ -306,7 +339,10 @@ def fetch_training_data(mentor: str):
     data = fetch_mentor_data(mentor)
     data_dict = {}
     data_list = []
-    for answer in data.get("answers", []):
+    answers = data.get("answers", [])
+    already_complete_answers = data.get("orphanedCompleteAnswers", [])
+    all_answers = [*answers, *already_complete_answers]
+    for answer in all_answers:
         question = answer["question"]
         q = {
             "id": question["_id"],
