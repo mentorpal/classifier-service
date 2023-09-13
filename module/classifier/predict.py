@@ -53,9 +53,7 @@ class TransformersQuestionClassifierPrediction:
     ) -> QuestionClassiferPredictionResult:
         sanitized_question = sanitize_string(question)
         if not canned_question_match_disabled:
-            if (
-                sanitized_question in self.mentor.questions_by_text
-            ):
+            if sanitized_question in self.mentor.questions_by_text:
                 q = self.mentor.questions_by_text[sanitized_question]
                 answer_id = q["answer_id"]
                 answer = q["answer"]
