@@ -28,9 +28,6 @@ class Mentor(object):
         self.questions_by_text = {}
         self.questions_by_answer = {}
         self.answer_id_by_answer = {}
-        self.manual_question_mappings = (
-            {}
-        )  # a Dict[str, Question], with the key being user question text, and the Question being the question document it was manually mapped to
         self.load(auth_headers)
 
     def load(self, auth_headers):
@@ -139,4 +136,4 @@ class Mentor(object):
                 "topics": [],
                 "external_video_ids": external_video_ids,
             }
-            self.manual_question_mappings[sanitize_string(question_asked)] = q
+            self.questions_by_text[sanitize_string(question_asked)] = q
