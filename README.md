@@ -77,7 +77,7 @@ and there're alarms that monitor DLQs and send message to alerting topic (curren
 
 sls deploy builds a docker image: `<acc>.dkr.ecr.<region>.amazonaws.com/serverless-mentor-classifier-service-<stage>` which can be started and invoked locally:
 ```
-docker run -e SHARED_ROOT=/app/shared -e GRAPHQL_ENDPOINT=https://v2.mentorpal.org/graphql -e API_SECRET=... --rm -p 9000:8080 <image_name>
+docker run -e SHARED_ROOT=/app/shared -e GRAPHQL_ENDPOINT=https://api.qamentorpal.org/graphql -e API_SECRET=... --rm -p 9000:8080 <image_name>
 curl -XPOST "http://localhost:9000/2015-03-31/functions/http_train/invocations" -d '{"mentor":"<id>"}'
 ```
 
@@ -134,7 +134,7 @@ To debug in VS Code, use this config:
       "program": "${file}",
       "justMyCode": false,
       "env": {
-        "GRAPHQL_ENDPOINT": "https://v2.mentorpal.org/graphql",
+        "GRAPHQL_ENDPOINT": "https://api.qamentorpal.org/graphql",
         "API_SECRET": "<redacted>",
         "AWS_REGION": "us-east-1",
         "SHARED_ROOT": "shared",
