@@ -23,7 +23,7 @@ phases:
   build:
     commands:
       - echo Deploying stack
-      - npm run deploy -- -s ${STAGE} --region us-west-2
+      - npm run deploy -- -s ${STAGE} --region us-east-1
 
       # TODO
       # - echo sentry release: ${SENTRY_RELEASE}
