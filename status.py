@@ -7,8 +7,10 @@
 import json
 import boto3
 import os
-from module.utils import load_sentry, create_json_response, require_env, is_authorized
+from module.api import mentor_can_edit
+from module.utils import load_sentry, create_json_response, require_env
 from module.logger import get_logger
+from train import get_auth_headers
 
 load_sentry()
 log = get_logger("status")
@@ -22,13 +24,12 @@ job_table = dynamodb.Table(JOBS_TABLE_NAME)
 def handler(event, context):
     log.debug(json.dumps(event))
     status_id = event["pathParameters"]["id"]
-    token = json.loads(event["requestContext"]["authorizer"]["token"])
-
+    auth_headers = get_auth_headers(event)
     db_item = job_table.get_item(Key={"id": status_id})
     log.debug(db_item)
     if "Item" in db_item:
         item = db_item["Item"]
-        if not is_authorized(item["mentor"], token):
+        if not mentor_can_edit(item["mentor"], auth_headers):
             status = 401
             data = {
                 "error": "not authorized",

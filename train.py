@@ -8,12 +8,12 @@ import json
 import uuid
 import boto3
 import os
-from module.utils import create_json_response, require_env, is_authorized, load_sentry
+from module.utils import create_json_response, require_env, load_sentry
 import datetime
 import base64
 from module.logger import get_logger
 from typing import Dict
-from module.api import add_or_update_train_task
+from module.api import add_or_update_train_task, mentor_can_edit
 
 
 load_sentry()
@@ -53,10 +53,9 @@ def handler(event, context):
         raise Exception("bad request")
     mentor = train_request["mentor"]
     ping = train_request["ping"] if "ping" in train_request else False
-    token = json.loads(event["requestContext"]["authorizer"]["token"])
     auth_headers = get_auth_headers(event)
 
-    if not is_authorized(mentor, token):
+    if not mentor_can_edit(mentor, auth_headers):
         data = {"error": "not authorized", "message": "not authorized"}
         return create_json_response(401, data, event)
 

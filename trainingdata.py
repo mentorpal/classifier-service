@@ -5,9 +5,10 @@
 # The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 #
 import json
-from module.api import fetch_training_data
-from module.utils import is_authorized, create_json_response, load_sentry
+from module.api import fetch_training_data, mentor_can_edit
+from module.utils import create_json_response, load_sentry
 from module.logger import get_logger
+from train import get_auth_headers
 
 
 load_sentry()
@@ -17,8 +18,8 @@ log = get_logger("training-data")
 def handler(event, context):
     log.debug(json.dumps(event))
     mentor = event["pathParameters"]["mentor"]
-    token = json.loads(event["requestContext"]["authorizer"]["token"])
-    if not is_authorized(mentor, token):
+    auth_headers = get_auth_headers(event)
+    if not mentor_can_edit(mentor, auth_headers):
         data = {
             "error": "not authorized",
             "message": "not authorized",
