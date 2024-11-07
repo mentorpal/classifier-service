@@ -20,6 +20,7 @@ aws_region = os.environ.get("REGION", "us-east-1")
 dynamodb = boto3.resource("dynamodb", region_name=aws_region)
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
 
+cached_mentor_can_edit = {}
 
 def handler(event, context):
     log.debug(json.dumps(event))
@@ -29,13 +30,20 @@ def handler(event, context):
     log.debug(db_item)
     if "Item" in db_item:
         item = db_item["Item"]
-        if not mentor_can_edit(item["mentor"], auth_headers):
+        mentor_can_edit_result = cached_mentor_can_edit.get(item["mentor"])
+        log.info(f"mentor_can_edit_result from cache: {mentor_can_edit_result}")
+        if not mentor_can_edit_result:
+            _mentor_can_edit_result = mentor_can_edit(item["mentor"], auth_headers)
+            mentor_can_edit_result = _mentor_can_edit_result.get("mentorCanEdit")
+            cached_mentor_can_edit[item["mentor"]] = mentor_can_edit_result
+        if not mentor_can_edit_result:
             status = 401
             data = {
                 "error": "not authorized",
                 "message": "not authorized",
             }
         else:
+            cached_mentor_can_edit[item["mentor"]] = mentor_can_edit_result
             status = 200
             data = {
                 "id": item["id"],
