@@ -405,7 +405,7 @@ def fetch_mentor_data(mentor: str, headers: Dict[str, str] = {}) -> dict:
     tdjson = __auth_gql(query_mentor(mentor), headers)
     if "errors" in tdjson:
         raise Exception(json.dumps(tdjson.get("errors")))
-    # print(tdjson, flush=True)
+    # print(tdjson, flush=True
     data = tdjson["data"]["mentor"]
     return data
 
