@@ -8,5 +8,5 @@ pylru==1.2.1
 # required to load model, about 200MB
 scikit-learn==0.24.2
 # numpy==1.22.3 # dependency of scikit-learn
-numpy==1.26.4
+numpy==1.20.3
 urllib3<=2
