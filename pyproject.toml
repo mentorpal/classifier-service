@@ -6,7 +6,7 @@ authors = []
 
 [tool.poetry.dependencies]
 python = "^3.9.6"
-numpy = "^1.20.3"
+numpy = "1.20.3"
 pylru = "^1.2.0"
 requests = "^2.25.1"
 scikit-learn = "0.24.2"

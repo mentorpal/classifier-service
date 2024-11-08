@@ -32,7 +32,7 @@ class TransformersQuestionClassifierPrediction:
         auth_headers: Dict[str, str] = {},
     ):
         if isinstance(mentor, str):
-            logging.info("loading mentor id {}...".format(mentor))
+            logging.info("loading  mentor id {}...".format(mentor))
             mentor = Mentor(mentor, auth_headers)
         assert isinstance(
             mentor, Mentor
@@ -135,7 +135,7 @@ class TransformersQuestionClassifierPrediction:
         if isinstance(decision[0], numpy.ndarray):
             highest_confidence = max(decision[0])
         else:
-            # edge-case - just a single number:
+            # edge-case - just a single number
             highest_confidence = decision[0]
         answer_id = prediction[0]
         answer_missing = False
