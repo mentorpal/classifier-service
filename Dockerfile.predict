@@ -6,7 +6,10 @@ ENV PYTHONPATH /app
 ENV PATH="/app/bin:${PATH}"
 
 COPY requirements-predict.txt ./requirements.txt
+# First install a specific version of numpy to ensure compatibility
+RUN pip install --no-cache numpy==1.19.5
+
 # RUN python -m pip install --upgrade pip
-RUN pip install --no-cache -r requirements.txt
+RUN pip install --no-cache -r requirements.txt 
 COPY predict.py ./
 COPY module module
