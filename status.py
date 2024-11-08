@@ -7,8 +7,11 @@
 import json
 import boto3
 import os
-from module.utils import load_sentry, create_json_response, require_env, is_authorized
+from module.api import user_can_edit_mentor
+from module.ttl_cache import TTLCache
+from module.utils import load_sentry, create_json_response, require_env
 from module.logger import get_logger
+from train import get_auth_headers
 
 load_sentry()
 log = get_logger("status")
@@ -19,16 +22,35 @@ dynamodb = boto3.resource("dynamodb", region_name=aws_region)
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
 
 
+def get_requesting_user_id(event):
+    token = json.loads(event["requestContext"]["authorizer"]["token"])
+    return token["id"]
+
+
+cached_user_can_edit_mentor = TTLCache()
+
+
+def get_user_can_edit_mentor(mentor, user_id, auth_headers):
+    user_can_edit_mentor_result = cached_user_can_edit_mentor.get((mentor, user_id))
+    if not user_can_edit_mentor_result:
+        user_can_edit_mentor_result = user_can_edit_mentor(mentor, auth_headers)
+        cached_user_can_edit_mentor.set((mentor, user_id), user_can_edit_mentor_result)
+    return user_can_edit_mentor_result
+
+
 def handler(event, context):
     log.debug(json.dumps(event))
     status_id = event["pathParameters"]["id"]
-    token = json.loads(event["requestContext"]["authorizer"]["token"])
-
+    auth_headers = get_auth_headers(event)
     db_item = job_table.get_item(Key={"id": status_id})
     log.debug(db_item)
     if "Item" in db_item:
         item = db_item["Item"]
-        if not is_authorized(item["mentor"], token):
+        user_id = get_requesting_user_id(event)
+        if not user_id:
+            return create_json_response(401, {"error": "not authorized, no user id", "message": "not authorized, no user id"}, event)
+        user_can_edit_mentor_result = get_user_can_edit_mentor(item["mentor"], user_id, auth_headers)
+        if not user_can_edit_mentor_result:
             status = 401
             data = {
                 "error": "not authorized",

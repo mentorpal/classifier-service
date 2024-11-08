@@ -273,6 +273,11 @@ query GradedUserQuestions($filter: Object!){
   }
 } """
 
+GQL_QUERY_USER_CAN_EDIT_MENTOR = """
+query MentorCanEdit($mentor: ID!){
+        mentorCanEdit(mentor: $mentor)
+} """
+
 
 def __auth_gql(query: GQLQueryBody, headers: Dict[str, str] = {}) -> dict:
     final_headers = {**headers, f"{SECRET_HEADER_NAME}": f"{SECRET_HEADER_VALUE}"}
@@ -310,6 +315,10 @@ def query_category_answers(category: str, mentor: str) -> GQLQueryBody:
 
 def mutation_update_training(mentor: str) -> GQLQueryBody:
     return {"query": GQL_UPDATE_MENTOR_TRAINING, "variables": {"id": mentor}}
+
+
+def query_user_can_edit_mentor(mentor: str) -> GQLQueryBody:
+    return {"query": GQL_QUERY_USER_CAN_EDIT_MENTOR, "variables": {"mentor": mentor}}
 
 
 def mutation_create_user_question(
@@ -385,6 +394,11 @@ def fetch_training_data(mentor: str):
     csv_writer.writerows(data_list)
 
     return data_csv.getvalue()
+
+
+def user_can_edit_mentor(mentor: str, headers: Dict[str, str] = {}) -> bool:
+    tdjson = __auth_gql(query_user_can_edit_mentor(mentor), headers=headers)
+    return tdjson.get("data")["mentorCanEdit"]
 
 
 def fetch_mentor_data(mentor: str, headers: Dict[str, str] = {}) -> dict:

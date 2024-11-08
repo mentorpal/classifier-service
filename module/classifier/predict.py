@@ -132,7 +132,7 @@ class TransformersQuestionClassifierPrediction:
     ) -> Tuple[str, str, str, AnswerMedia, float, ExternalVideoIds]:
         prediction = self.model.predict([embedded_question])
         decision = self.model.decision_function([embedded_question])
-        if type(decision[0]) == numpy.ndarray:
+        if isinstance(decision[0], numpy.ndarray):
             highest_confidence = max(decision[0])
         else:
             # edge-case - just a single number:
