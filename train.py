@@ -13,7 +13,7 @@ import datetime
 import base64
 from module.logger import get_logger
 from typing import Dict
-from module.api import add_or_update_train_task, mentor_can_edit
+from module.api import add_or_update_train_task, user_can_edit_mentor
 
 
 load_sentry()
@@ -55,7 +55,7 @@ def handler(event, context):
     ping = train_request["ping"] if "ping" in train_request else False
     auth_headers = get_auth_headers(event)
 
-    if not mentor_can_edit(mentor, auth_headers):
+    if not user_can_edit_mentor(mentor, auth_headers):
         data = {"error": "not authorized", "message": "not authorized"}
         return create_json_response(401, data, event)
 

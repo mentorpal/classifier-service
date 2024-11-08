@@ -7,7 +7,8 @@
 import json
 import boto3
 import os
-from module.api import mentor_can_edit
+from module.api import user_can_edit_mentor
+from module.ttl_cache import TTLCache
 from module.utils import load_sentry, create_json_response, require_env
 from module.logger import get_logger
 from train import get_auth_headers
@@ -20,7 +21,21 @@ aws_region = os.environ.get("REGION", "us-east-1")
 dynamodb = boto3.resource("dynamodb", region_name=aws_region)
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
 
-cached_mentor_can_edit = {}
+
+def get_requesting_user_id(event):
+    token = json.loads(event["requestContext"]["authorizer"]["token"])
+    return token["id"]
+
+
+cached_user_can_edit_mentor = TTLCache()
+
+
+def get_user_can_edit_mentor(mentor, user_id, auth_headers):
+    user_can_edit_mentor_result = cached_user_can_edit_mentor.get((mentor, user_id))
+    if not user_can_edit_mentor_result:
+        user_can_edit_mentor_result = user_can_edit_mentor(mentor, auth_headers)
+        cached_user_can_edit_mentor.set((mentor, user_id), user_can_edit_mentor_result)
+    return user_can_edit_mentor_result
 
 
 def handler(event, context):
@@ -31,20 +46,17 @@ def handler(event, context):
     log.debug(db_item)
     if "Item" in db_item:
         item = db_item["Item"]
-        mentor_can_edit_result = cached_mentor_can_edit.get(item["mentor"])
-        log.info(f"mentor_can_edit_result from cache: {mentor_can_edit_result}")
-        if not mentor_can_edit_result:
-            _mentor_can_edit_result = mentor_can_edit(item["mentor"], auth_headers)
-            mentor_can_edit_result = _mentor_can_edit_result.get("mentorCanEdit")
-            cached_mentor_can_edit[item["mentor"]] = mentor_can_edit_result
-        if not mentor_can_edit_result:
+        user_id = get_requesting_user_id(event)
+        if not user_id:
+            return create_json_response(401, {"error": "not authorized, no user id", "message": "not authorized, no user id"}, event)
+        user_can_edit_mentor_result = get_user_can_edit_mentor(item["mentor"], user_id, auth_headers)
+        if not user_can_edit_mentor_result:
             status = 401
             data = {
                 "error": "not authorized",
                 "message": "not authorized",
             }
         else:
-            cached_mentor_can_edit[item["mentor"]] = mentor_can_edit_result
             status = 200
             data = {
                 "id": item["id"],
