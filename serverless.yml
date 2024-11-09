@@ -85,7 +85,7 @@ custom:
         layersDeploymentBucket: ${self:provider.deploymentBucket.name}
         dependenciesPath: ./requirements.txt
         compatibleRuntimes:
-          - python3.9
+          - python3.12
         functions:
           - http_train
           - http_train_status
@@ -96,7 +96,7 @@ provider:
   name: aws
   region: ${opt:region, 'us-east-1'}
   stage: ${opt:stage, 'dev'} # stage is dev unless otherwise specified with --stage flag
-  runtime: python3.9
+  runtime: python3.12
   stackTags:
     ENVIRONMENT: ${self:provider.stage}
     PROJECT: ${self:service}-${self:provider.stage}
