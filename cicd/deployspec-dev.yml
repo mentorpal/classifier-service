@@ -25,6 +25,7 @@ phases:
   build:
     commands:
       - echo Deploying stack
+      - docker --version
       - npm run deploy -- -s ${STAGE} --region us-east-1
 
       # TODO
