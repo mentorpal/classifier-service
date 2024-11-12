@@ -113,30 +113,33 @@ provider:
       train:
         path: ./
         file: Dockerfile
-        platform: linux/amd64
-        buildOptions:
-          [
-            "--provenance",
-            "false"
-          ]
+        # # Enable for deployment on Mac machines
+        # platform: linux/amd64
+        # buildOptions:
+        #   [
+        #     "--provenance",
+        #     "false"
+        #   ]
       predict:
         path: ./
         file: Dockerfile.predict
-        platform: linux/amd64
-        buildOptions:
-          [
-            "--provenance",
-            "false"
-          ]
+        # # Enable for deployment on Mac machines
+        # platform: linux/amd64
+        # buildOptions:
+        #   [
+        #     "--provenance",
+        #     "false"
+        #   ]
       followup:
         path: ./
         file: Dockerfile.followup
-        platform: linux/amd64
-        buildOptions:
-          [
-            "--provenance",
-            "false"
-          ]
+        # # Enable for deployment on Mac machines
+        # platform: linux/amd64
+        # buildOptions:
+        #   [
+        #     "--provenance",
+        #     "false"
+        #   ]
 
   endpointType: regional
   apiGateway:
