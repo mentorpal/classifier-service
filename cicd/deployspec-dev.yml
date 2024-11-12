@@ -8,7 +8,9 @@ env:
   variables:
     SENTRY_ORG: 'usc-ict-ls'
     SENTRY_PROJECT: 'mentor-classifier'
-
+  parameter-store:
+    SERVERLESS_ACCESS_KEY: "/shared/serverless-cicd-token"
+  
 phases:
   install:
     runtime-versions:
