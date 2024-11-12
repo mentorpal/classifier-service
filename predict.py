@@ -48,6 +48,7 @@ def make_response(status, body, event):
 
 
 def handler(event, context):
+    log.info("testing predict")
     log.debug(json.dumps(event))
     if "queryStringParameters" not in event:
         raise Exception("bad request")
