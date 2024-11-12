@@ -14,7 +14,7 @@
 service: mentor-classifier-service
 
 # pin the service to only deploy with a specific Serverless version
-frameworkVersion: '3'
+frameworkVersion: '4'
 
 plugins:
   - serverless-deployment-bucket
@@ -113,12 +113,30 @@ provider:
       train:
         path: ./
         file: Dockerfile
+        platform: linux/amd64
+        buildOptions:
+          [
+            "--provenance",
+            "false"
+          ]
       predict:
         path: ./
         file: Dockerfile.predict
+        platform: linux/amd64
+        buildOptions:
+          [
+            "--provenance",
+            "false"
+          ]
       followup:
         path: ./
         file: Dockerfile.followup
+        platform: linux/amd64
+        buildOptions:
+          [
+            "--provenance",
+            "false"
+          ]
 
   endpointType: regional
   apiGateway:
@@ -250,6 +268,7 @@ functions:
       name: predict
       command:
         - predict.handler
+
     memorySize: 2048
     timeout: 30
     events:

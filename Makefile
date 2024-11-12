@@ -11,6 +11,16 @@ LICENSE_HEADER:
 node_modules/license-check-and-add:
 	npm ci
 
+.PHONY: poetry-ensure-installed
+poetry-ensure-installed:
+	sh ./tools/poetry_ensure_installed.sh
+
+.PHONY: install
+install: poetry-ensure-installed
+	poetry config --local virtualenvs.in-project true
+	poetry env use python3.9
+	poetry install
+
 .PHONY: license
 license: LICENSE_HEADER
 	npm run license:fix
