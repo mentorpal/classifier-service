@@ -6,7 +6,6 @@
 #
 import json
 import os
-from typing import Dict
 import boto3
 import botocore
 from module.logger import get_logger

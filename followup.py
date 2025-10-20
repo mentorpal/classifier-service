@@ -5,11 +5,11 @@
 # The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 #
 import json
-from typing import Dict
 from module.utils import create_json_response, load_sentry
 from module.logger import get_logger
 from module.followup_api import generate_followups
 from train import get_auth_headers
+
 load_sentry()
 log = get_logger("followup")
 

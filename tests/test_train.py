@@ -21,7 +21,7 @@ def data_root() -> str:
 
 
 @responses.activate
-@pytest.mark.parametrize("mentor_id", [("clint")])
+@pytest.mark.parametrize("mentor_id", ["clint"])
 def test_trains_and_outputs_models(data_root: str, shared_root: str, mentor_id: str):
     with open(fixture_path("graphql/{}.json".format(mentor_id))) as f:
         data = json.load(f)

@@ -48,8 +48,17 @@ def handler(event, context):
         item = db_item["Item"]
         user_id = get_requesting_user_id(event)
         if not user_id:
-            return create_json_response(401, {"error": "not authorized, no user id", "message": "not authorized, no user id"}, event)
-        user_can_edit_mentor_result = get_user_can_edit_mentor(item["mentor"], user_id, auth_headers)
+            return create_json_response(
+                401,
+                {
+                    "error": "not authorized, no user id",
+                    "message": "not authorized, no user id",
+                },
+                event,
+            )
+        user_can_edit_mentor_result = get_user_can_edit_mentor(
+            item["mentor"], user_id, auth_headers
+        )
         if not user_can_edit_mentor_result:
             status = 401
             data = {

@@ -32,7 +32,11 @@ job_table = dynamodb.Table(JOBS_TABLE_NAME)
 
 
 def get_auth_headers(event) -> Dict[str, str]:
-    authorization = event["headers"]["Authorization"] if "Authorization" in event["headers"] else None
+    authorization = (
+        event["headers"]["Authorization"]
+        if "Authorization" in event["headers"]
+        else None
+    )
     origin = event["headers"]["Origin"] if "Origin" in event["headers"] else None
     headers = {}
     if authorization:
@@ -93,9 +97,9 @@ def handler(event, context):
         "id": job_id,
         "mentor": mentor,
         "status": "QUEUED",
-        "statusUrl": f"/train/status/{job_id}"
-        if ping is False
-        else "no_status_on_ping",
+        "statusUrl": (
+            f"/train/status/{job_id}" if ping is False else "no_status_on_ping"
+        ),
     }
     return create_json_response(200, data, event)
 
