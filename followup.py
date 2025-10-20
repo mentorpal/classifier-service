@@ -9,17 +9,9 @@ from typing import Dict
 from module.utils import create_json_response, load_sentry
 from module.logger import get_logger
 from module.followup_api import generate_followups
-
+from train import get_auth_headers
 load_sentry()
 log = get_logger("followup")
-
-
-def get_auth_headers(event) -> Dict[str, str]:
-    return (
-        {"Authorization": event["headers"]["Authorization"]}
-        if "Authorization" in event["headers"]
-        else {}
-    )
 
 
 def handler(event, context):

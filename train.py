@@ -32,11 +32,14 @@ job_table = dynamodb.Table(JOBS_TABLE_NAME)
 
 
 def get_auth_headers(event) -> Dict[str, str]:
-    return (
-        {"Authorization": event["headers"]["Authorization"]}
-        if "Authorization" in event["headers"]
-        else {}
-    )
+    authorization = event["headers"]["Authorization"] if "Authorization" in event["headers"] else None
+    origin = event["headers"]["Origin"] if "Origin" in event["headers"] else None
+    headers = {}
+    if authorization:
+        headers["Authorization"] = authorization
+    if origin:
+        headers["custom-external-origin"] = origin
+    return headers
 
 
 def handler(event, context):
