@@ -24,7 +24,7 @@ phases:
       #   Check that it exists and that you have proper access to it
       - git lfs pull https://github.com/mentorpal/classifier-service.git
       - pyenv global $PYTHON_312_VERSION
-      - python3 -m venv /root/venv
+      - $(pyenv which python3) -m venv /root/venv
       - . /root/venv/bin/activate
       - pip3 install poetry
       - poetry install --no-root
