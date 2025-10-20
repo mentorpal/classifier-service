@@ -17,7 +17,7 @@ COPY module module
 RUN python -m pip install --upgrade pip \
     && pip install --no-cache-dir --upgrade poetry \
     && poetry config virtualenvs.create false \
-    && poetry install --no-dev --no-root \
+    && poetry install --without dev --no-root \
     # # poetry installs full torch because its transformers dependency:
     # this will install just the cpu (no cuda) version of torch:
     && pip install torch==1.9.1+cpu torchvision==0.10.1+cpu -f https://download.pytorch.org/whl/torch_stable.html \
