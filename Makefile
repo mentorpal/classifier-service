@@ -18,7 +18,7 @@ poetry-ensure-installed:
 .PHONY: install
 install: poetry-ensure-installed
 	poetry config --local virtualenvs.in-project true
-	poetry env use python3.9
+	poetry env use python3.12
 	poetry install
 
 .PHONY: license
