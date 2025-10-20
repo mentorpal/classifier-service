@@ -13,6 +13,7 @@ phases:
   install:
     runtime-versions:
       nodejs: 22
+      python: 3.12
     commands:
       - cd /tmp
       - curl -OJL https://github.com/git-lfs/git-lfs/releases/download/v3.1.4/git-lfs-linux-amd64-v3.1.4.tar.gz
@@ -23,8 +24,7 @@ phases:
       #   batch response: Repository or object not found: https://codestar-connections.***classifier-service.git/info/lfs/objects/batch
       #   Check that it exists and that you have proper access to it
       - git lfs pull https://github.com/mentorpal/classifier-service.git
-      - pyenv global $PYTHON_312_VERSION
-      - $(pyenv which python3) -m venv /root/venv
+      - python3 -m venv /root/venv
       - . /root/venv/bin/activate
       - pip3 install poetry
       - poetry install --no-root
