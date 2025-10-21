@@ -1,3 +1,4 @@
 sentry-sdk==1.14.0
 spacy==3.8.2
+setuptools==80.9.0
 urllib3<=2
