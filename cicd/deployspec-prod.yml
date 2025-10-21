@@ -15,7 +15,7 @@ phases:
   install:
     runtime-versions:
       nodejs: 22
-
+      python: 3.12
   pre_build:
     commands:
       - pyenv global $PYTHON_312_VERSION

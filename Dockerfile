@@ -20,7 +20,7 @@ RUN python -m pip install --upgrade pip \
     && poetry install --without dev --no-root \
     # # poetry installs full torch because its transformers dependency:
     # this will install just the cpu (no cuda) version of torch:
-    && pip install torch==1.9.1+cpu torchvision==0.10.1+cpu -f https://download.pytorch.org/whl/torch_stable.html \
+    && pip install torch==2.9.0 torchvision --index-url https://download.pytorch.org/whl/cpu \
     # force delete poetry and pip caches
     && rm -rf /root/.cache/* pyproject.toml poetry.lock \
 # TODO this leaves all poetry pip dependencies installed
