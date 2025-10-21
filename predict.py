@@ -16,8 +16,8 @@ from module.utils import (
     append_cors_headers,
     append_secure_headers,
     require_env,
+    get_auth_headers,
 )
-from train import get_auth_headers
 
 load_sentry()
 log = get_logger("predict")

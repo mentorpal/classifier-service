@@ -9,9 +9,13 @@ import boto3
 import os
 from module.api import user_can_edit_mentor
 from module.ttl_cache import TTLCache
-from module.utils import load_sentry, create_json_response, require_env
+from module.utils import (
+    load_sentry,
+    create_json_response,
+    require_env,
+    get_auth_headers,
+)
 from module.logger import get_logger
-from train import get_auth_headers
 
 load_sentry()
 log = get_logger("status")

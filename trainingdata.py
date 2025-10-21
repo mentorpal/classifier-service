@@ -5,10 +5,9 @@
 # The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 #
 import json
-from module.api import fetch_training_data, user_can_edit_mentor
-from module.utils import create_json_response, load_sentry
+from module.utils import create_json_response, load_sentry, get_auth_headers
 from module.logger import get_logger
-from train import get_auth_headers
+from module.api import fetch_training_data, user_can_edit_mentor
 
 
 load_sentry()
