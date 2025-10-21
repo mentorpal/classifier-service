@@ -87,7 +87,6 @@ def get_auth_headers(event) -> Dict[str, str]:
         if "Authorization" in event["headers"]
         else None
     )
-    print(event["headers"])
     origin1 = event["headers"]["Origin"] if "Origin" in event["headers"] else None
     origin2 = event["headers"]["origin"] if "origin" in event["headers"] else None
     headers = {}
