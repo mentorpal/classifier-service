@@ -17,7 +17,6 @@ from module.utils import (
 import datetime
 import base64
 from module.logger import get_logger
-from typing import Dict
 from module.api import add_or_update_train_task, user_can_edit_mentor
 
 
