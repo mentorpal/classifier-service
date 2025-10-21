@@ -1578,7 +1578,7 @@ dev = ["pytest", "setuptools"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "2321d09006fa0fdc4af3bfbf3b010bd62f3e1f92171778de2a2b9d7c3e9991c0"
+content-hash = "3465b4062dde46a2f683bc5948c12db9c5c548f7fc962dda620817a8a0fa5cbd"
 
 [metadata.files]
 annotated-types = [
