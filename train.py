@@ -8,11 +8,15 @@ import json
 import uuid
 import boto3
 import os
-from module.utils import create_json_response, require_env, load_sentry
+from module.utils import (
+    create_json_response,
+    require_env,
+    load_sentry,
+    get_auth_headers,
+)
 import datetime
 import base64
 from module.logger import get_logger
-from typing import Dict
 from module.api import add_or_update_train_task, user_can_edit_mentor
 
 
@@ -29,14 +33,6 @@ log.info(f"using queue {queue_url}")
 # todo endpoint_url="http://localhost:8000") for localstack
 dynamodb = boto3.resource("dynamodb", region_name=aws_region)
 job_table = dynamodb.Table(JOBS_TABLE_NAME)
-
-
-def get_auth_headers(event) -> Dict[str, str]:
-    return (
-        {"Authorization": event["headers"]["Authorization"]}
-        if "Authorization" in event["headers"]
-        else {}
-    )
 
 
 def handler(event, context):
@@ -90,9 +86,9 @@ def handler(event, context):
         "id": job_id,
         "mentor": mentor,
         "status": "QUEUED",
-        "statusUrl": f"/train/status/{job_id}"
-        if ping is False
-        else "no_status_on_ping",
+        "statusUrl": (
+            f"/train/status/{job_id}" if ping is False else "no_status_on_ping"
+        ),
     }
     return create_json_response(200, data, event)
 

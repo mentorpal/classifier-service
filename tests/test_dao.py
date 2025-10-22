@@ -16,7 +16,7 @@ from .helpers import fixture_path
 
 
 @responses.activate
-@pytest.mark.parametrize("mentor_id", [("clint")])
+@pytest.mark.parametrize("mentor_id", ["clint"])
 def test_find_classifier_caches(data_root: str, shared_root: str, mentor_id: str):
     with open(fixture_path("graphql/{}.json".format(mentor_id))) as f:
         data = json.load(f)
@@ -28,7 +28,7 @@ def test_find_classifier_caches(data_root: str, shared_root: str, mentor_id: str
 
 
 @responses.activate
-@pytest.mark.parametrize("mentor_id", [("clint")])
+@pytest.mark.parametrize("mentor_id", ["clint"])
 def test_find_classifier_returns_updated_classifier_if_model_has_changed(
     tmp_path, data_root: str, shared_root: str, mentor_id: str
 ):

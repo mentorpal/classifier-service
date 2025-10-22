@@ -81,6 +81,22 @@ def append_secure_headers(headers):
         headers[h] = secure[h]
 
 
+def get_auth_headers(event) -> Dict[str, str]:
+    authorization = (
+        event["headers"]["Authorization"]
+        if "Authorization" in event["headers"]
+        else None
+    )
+    origin1 = event["headers"]["Origin"] if "Origin" in event["headers"] else None
+    origin2 = event["headers"]["origin"] if "origin" in event["headers"] else None
+    headers = {}
+    if authorization:
+        headers["Authorization"] = authorization
+    if origin1 or origin2:
+        headers["custom-external-origin"] = origin1 or origin2
+    return headers
+
+
 def append_cors_headers(headers, event):
     origin = environ.get("CORS_ORIGIN", "*")
     # TODO specify allowed list of origins and if event["headers"]["origin"] is one of them then allow it
@@ -90,9 +106,9 @@ def append_cors_headers(headers, event):
     headers["Access-Control-Allow-Origin"] = origin
     headers["Access-Control-Allow-Origin"] = "*"
     headers["Access-Control-Allow-Headers"] = "GET,PUT,POST,DELETE,OPTIONS"
-    headers[
-        "Access-Control-Allow-Methods"
-    ] = "Authorization,Origin,Accept,Accept-Language,Content-Language,Content-Type"
+    headers["Access-Control-Allow-Methods"] = (
+        "Authorization,Origin,Accept,Accept-Language,Content-Language,Content-Type"
+    )
 
 
 def use_average_embedding() -> bool:

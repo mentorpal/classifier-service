@@ -65,9 +65,11 @@ class TransformersQuestionClassifierPrediction:
                     question,
                     answer_id,
                     chat_session_id,
-                    "PARAPHRASE"
-                    if sanitized_question != sanitize_string(q["question_text"])
-                    else "EXACT",
+                    (
+                        "PARAPHRASE"
+                        if sanitized_question != sanitize_string(q["question_text"])
+                        else "EXACT"
+                    ),
                     1.0,
                 )
                 return QuestionClassiferPredictionResult(
@@ -96,9 +98,11 @@ class TransformersQuestionClassifierPrediction:
             question,
             answer_id,
             chat_session_id,
-            "OFF_TOPIC"
-            if highest_confidence < get_off_topic_threshold()
-            else "CLASSIFIER",
+            (
+                "OFF_TOPIC"
+                if highest_confidence < get_off_topic_threshold()
+                else "CLASSIFIER"
+            ),
             highest_confidence,
         )
         if highest_confidence < get_off_topic_threshold():
