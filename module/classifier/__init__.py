@@ -41,3 +41,4 @@ class QuestionClassiferPredictionResult:
     feedback_id: str
     external_video_ids: ExternalVideoIds
     answer_missing: bool
+    question_id: str
