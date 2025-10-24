@@ -88,6 +88,7 @@ class Mentor(object):
             self.answer_id_by_answer[answer["_id"]] = {
                 "transcript": answer["transcript"],
                 "markdownTranscript": answer["markdownTranscript"],
+                "question_id": question["_id"],
             }
             self.questions_by_id[question["_id"]] = q
         # First add primary question texts

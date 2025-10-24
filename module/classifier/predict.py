@@ -21,7 +21,7 @@ from module.api import create_user_question, get_off_topic_threshold, sbert_enco
 from module.mentor import Mentor
 from module.utils import file_last_updated_at, sanitize_string
 
-AnswerIdTextAndMedia = Tuple[str, str, str, Media, Media, Media]
+AnswerIdTextAndMedia = Tuple[str, str, str, Media, Media, Media, str]
 
 
 class TransformersQuestionClassifierPrediction:
@@ -60,6 +60,7 @@ class TransformersQuestionClassifierPrediction:
                 markdown_answer = q["markdown_answer"]
                 answer_media = q["answer_media"]
                 external_video_ids = q["external_video_ids"]
+                question_id = q["id"]
                 feedback_id = create_user_question(
                     self.mentor.id,
                     question,
@@ -81,6 +82,7 @@ class TransformersQuestionClassifierPrediction:
                     feedback_id,
                     external_video_ids,
                     answer_missing=False,
+                    question_id=question_id,
                 )
         encoding_json = sbert_encode(question)
         embedded_question = numpy.array(encoding_json["encoding"])
@@ -92,6 +94,7 @@ class TransformersQuestionClassifierPrediction:
             highest_confidence,
             external_video_ids,
             answer_missing,
+            question_id,
         ) = self.__get_prediction(embedded_question)
         feedback_id = create_user_question(
             self.mentor.id,
@@ -112,6 +115,7 @@ class TransformersQuestionClassifierPrediction:
                 markdownAnswer,
                 answer_media,
                 external_video_ids,
+                question_id,
             ) = self.__get_offtopic()
         return QuestionClassiferPredictionResult(
             answer_id,
@@ -122,6 +126,7 @@ class TransformersQuestionClassifierPrediction:
             feedback_id,
             external_video_ids,
             answer_missing,
+            question_id,
         )
 
     def get_last_trained_at(self) -> float:
@@ -133,7 +138,7 @@ class TransformersQuestionClassifierPrediction:
 
     def __get_prediction(
         self, embedded_question
-    ) -> Tuple[str, str, str, AnswerMedia, float, ExternalVideoIds]:
+    ) -> Tuple[str, str, str, AnswerMedia, float, ExternalVideoIds, bool, str]:
         prediction = self.model.predict([embedded_question])
         decision = self.model.decision_function([embedded_question])
         if isinstance(decision[0], numpy.ndarray):
@@ -147,6 +152,7 @@ class TransformersQuestionClassifierPrediction:
             answer = self.mentor.answer_id_by_answer[prediction[0]]
             answer_text = answer["transcript"]
             answer_markdown_text = answer["markdownTranscript"]
+            question_id = answer["question_id"]
             answer_key = sanitize_string(answer_text)
             answer_media = self.mentor.questions_by_answer[answer_key].get(
                 "answer_media"
@@ -164,6 +170,7 @@ class TransformersQuestionClassifierPrediction:
                 answer_markdown_text,
                 answer_media,
                 external_video_ids,
+                question_id,
             ) = self.__get_offtopic()
 
         return (
@@ -174,6 +181,7 @@ class TransformersQuestionClassifierPrediction:
             float(highest_confidence),
             external_video_ids,
             answer_missing,
+            question_id,
         )
 
     def __get_offtopic(self) -> AnswerIdTextAndMedia:
@@ -181,6 +189,13 @@ class TransformersQuestionClassifierPrediction:
             id, text, markdownText, answer_media, external_video_ids = random.choice(
                 self.mentor.utterances_by_type["_OFF_TOPIC_"]
             )
-            return (id, text, markdownText, answer_media, external_video_ids)
+            return (id, text, markdownText, answer_media, external_video_ids, "")
         except KeyError:
-            return ("_OFF_TOPIC_", "_OFF_TOPIC_", "_OFF_TOPIC_", {}, {"wistiaId": ""})
+            return (
+                "_OFF_TOPIC_",
+                "_OFF_TOPIC_",
+                "_OFF_TOPIC_",
+                {},
+                {"wistiaId": ""},
+                "",
+            )
