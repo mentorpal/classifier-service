@@ -106,6 +106,7 @@ def handler(event, context):
 
     body = {
         "question": question,
+        "question_id": result.question_id,
         "answer_id": result.answer_id,
         "answer_text": result.answer_text,
         "answer_markdown_text": result.answer_markdown_text,
